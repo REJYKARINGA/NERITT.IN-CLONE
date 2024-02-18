@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        body {
+            background: url('/public/images/1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+        }
+
+        .otp-container {
+            background-color: rgba(255, 255, 255, 0.3); /* Adjust opacity here */
+            border: 2px solid #129393;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 80%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .otp-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .otp-container input {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        .otp-container .verify-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #0f88d4;
+            color: white;
+            cursor: pointer;
+        }
+
+        .otp-container .resend-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            background-color: #129393;
+            color: white;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .otp-container .resend-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .otp-container .resend-btn.exceeded {
+            background-color: #00c00a; /* Change color when the time limit is exceeded */
+        }
+
+        .otp-container .box {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f5f5f5;
+        }
+
+        .otp-container .message {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: black;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body><%-include('cursor.ejs')-%>
+    <div class="otp-container">
+        <form id="otpForm" action="/verify-otp" method="POST">
+          <h4 style="font-weight: bold; color: #129393;">Verification</h4>
+          <h6 style="text-align: center;">Messenger has sent a code to <br>verify your account</h6>
+    
+          <input type="text" name="otp" placeholder="Enter OTP" required>
+          <button type="submit" class="verify-btn">Verify OTP</button>
+        </form>
+    
+        <form id="resendForm" action="/resend-otp" method="POST">
+          <button type="submit" class="resend-btn" id="resendButton" disabled>Resend OTP in <span id="timer">10</span> seconds</button>
+        </form>
+      </div>
+   
+
+     <script>
+    const timer = document.getElementById('timer');
+    const resendBtn = document.getElementById('resendButton');
+
+    let timeLeft = 10; // Set the timer duration in seconds
+
+    const countdown = setInterval(() => {
+      timeLeft--;
+      timer.textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(countdown);
+        resendBtn.removeAttribute('disabled');
+        resendBtn.classList.remove('disabled');
+        resendBtn.classList.add('exceeded');
+        resendBtn.textContent = 'Resend OTP';
+      }
+    }, 1000)
+  </script>
+</body>
+<script>
+    if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+  </script>
+</html>

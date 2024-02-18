@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Email OTP Submission</title>
+</head>
+<body>
+  <h1>Send OTP via Email</h1>
+  <form id="emailForm">
+    <label for="emailInput">Enter Your Email:</label>
+    <input type="email" id="emailInput" name="email" required>
+    <button type="submit">Send OTP</button>
+  </form>
+
+  <script>
+    document.getElementById('emailForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const email = document.getElementById('emailInput').value;
+
+      // Send the email address to the server to trigger OTP sending
+      fetch('/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Network response was not ok.');
+      })
+      .then(data => {
+        console.log('OTP sent:', data.otp);
+        alert('OTP sent! Check your email.');
+        // Handle the response data as needed (e.g., show a success message to the user)
+      })
+      .catch(error => {
+        console.error('Error sending OTP:', error);
+        alert('Failed to send OTP. Please try again.');
+        // Handle errors (e.g., show an error message to the user)
+      });
+    });
+  </script>
+</body>
+</html>

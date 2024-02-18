@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Address</title>
+</head>
+<body>
+    <h1>Select Address</h1>
+
+    <div>
+        <label for="CNTCT7398A173B9A243DB9E0903679" class="_2Fn-Ln _1TW9af j0Sqdz _18Z3T6 _3L7Pww">
+            <input type="radio" class="_3DAmyP" name="address" readonly="" id="CNTCT7398A173B9A243DB9E0903679" checked="">
+            <div class="_1XFPmK"></div>
+            <div class="_2jIO64">
+                <div class="_2SkKgB">
+                    <div id="CNTCT7398A173B9A243DB9E0903679" class="tDHRfA _3a5__h">
+                        <p class="rPNEXT">
+                            <span class="_2dQV-8">REJY KP</span>
+                            <span class="_2XilLp">HOME</span>
+                            <span class="_3mmRDy _2dQV-8">7994870262</span>
+                        </p>
+                        <span class="rPNEXT Br27Zz">Boys Hostel, Amala Mall, Dotspace, Asset, Kazhakuttom, Thiruvananthapuram, Kerala - <span class="_2dQV-8">695582</span></span>
+                        <button class="_2KpZ6l RLM7ES _3AWRsL">Deliver Here</button>
+                    </div>
+                    <div class="_1AXmWp"><button type="button" class="_1MM7ZD">EDIT</button></div>
+                </div>
+            </div>
+        </label>
+    </div>
+
+    <div>
+        <label for="CNTCT303872B037444A03800F2EE8A" class="_2Fn-Ln _1TW9af _18Z3T6">
+            <input type="radio" class="_3DAmyP" name="address" readonly="" id="CNTCT303872B037444A03800F2EE8A">
+            <div class="_1XFPmK"></div>
+            <div class="_2jIO64">
+                <div class="_2SkKgB">
+                    <div id="CNTCT303872B037444A03800F2EE8A" class="tDHRfA">
+                        <p class="rPNEXT">
+                            <span class="_2dQV-8">Rejy Karinga</span>
+                            <span class="_2XilLp">HOME</span>
+                            <span class="_3mmRDy _2dQV-8">7994870262</span>
+                        </p>
+                        <span class="rPNEXT Br27Zz">karingappara, Kadampuzha, karekkad, Kottakal, Kerala - <span class="_2dQV-8">676553</span></span>
+                    </div>
+                </div>
+            </div>
+        </label>
+    </div>
+
+    <!-- Additional addresses can be added following the same structure -->
+
+    <button onclick="processCheckout()">Proceed to Payment</button>
+
+    <script>
+        function processCheckout() {
+            // Retrieve selected address
+            var selectedAddress = document.querySelector('input[name="address"]:checked').id;
+            // Redirect to payment page or perform further processing
+            // For demonstration purpose, redirecting to a hypothetical payment page
+            window.location.href = "payment.html?address=" + selectedAddress;
+        }
+    </script>
+</body>
+</html>

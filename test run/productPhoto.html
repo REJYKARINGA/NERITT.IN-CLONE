@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+</head>
+<body>
+
+<div class="container">
+    <h2>Edit Product</h2>
+    <form id="editProductForm">
+        <!-- Product Details Section -->
+        <div class="form-group">
+            <label for="productName">Product Name:</label>
+            <input type="text" class="form-control" id="productName" name="productName" value="Product Name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="productDescription">Product Description:</label>
+            <textarea class="form-control" id="productDescription" name="productDescription" rows="4" required>Product Description</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="productPrice">Product Price:</label>
+            <input type="number" class="form-control" id="productPrice" name="productPrice" step="0.01" value="25.99" required>
+        </div>
+
+        <!-- Product Images Section -->
+        <div class="form-group">
+            <label for="productImages">Product Images:</label>
+            <input type="file" class="form-control-file" id="productImages" name="gallery[]" multiple accept="image/*">
+            <small class="form-text text-muted">You can select multiple images by holding down the Ctrl key (Windows) or Command key (Mac).</small>
+        </div>
+
+        <!-- Image Preview Section -->
+        <div class="form-group" id="imagePreviewContainer">
+            <!-- Existing product images will be displayed here -->
+            <!-- Replace the following URLs with the actual URLs from your backend -->
+            <img src="gallery[0]" alt="Product Image 1">
+            <img src="gallery[1]" alt="Product Image 2">
+            <!-- Add more images dynamically based on the product's gallery -->
+        </div>
+
+        <!-- Display the number of images dynamically -->
+        <p id="imageCountLabel"></p>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Update Product</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('productImages').addEventListener('change', function () {
+        const input = this;
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const imageCountLabel = document.getElementById('imageCountLabel');
+
+        previewContainer.innerHTML = ''; // Clear previous previews
+
+        for (const file of input.files) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                previewContainer.appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // Display the number of images dynamically
+        imageCountLabel.textContent = `Number of Images: ${input.files.length}`;
+    });
+
+    document.getElementById('editProductForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        // Add your form submission logic here
+        alert('Product updated successfully!');
+    });
+</script>
+
+</body>
+</html>

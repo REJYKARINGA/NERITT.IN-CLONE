@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation Example</title>
+    <style>
+        .invalid-feedback {
+            font-weight: bold;
+            display: none;
+            color: #129393;
+        }
+    </style>
+</head>
+<body>
+    <h2>Address Form</h2>
+    <form id="addressForm" action="#" method="post">
+        <div class="form-group">
+            <label for="fatherName">Father's Name:</label>
+            <input type="text" id="fatherName" name="fatherName" class="form-control" required>
+            <span class="invalid-feedback" role="alert" id="fatherName_err">Please provide a valid father's name.</span>
+        </div>
+
+        <!-- Other form fields with similar structure -->
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('addressForm').addEventListener('submit', function(event) {
+            var valid = true;
+
+            // Validate Father's Name
+            var fatherName = document.getElementById('fatherName').value.trim();
+            if (!/^[A-Za-z\s]+$/.test(fatherName)) {
+                document.getElementById('fatherName_err').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('fatherName_err').style.display = 'none';
+            }
+
+            // Other validations for remaining fields go here
+
+            if (!valid) {
+                event.preventDefault(); // Prevent form submission if there are validation errors
+            }
+        });
+    </script>
+</body>
+</html>

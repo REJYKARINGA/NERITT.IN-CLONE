@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .profile-container {
+            text-align: center;
+        }
+
+        .profile-image {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 2px solid #338ab3; /* Add your desired border color here */
+
+        }
+
+        .profile-name {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-container">
+    <img class="profile-image" src="<%= msg1.profileImageUrl %>" alt="User Profile Image" />
+    <h1 class="profile-name">Hello, <%= msg1.name %></h1>
+</div>
+
+</body>
+</html>

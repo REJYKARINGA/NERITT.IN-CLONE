@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #129393;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url(/1.jpg);
+        }
+        input[type="email"],
+    input[type="password"],
+    input[type="submit"],
+    a {
+      margin-bottom: 15px;
+      padding: 10px;
+      /* border: 1px solid #ccc; */
+      border-radius: 3px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="submit"]:focus {
+      outline: none;
+      border-color: dodgerblue;
+    }
+
+    input[type="submit"] {
+      background-color: dodgerblue;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #007bff;
+    }
+
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.3); /* Adjust opacity here */
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 80%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .login-container input {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .login-container .forgot-password {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .login-container .register-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .login-container button {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #0f88d4;
+            color: white;
+            cursor: pointer;
+            opacity: 1; /* Set opacity for the login button */
+        }
+        
+        a {
+            color: black;
+        }
+        
+    </style>
+</head>
+
+<body style="background-image: url('/public/images/1.jpg'); background-size: cover;">
+    
+    <div class="login-container" style="border: 2px #129393 solid; text-align: center; " >
+        <form action="/admin/dashboard" method="POST">
+            <h1 style="font-weight: bold;">Welcome</h1>
+            <h6 >Admin Login</h6>
+            <input type="text" id="username" name="username" placeholder="Email ID" value="RejiMan" required>
+            <input type="password" id="password" name="password" placeholder="Password" value="12345" required>
+            <a href="/forgotPage" class="forgot-password" style="text-decoration: none;">Forgot your password?</a>
+            <input type="submit" value="Login">
+            <p class="register-link" style="text-decoration: none;">Don't have an account? <a href="/signup">Register now</a></p>
+        </form>
+    </div>
+</body>
+
+</html>
+
+

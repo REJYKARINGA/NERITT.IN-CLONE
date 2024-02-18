@@ -1,0 +1,1628 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+       <!--  <meta name="description" content="Orbiter is a bootstrap minimal & clean admin template">
+        <meta name="keywords" content="admin, admin panel, admin template, admin dashboard, responsive, bootstrap 4, ui kits, ecommerce, web app, crm, cms, html, sass support, scss">
+        <meta name="author" content="Themesbox"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+        <meta name="csrf-token" content="pQwjoxBXbM5MHFrsWMzHOgdYWZcCHLUmJ9sGZslm">
+
+        <title>  
+Variant List 
+ </title>
+        <!-- Fevicon -->
+        <link rel="shortcut icon" href="https://neritt.in/assets/user/images/assets/favicons/favicon-32x32.png">
+        <!-- Start CSS -->   
+          <!-- icon style sheet css -->
+    <link rel="stylesheet" href="/public/css/themify-icons.css">
+    
+    
+        <!-- 
+<link href="/assets/css/image-uploader.css" rel="stylesheet" type="text/css"> -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/css/bootstrap-colorpicker.min.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/js/bootstrap-colorpicker.min.js"></script>
+        <link href="https://neritt.in/assets/plugins/switchery/switchery.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/plugins/animate/animate.css" rel="stylesheet" type="text/css">
+
+        <link href="https://neritt.in/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="https://neritt.in/assets/css/icons.css" rel="stylesheet" type="text/css">
+        <link href="https://neritt.in/assets/css/flag-icon.min.css" rel="stylesheet" type="text/css">
+        <link href="https://neritt.in/assets/css/style.css" rel="stylesheet" type="text/css">
+        <link href="https://neritt.in/assets/css/app.css" rel="stylesheet" type="text/css">
+        <link href="https://neritt.in/assets/css/datepicker.min.css" rel="stylesheet" type="text/css">
+        <link href="https://neritt.in/assets/css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/css/bootstrap-colorpicker.min.css" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.1/js/bootstrap-colorpicker.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <link href="/assets/plugins/pnotify/css/pnotify.custom.min.css" rel="stylesheet" type="text/css">
+    <style>
+        .se-pre-con{
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: #117A65;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-grow {
+            color: #ffffff !important;
+        }
+    </style>
+    <!-- <script>
+        document.onreadystatechange = function() { 
+                if (document.readyState !== "complete") { 
+                    setTimeout(function(){ 
+                        document.querySelector("body").style.visibility = "hidden"; 
+                        document.querySelector(".se-pre-con").style.display = "visible"; 
+                    }, 1000);
+                } else { 
+                    setTimeout(function(){ 
+                        document.querySelector(".se-pre-con").style.display = "none"; 
+                        document.querySelector("body").style.visibility = "visible"; 
+                    }, 1000);
+                } 
+            }; 
+    </script> -->
+    <script>
+        var notification_popup_flag = true;
+    </script>
+        <!-- End CSS -->
+    </head>
+    <body class="vertical-layout">
+        <!-- <div class="se-pre-con">
+            <div class="spinner-grow text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div> --><%-include('cursor.ejs')-%>
+    <!-- <body class="horizontal-layout"> -->
+        <input type="hidden" name="_token" value="pQwjoxBXbM5MHFrsWMzHOgdYWZcCHLUmJ9sGZslm">
+        <input type="hidden" id="app-url" value="https://neritt.in">
+
+        <!-- Start Infobar Setting Sidebar -->
+        <div id="infobar-settings-sidebar" class="infobar-settings-sidebar">
+            <div class="infobar-settings-sidebar-head d-flex w-100 justify-content-between">
+                <h4>Settings</h4><a href="javascript:void(0)" id="infobar-settings-close" class="infobar-settings-close"><img src="https://neritt.in/assets/images/svg-icon/close.svg" class="img-fluid menu-hamburger-close" alt="close"></a>
+            </div>
+            <div class="infobar-settings-sidebar-body">
+                <div class="custom-mode-setting">
+                    <div class="row align-items-center pb-3">
+                        <div class="col-8"><h6 class="mb-0">Payment Reminders</h6></div>
+                        <div class="col-4 text-right"><input type="checkbox" class="js-switch-setting-first" checked /></div>
+                    </div>
+                    <div class="row align-items-center pb-3">
+                        <div class="col-8"><h6 class="mb-0">Stock Updates</h6></div>
+                        <div class="col-4 text-right"><input type="checkbox" class="js-switch-setting-second" checked /></div>
+                    </div>
+                    <div class="row align-items-center pb-3">
+                        <div class="col-8"><h6 class="mb-0">Open for New Products</h6></div>
+                        <div class="col-4 text-right"><input type="checkbox" class="js-switch-setting-third" /></div>
+                    </div>
+                    <div class="row align-items-center pb-3">
+                        <div class="col-8"><h6 class="mb-0">Enable SMS</h6></div>
+                        <div class="col-4 text-right"><input type="checkbox" class="js-switch-setting-fourth" checked /></div>
+                    </div>
+                    <div class="row align-items-center pb-3">
+                        <div class="col-8"><h6 class="mb-0">Newsletter Subscription</h6></div>
+                        <div class="col-4 text-right"><input type="checkbox" class="js-switch-setting-fifth" checked /></div>
+                    </div>
+                    <div class="row align-items-center pb-3">
+                        <div class="col-8"><h6 class="mb-0">Show Map</h6></div>
+                        <div class="col-4 text-right"><input type="checkbox" class="js-switch-setting-sixth" /></div>
+                    </div>
+                    <div class="row align-items-center pb-3">
+                        <div class="col-8"><h6 class="mb-0">e-Statement</h6></div>
+                        <div class="col-4 text-right"><input type="checkbox" class="js-switch-setting-seventh" checked /></div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-8"><h6 class="mb-0">Monthly Report</h6></div>
+                        <div class="col-4 text-right"><input type="checkbox" class="js-switch-setting-eightth" checked /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="infobar-settings-sidebar-overlay"></div>
+        <!-- End Infobar Setting Sidebar -->
+        <!-- Start Containerbar -->
+        <!-- class="container-fluid" -->
+        <div id="containerbar">
+            <!-- Start Rightbar -->
+            <div class="leftbar">
+    <!-- Start Navigationbar -->
+    <div class="navigationbar">
+        <!-- Start Sidebar -->
+        <div class="sidebar">
+            <!-- Start Logobar -->
+            <div class="logobar">
+                <a href="https://neritt.in/admin-dashboard" class="logo logo-large">
+                    <!-- <h3>Neritt</h3> -->
+
+                    <img src="https://neritt.in/assets/user/images/assets/logo-dark.png" class="img-fluid" alt="logo">
+                </a>
+                <a href="https://neritt.in/admin-dashboard" class="logo logo-small">
+                    <!-- <h3>Neritt</h3> -->
+                    <img src="https://neritt.in/assets/user/images/assets/logo-dark.png" class="img-fluid" alt="logo">
+                </a>
+            </div>
+            <!-- End Logobar -->
+            <!-- Start Horizontal Nav -->
+            <div class="horizontal-nav active">
+                <ul class="vertical-menu in">
+                    <li class="">
+                        <a href="https://neritt.in/admin-dashboard">
+                            <i class="ti ti-dashboard"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    </li>
+                    <li id="sales_report">
+                        <a href="javascript:void(0)"><i class="ti ti-file"></i>
+                            <span>Vendor Sale Report</span></a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/sales-report">
+                            <i class="ti ti-files"></i>
+                            <span>Sales Report</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/school-report">
+                            <i class="ti ti-download"></i>
+                            <span>School Report</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/agent">
+                            <i class="ti ti-user"></i>
+                            <span>Agent Registration</span>
+
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/school">
+                            <i class="ti ti-home"></i>
+                            <span>School Registration</span>
+
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/user">
+                            <i class="ti ti-user"></i>
+                            <span>Users</span>
+
+                        </a>
+                    </li>
+
+                    <li class="">
+                        <a href="https://neritt.in/products">
+                            <i class="ti ti-package"></i>
+                            <span>Products</span>
+
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/categories">
+                            <i class="ti ti-menu-alt"></i>
+                            <span>Categories</span>
+
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/schools">
+                            <i class="ti ti-book"></i>
+                            <span>Schools</span>
+
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/agents">
+                            <i class="ti ti-user"></i>
+                            <span>Agents</span>
+
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/banner">
+                            <i class="ti ti-image"></i>
+                            <span>Banner</span>
+
+                        </a>
+                    </li>
+                    <li class="active" style="display:none;">
+                        <a href="https://neritt.in/variants">
+                            <i class="ti ti-layers"></i>
+                            <span>Variants</span>
+
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/brands">
+                            <i class="ti ti-dropbox"></i>
+                            <span>Brands</span>
+
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="https://neritt.in/orders">
+                            <i class="ti ti-write"></i>
+                            <span>Orders</span>
+
+                        </a>
+                    </li>
+
+
+                    <li id="settings" class="has-sub">
+                        <a><i class="ti ti-settings"></i>
+                            <span>Settings</span></a>
+                        <ul style="display:none;" class="SubMenu">
+                            <li class=""><a
+                                    href="https://neritt.in/class">Class </a></li>
+                            <li class=""><a
+                                    href="https://neritt.in/city">City </a></li>
+
+
+                        </ul>
+
+
+                    </li>
+                </ul>
+            </div>
+            <!-- End Horizontal Nav -->
+        </div>
+        <!-- End Sidebar -->
+    </div>
+    <!-- End Navigationbar -->
+</div>
+          
+            <div class="rightbar">
+    <!-- Start Topbar Mobile -->
+    <div class="topbar-mobile">
+        <div class="row align-items-center">
+            <div class="col-md-12">
+                <div class="mobile-logobar">
+                    <!-- <a href="https://neritt.in" class="mobile-logo"><img src="https://neritt.in/assets/images/logo_bizi.png"  class="img-fluid" alt="logo"></a> -->
+                    Neritt
+                </div>
+                <div class="mobile-togglebar">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <div class="topbar-toggle-icon">
+                                <a class="topbar-toggle-hamburger" href="javascript:void();">
+                                    <img src="https://neritt.in/assets/images/svg-icon/horizontal.svg " class="img-fluid menu-hamburger-horizontal" alt="horizontal">
+                                    <img src="https://neritt.in/assets/images/svg-icon/verticle.svg " class="img-fluid menu-hamburger-vertical" alt="verticle">
+                                 </a>
+                             </div>
+                        </li>
+                        <li class="list-inline-item">
+                            <div class="menubar">
+                                <a class="menu-hamburger navbar-toggle bg-transparent" href="javascript:void();" data-toggle="collapse" data-target="#navbar-menu" aria-expanded="true">
+                                    <img src="https://neritt.in/assets/images/svg-icon/collapse.svg " class="img-fluid menu-hamburger-collapse" alt="collapse">
+                                    <img src="https://neritt.in/assets/images/svg-icon/close.svg " class="img-fluid menu-hamburger-close" alt="close">
+                                </a>
+                             </div>
+                        </li>                                
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Start Topbar -->
+    <div class="topbar">
+        <!-- Start container-fluid -->
+        <div class="container-fluid">
+            <!-- Start row -->
+            <div class="row align-items-center">
+                <!-- Start col -->
+                <div class="col-md-12 align-self-center">
+                    <!-- <div class="togglebar">
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item">
+                                <div class="logobar">
+                                    <a href="https://neritt.in" class="logo logo-large"><img src="https://neritt.in/assets/images/logo_bizi.png" class ="img-fluid" alt="logo"></a>
+                                </div>
+                            </li>
+                           
+                        </ul>
+                    </div> -->
+                    <div class="togglebar">
+                            <ul class="list-inline mb-0">
+                                <li class="list-inline-item">
+                                    <div class="menubar">
+                                        <a class="menu-hamburger" href="javascript:void(0);">
+                                           <img src="https://neritt.in/assets/images/svg-icon/collapse.svg" class="img-fluid menu-hamburger-collapse" alt="collapse" style="">
+                                           <img src="https://neritt.in/assets/images/svg-icon/close.svg" class="img-fluid menu-hamburger-close" alt="close" style="display: none;">
+                                         </a>
+                                     </div>
+                                </li>
+                                <!-- <li class="list-inline-item">
+                                    <div class="searchbar">
+                                        <form>
+                                            <div class="input-group">
+                                              <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
+                                              <div class="input-group-append">
+                                                <button class="btn" type="submit" id="button-addon2"><img src="assets/images/svg-icon/search.svg" class="img-fluid" alt="search"></button>
+                                              </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </li> -->
+                            </ul>
+                        </div>
+                    <div class="infobar">
+                        <ul class="list-inline mb-0">
+                         
+                            <!-- <li class="list-inline-item">
+                                <div class="settingbar">
+                                    <div class="toggle">
+                                        <span>🌙</span>
+                                        <input type="checkbox" id="toggle-switch" />
+                                        <label for="toggle-switch"><span class="screen-reader-text">Toggle Color Scheme</span></label>
+                                        <span>☀️</span>
+                                    </div>
+                                </div>
+                            </li> -->
+                            <li class="list-inline-item">
+                                    <div class="profilebar">
+                                        <div class="dropdown">
+                                          <a class="dropdown-toggle" href="#" role="button" id="profilelink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/public/images/admin icon.jpg" class="img-fluid" alt="profile"><span class="feather icon-chevron-down live-icon"></span></a>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profilelink" style="">
+                                                <div class="dropdown-item">
+                                                    <div class="profilename">
+                                                      <h5>admin</h5>
+                                                    </div>
+                                                </div>
+                                                <div class="userbox">
+                                                    <img src="https://neritt.in/assets/images/svg-icon/logout.svg " class="img-fluid" alt="logout"><a href="/admin/logout">Logout</a>
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                   
+                                </li>
+                           
+                            <!-- <li class="list-inline-item menubar-toggle">
+                                <div class="menubar">
+                                    <a class="menu-hamburger navbar-toggle bg-transparent" href="javascript:void();" data-toggle="collapse" data-target="#navbar-menu" aria-expanded="true">
+                                        <img src="https://neritt.in/assets/images/svg-icon/collapse.svg " class="img-fluid menu-hamburger-collapse" alt="collapse">
+                                        <img src="https://neritt.in/assets/images/svg-icon/close.svg " class="img-fluid menu-hamburger-close" alt="close">
+                                    </a>
+                                 </div>
+                            </li> -->
+                        </ul>
+                    </div>
+                </div>
+                <!-- End col -->
+            </div> 
+            <!-- End row -->
+        </div>
+        <!-- End container-fluid -->
+    </div>
+    <!-- End Topbar -->
+    <!-- Start Breadcrumbbar -->                    
+    <div class="breadcrumbbar">
+        <div class="row align-items-center">
+            <div class="col-md-8 col-lg-8">
+                <h4 class="page-title"> 
+Variant List 
+</h4>
+                <div class="breadcrumb-list">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="https://neritt.in/admin-dashboard">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"> 
+Variant List 
+</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <div class="widgetbar">
+                      
+<button id="upload" class="btn btn-success upload-image"><i class="feather icon-plus mr-1"></i>Add Variant</button>
+ <!-- <button class="btn btn-primary-rgba design-image"><i class="feather icon-image mr-2"></i>Design Image</button> -->
+
+                   
+                </div>                        
+            </div>
+        </div>          
+    </div>
+    <!-- End Breadcrumbbar -->
+    <!-- Start Contentbar -->    
+<div class="contentbar">                
+    <!-- Start row -->
+    <div class="row">
+        <!-- Start col -->
+        <div class="col-lg-12">
+            <div class="card m-b-30">
+            <div class="card-header">                                
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <h5 class="card-title mb-0">All Variants</h5>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-inline-group text-right mb-0 pl-0">
+                                 <li class="list-inline-item">
+                                      <div class="form-group mb-0 amount-spent-select">
+                                        <input type="text" id="search" class="form-control" placeholder="Search">
+                                        <input type="hidden" id="ajax-path" value=""/>
+                                    </div>
+                                </li>
+                            </ul>                                        
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>SKU</th>
+                                    <th>Title</th>
+                                    <th>Product</th>
+                                    <th>Color</th>
+                                    <th>Size</th>
+                                    <th>Price</th>
+                                    <th>Offer Price</th>
+                                    <th>Gallery</th>
+                                    <th>Status</th>
+                                    <th>Stock Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="image_content">
+                                                                                                <tr>
+                                    <td><div class="td-content">1</div></td>
+                                    <td><div class="td-content">GNTS18ID</div></td>
+                                    <td><div class="td-content">Variant</div></td>
+                                    <td><div class="td-content">TSHIRT ONLY, (PRIDE KG UNIFORMS)</div></td>
+                                    <td><div class="input-group-addon" style="width:15px;height:15px;background-color:#ddeeff;"></div></td>
+                                    <td><div class="td-content">18</div></td>
+                                    <td><div class="td-content">290</div></td>
+                                    <td><div class="td-content">275</div></td>
+                                    <td><a href="https://neritt.in/view-gallery?product=965&amp;variant_id=1000"><button type="button" class="edit-button btn btn-sm btn-success btn-view"data-toggle="tooltip" data-placement="bottom" title="View Gallery" style="float: none; margin: 5px;"><span class="ti-eye"></span></button></td></a>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             Active                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1000" data-message="status" class="dropdown-item status" href="#">Active</a>
+                                                <a data-value="0" data-id ="1000" data-message="status" class="dropdown-item status" href="#">In Active</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             In Stock                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1000" data-message="stock_status" class="dropdown-item status" href="#">In Stock</a>
+                                                <a data-value="0" data-id ="1000" data-message="stock_status" class="dropdown-item status" href="#">Out of Stock</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm ">
+                                        <button type="button" data-id="1000" class="edit-button btn btn-sm btn-info btnEdit" style="float: none; margin: 5px;"><span class="ti-pencil"></span></button>
+                                        <a ><button type="button" url="https://neritt.in/delete-variant/1000" class="delete-button btn btn-sm btn-danger" style="float: none; margin: 5px;"><span class="ti-trash"></span></button></a>
+                                    </div>
+                                </td>
+                                </tr>
+                                                                                                <tr>
+                                    <td><div class="td-content">2</div></td>
+                                    <td><div class="td-content">GNTS20ID</div></td>
+                                    <td><div class="td-content">Variant</div></td>
+                                    <td><div class="td-content">TSHIRT ONLY, (PRIDE KG UNIFORMS)</div></td>
+                                    <td><div class="input-group-addon" style="width:15px;height:15px;background-color:#ddeeff;"></div></td>
+                                    <td><div class="td-content">20</div></td>
+                                    <td><div class="td-content">290</div></td>
+                                    <td><div class="td-content">275</div></td>
+                                    <td><a href="https://neritt.in/view-gallery?product=965&amp;variant_id=1001"><button type="button" class="edit-button btn btn-sm btn-success btn-view"data-toggle="tooltip" data-placement="bottom" title="View Gallery" style="float: none; margin: 5px;"><span class="ti-eye"></span></button></td></a>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             Active                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1001" data-message="status" class="dropdown-item status" href="#">Active</a>
+                                                <a data-value="0" data-id ="1001" data-message="status" class="dropdown-item status" href="#">In Active</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             In Stock                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1001" data-message="stock_status" class="dropdown-item status" href="#">In Stock</a>
+                                                <a data-value="0" data-id ="1001" data-message="stock_status" class="dropdown-item status" href="#">Out of Stock</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm ">
+                                        <button type="button" data-id="1001" class="edit-button btn btn-sm btn-info btnEdit" style="float: none; margin: 5px;"><span class="ti-pencil"></span></button>
+                                        <a ><button type="button" url="https://neritt.in/delete-variant/1001" class="delete-button btn btn-sm btn-danger" style="float: none; margin: 5px;"><span class="ti-trash"></span></button></a>
+                                    </div>
+                                </td>
+                                </tr>
+                                                                                                <tr>
+                                    <td><div class="td-content">3</div></td>
+                                    <td><div class="td-content">GNTS22ID</div></td>
+                                    <td><div class="td-content">Variant</div></td>
+                                    <td><div class="td-content">TSHIRT ONLY, (PRIDE KG UNIFORMS)</div></td>
+                                    <td><div class="input-group-addon" style="width:15px;height:15px;background-color:#ddeeff;"></div></td>
+                                    <td><div class="td-content">22</div></td>
+                                    <td><div class="td-content">290</div></td>
+                                    <td><div class="td-content">275</div></td>
+                                    <td><a href="https://neritt.in/view-gallery?product=965&amp;variant_id=1002"><button type="button" class="edit-button btn btn-sm btn-success btn-view"data-toggle="tooltip" data-placement="bottom" title="View Gallery" style="float: none; margin: 5px;"><span class="ti-eye"></span></button></td></a>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             Active                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1002" data-message="status" class="dropdown-item status" href="#">Active</a>
+                                                <a data-value="0" data-id ="1002" data-message="status" class="dropdown-item status" href="#">In Active</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             In Stock                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1002" data-message="stock_status" class="dropdown-item status" href="#">In Stock</a>
+                                                <a data-value="0" data-id ="1002" data-message="stock_status" class="dropdown-item status" href="#">Out of Stock</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm ">
+                                        <button type="button" data-id="1002" class="edit-button btn btn-sm btn-info btnEdit" style="float: none; margin: 5px;"><span class="ti-pencil"></span></button>
+                                        <a ><button type="button" url="https://neritt.in/delete-variant/1002" class="delete-button btn btn-sm btn-danger" style="float: none; margin: 5px;"><span class="ti-trash"></span></button></a>
+                                    </div>
+                                </td>
+                                </tr>
+                                                                                                <tr>
+                                    <td><div class="td-content">4</div></td>
+                                    <td><div class="td-content">GNTS24ID</div></td>
+                                    <td><div class="td-content">Variant</div></td>
+                                    <td><div class="td-content">TSHIRT ONLY, (PRIDE KG UNIFORMS)</div></td>
+                                    <td><div class="input-group-addon" style="width:15px;height:15px;background-color:#ddeeff;"></div></td>
+                                    <td><div class="td-content">24</div></td>
+                                    <td><div class="td-content">290</div></td>
+                                    <td><div class="td-content">275</div></td>
+                                    <td><a href="https://neritt.in/view-gallery?product=965&amp;variant_id=1003"><button type="button" class="edit-button btn btn-sm btn-success btn-view"data-toggle="tooltip" data-placement="bottom" title="View Gallery" style="float: none; margin: 5px;"><span class="ti-eye"></span></button></td></a>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             Active                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1003" data-message="status" class="dropdown-item status" href="#">Active</a>
+                                                <a data-value="0" data-id ="1003" data-message="status" class="dropdown-item status" href="#">In Active</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             In Stock                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1003" data-message="stock_status" class="dropdown-item status" href="#">In Stock</a>
+                                                <a data-value="0" data-id ="1003" data-message="stock_status" class="dropdown-item status" href="#">Out of Stock</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm ">
+                                        <button type="button" data-id="1003" class="edit-button btn btn-sm btn-info btnEdit" style="float: none; margin: 5px;"><span class="ti-pencil"></span></button>
+                                        <a ><button type="button" url="https://neritt.in/delete-variant/1003" class="delete-button btn btn-sm btn-danger" style="float: none; margin: 5px;"><span class="ti-trash"></span></button></a>
+                                    </div>
+                                </td>
+                                </tr>
+                                                                                                <tr>
+                                    <td><div class="td-content">5</div></td>
+                                    <td><div class="td-content">GNTS26ID</div></td>
+                                    <td><div class="td-content">Variant</div></td>
+                                    <td><div class="td-content">TSHIRT ONLY, (PRIDE KG UNIFORMS)</div></td>
+                                    <td><div class="input-group-addon" style="width:15px;height:15px;background-color:#ddeeff;"></div></td>
+                                    <td><div class="td-content">26</div></td>
+                                    <td><div class="td-content">290</div></td>
+                                    <td><div class="td-content">275</div></td>
+                                    <td><a href="https://neritt.in/view-gallery?product=965&amp;variant_id=1004"><button type="button" class="edit-button btn btn-sm btn-success btn-view"data-toggle="tooltip" data-placement="bottom" title="View Gallery" style="float: none; margin: 5px;"><span class="ti-eye"></span></button></td></a>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             Active                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1004" data-message="status" class="dropdown-item status" href="#">Active</a>
+                                                <a data-value="0" data-id ="1004" data-message="status" class="dropdown-item status" href="#">In Active</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td value="1">
+                                        <div class="dropdown">
+                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                             In Stock                                             </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a data-value="1" data-id ="1004" data-message="stock_status" class="dropdown-item status" href="#">In Stock</a>
+                                                <a data-value="0" data-id ="1004" data-message="stock_status" class="dropdown-item status" href="#">Out of Stock</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm ">
+                                        <button type="button" data-id="1004" class="edit-button btn btn-sm btn-info btnEdit" style="float: none; margin: 5px;"><span class="ti-pencil"></span></button>
+                                        <a ><button type="button" url="https://neritt.in/delete-variant/1004" class="delete-button btn btn-sm btn-danger" style="float: none; margin: 5px;"><span class="ti-trash"></span></button></a>
+                                    </div>
+                                </td>
+                                </tr>
+                                                                                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                         
+
+                </div>
+                <div class="d-flex justify-content-right">
+                    
+                </div>
+            </div>
+        </div>
+        <!-- End col -->
+      
+    </div>
+    <!-- End row -->
+</div>
+
+<div class="modal fade " id="create-modal" tabindex="-1" role="dialog" aria-labelledby="create-modal-label"   aria-hidden="true">
+    <div class="modal-dialog  " role="document">
+        <div class="modal-content ">
+             <form action="https://neritt.in/variant/store"  id="variant_form" class="" method="POST"  enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="pQwjoxBXbM5MHFrsWMzHOgdYWZcCHLUmJ9sGZslm">             <div class="modal-header">
+                <h5 class="modal-title" id="create-modal-label">Create Variant</h5>
+                <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <input type="hidden" name="id" id="variant_id" value="">
+                    <input type="hidden" name="product_id"  value="965" >
+                    <div class="form-group name">
+                        <label for="name" class="col-form-label">Title</label>
+                        <input type="text" class="form-control" placeholder="Enter Title" id="txtTitle" name="title" value="" />
+                        <span class="validate" id="title_err" style="display:none;color:red;"></span>
+                    </div>
+                    <div class="form-group name">
+                        <label for="product_selection" class="col-form-label">Product</label>
+                        <select class="form-control" id='product' name='product'>
+                            <option id="opt" value="">default</option>
+                                                            <option  value="2" >Safwan UNISEX Waterproof School Bag  (Blue, 25 L)</option>
+                                                            <option  value="3" >Boys &amp; Girls Solid Mid-Calf/Crew  (Pack of 3)</option>
+                                                            <option  value="4" >TARGET PUBLICATIONS Single Line Small Notebooks</option>
+                                                            <option  value="5" >Classmate Long Notebook</option>
+                                                            <option  value="6" >School uniform</option>
+                                                            <option  value="7" >DAV School Uniform Full Pant</option>
+                                                            <option  value="8" >Bleached White School Uniform</option>
+                                                            <option  value="9" >ELEGANTE Aluminum ID Card</option>
+                                                            <option  value="10" >WeKonnect; Heavy Duty Retractable Badge Holder</option>
+                                                            <option  value="11" >Textbook of Biochemistry</option>
+                                                            <option  value="12" >SCHOOL BELT</option>
+                                                            <option  value="13" >Robodo MO32 RFID Card</option>
+                                                            <option  value="14" >Slim Tie</option>
+                                                            <option  value="15" >Umbrella for rain</option>
+                                                            <option  value="17" >Sakar Nylon Capsule Shape Umbrella For Man and Woman</option>
+                                                            <option  value="18" >Cello Bling Pastel Ball Pen</option>
+                                                            <option  value="19" >OFIXO Creative Colorful 400 Sheets</option>
+                                                            <option  value="20" >College Bag</option>
+                                                            <option  value="21" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="22" >Lace Casual Shoes For Boys  (Black)</option>
+                                                            <option  value="25" >BOYS PANT</option>
+                                                            <option  value="26" >SOCKS</option>
+                                                            <option  value="27" >SHOE</option>
+                                                            <option  value="28" >BOYS SHIRT</option>
+                                                            <option  value="29" >BELT</option>
+                                                            <option  value="30" >UNIFORM TIE</option>
+                                                            <option  value="31" >GIRLS TOP</option>
+                                                            <option  value="32" >GIRLS PANT</option>
+                                                            <option  value="33" >NOTE BOOK</option>
+                                                            <option  value="34" >SCHOOL BAG</option>
+                                                            <option  value="36" >UMBRELLA</option>
+                                                            <option  value="37" >School Bag</option>
+                                                            <option  value="38" >BOYS SHIRT</option>
+                                                            <option  value="104" >BOYS SHIRT</option>
+                                                            <option  value="105" >BOYS SHIRT</option>
+                                                            <option  value="106" >BOYS SHIRT</option>
+                                                            <option  value="107" >BOYS SHIRT</option>
+                                                            <option  value="108" >BOYS SHIRT</option>
+                                                            <option  value="109" >BOYS SHIRT</option>
+                                                            <option  value="110" >BOYS SHIRT</option>
+                                                            <option  value="111" >BOYS SHIRT</option>
+                                                            <option  value="112" >BOYS SHIRT</option>
+                                                            <option  value="113" >BOYS SHIRT</option>
+                                                            <option  value="114" >BOYS SHIRT</option>
+                                                            <option  value="115" >BOYS SHIRT</option>
+                                                            <option  value="116" >BOYS SHIRT</option>
+                                                            <option  value="117" >BOYS SHIRT</option>
+                                                            <option  value="118" >BOYS SHIRT</option>
+                                                            <option  value="119" >BOYS SHIRT</option>
+                                                            <option  value="120" >BOYS SHIRT</option>
+                                                            <option  value="121" >BOYS SHIRT</option>
+                                                            <option  value="122" >BOYS SHIRT</option>
+                                                            <option  value="123" >BOYS SHIRT</option>
+                                                            <option  value="124" >BOYS SHIRT</option>
+                                                            <option  value="125" >BOYS SHIRT</option>
+                                                            <option  value="126" >BOYS SHIRT</option>
+                                                            <option  value="127" >BOYS SHIRT</option>
+                                                            <option  value="128" >BOYS SHIRT</option>
+                                                            <option  value="129" >BOYS SHIRT</option>
+                                                            <option  value="130" >BOYS SHIRT</option>
+                                                            <option  value="131" >BOYS SHIRT</option>
+                                                            <option  value="132" >BOYS SHIRT</option>
+                                                            <option  value="133" >BOYS SHIRT</option>
+                                                            <option  value="134" >BOYS SHIRT</option>
+                                                            <option  value="135" >BOYS SHIRT</option>
+                                                            <option  value="136" >BOYS SHIRT</option>
+                                                            <option  value="137" >BOYS PANT</option>
+                                                            <option  value="138" >BOYS PANT</option>
+                                                            <option  value="139" >BOYS PANT</option>
+                                                            <option  value="140" >BOYS PANT</option>
+                                                            <option  value="141" >BOYS PANT</option>
+                                                            <option  value="142" >BOYS PANT</option>
+                                                            <option  value="143" >BOYS PANT</option>
+                                                            <option  value="144" >BOYS PANT</option>
+                                                            <option  value="145" >BOYS PANT</option>
+                                                            <option  value="146" >BOYS PANT</option>
+                                                            <option  value="147" >BOYS PANT</option>
+                                                            <option  value="148" >BOYS PANT</option>
+                                                            <option  value="149" >BOYS PANT</option>
+                                                            <option  value="150" >BOYS PANT</option>
+                                                            <option  value="151" >BOYS PANT</option>
+                                                            <option  value="152" >BOYS PANT</option>
+                                                            <option  value="153" >BOYS PANT</option>
+                                                            <option  value="154" >BOYS PANT</option>
+                                                            <option  value="155" >BOYS PANT</option>
+                                                            <option  value="156" >BOYS PANT</option>
+                                                            <option  value="157" >BOYS PANT</option>
+                                                            <option  value="158" >BOYS PANT</option>
+                                                            <option  value="159" >BOYS PANT</option>
+                                                            <option  value="160" >BOYS PANT</option>
+                                                            <option  value="161" >BOYS PANT</option>
+                                                            <option  value="162" >BOYS PANT</option>
+                                                            <option  value="163" >BOYS PANT</option>
+                                                            <option  value="164" >BOYS PANT</option>
+                                                            <option  value="165" >BOYS PANT</option>
+                                                            <option  value="166" >BOYS PANT</option>
+                                                            <option  value="167" >BOYS PANT</option>
+                                                            <option  value="168" >BOYS PANT</option>
+                                                            <option  value="169" >BOYS PANT</option>
+                                                            <option  value="170" >GIRLS TOP</option>
+                                                            <option  value="171" >GIRLS TOP</option>
+                                                            <option  value="172" >GIRLS TOP</option>
+                                                            <option  value="173" >GIRLS TOP</option>
+                                                            <option  value="174" >GIRLS TOP</option>
+                                                            <option  value="175" >GIRLS TOP</option>
+                                                            <option  value="176" >GIRLS TOP</option>
+                                                            <option  value="177" >GIRLS TOP</option>
+                                                            <option  value="178" >GIRLS TOP</option>
+                                                            <option  value="179" >GIRLS TOP</option>
+                                                            <option  value="180" >GIRLS TOP</option>
+                                                            <option  value="181" >GIRLS TOP</option>
+                                                            <option  value="182" >GIRLS TOP</option>
+                                                            <option  value="183" >GIRLS TOP</option>
+                                                            <option  value="184" >GIRLS TOP</option>
+                                                            <option  value="185" >GIRLS TOP</option>
+                                                            <option  value="186" >GIRLS TOP</option>
+                                                            <option  value="187" >GIRLS TOP</option>
+                                                            <option  value="188" >GIRLS TOP</option>
+                                                            <option  value="189" >GIRLS TOP</option>
+                                                            <option  value="190" >GIRLS TOP</option>
+                                                            <option  value="191" >GIRLS TOP</option>
+                                                            <option  value="192" >GIRLS TOP</option>
+                                                            <option  value="193" >GIRLS TOP</option>
+                                                            <option  value="194" >GIRLS TOP</option>
+                                                            <option  value="195" >GIRLS TOP</option>
+                                                            <option  value="196" >GIRLS TOP</option>
+                                                            <option  value="197" >GIRLS TOP</option>
+                                                            <option  value="198" >GIRLS TOP</option>
+                                                            <option  value="199" >GIRLS TOP</option>
+                                                            <option  value="200" >GIRLS TOP</option>
+                                                            <option  value="201" >GIRLS TOP</option>
+                                                            <option  value="202" >GIRLS PANT</option>
+                                                            <option  value="203" >GIRLS PANT</option>
+                                                            <option  value="204" >GIRLS PANT</option>
+                                                            <option  value="205" >GIRLS PANT</option>
+                                                            <option  value="206" >GIRLS PANT</option>
+                                                            <option  value="207" >GIRLS PANT</option>
+                                                            <option  value="208" >GIRLS PANT</option>
+                                                            <option  value="209" >GIRLS PANT</option>
+                                                            <option  value="210" >GIRLS PANT</option>
+                                                            <option  value="211" >GIRLS PANT</option>
+                                                            <option  value="212" >GIRLS PANT</option>
+                                                            <option  value="213" >GIRLS PANT</option>
+                                                            <option  value="214" >GIRLS PANT</option>
+                                                            <option  value="215" >GIRLS PANT</option>
+                                                            <option  value="216" >GIRLS PANT</option>
+                                                            <option  value="217" >GIRLS PANT</option>
+                                                            <option  value="218" >GIRLS PANT</option>
+                                                            <option  value="219" >GIRLS PANT</option>
+                                                            <option  value="220" >GIRLS PANT</option>
+                                                            <option  value="221" >GIRLS PANT</option>
+                                                            <option  value="222" >GIRLS PANT</option>
+                                                            <option  value="223" >GIRLS PANT</option>
+                                                            <option  value="224" >GIRLS PANT</option>
+                                                            <option  value="225" >GIRLS PANT</option>
+                                                            <option  value="226" >GIRLS PANT</option>
+                                                            <option  value="227" >GIRLS PANT</option>
+                                                            <option  value="228" >GIRLS PANT</option>
+                                                            <option  value="229" >GIRLS PANT</option>
+                                                            <option  value="230" >GIRLS PANT</option>
+                                                            <option  value="231" >GIRLS PANT</option>
+                                                            <option  value="232" >GIRLS PANT</option>
+                                                            <option  value="233" >GIRLS PANT</option>
+                                                            <option  value="234" >SCHOOL BAG</option>
+                                                            <option  value="235" >SCHOOL BAG</option>
+                                                            <option  value="236" >SCHOOL BAG</option>
+                                                            <option  value="237" >SCHOOL BAG</option>
+                                                            <option  value="238" >SCHOOL BAG</option>
+                                                            <option  value="239" >SCHOOL BAG</option>
+                                                            <option  value="240" >SCHOOL BAG</option>
+                                                            <option  value="241" >SCHOOL BAG</option>
+                                                            <option  value="242" >SCHOOL BAG</option>
+                                                            <option  value="243" >SCHOOL BAG</option>
+                                                            <option  value="244" >SCHOOL BAG</option>
+                                                            <option  value="245" >SCHOOL BAG</option>
+                                                            <option  value="246" >SCHOOL BAG</option>
+                                                            <option  value="247" >SCHOOL BAG</option>
+                                                            <option  value="248" >SCHOOL BAG</option>
+                                                            <option  value="249" >SCHOOL BAG</option>
+                                                            <option  value="250" >SCHOOL BAG</option>
+                                                            <option  value="251" >SCHOOL BAG</option>
+                                                            <option  value="252" >SCHOOL BAG</option>
+                                                            <option  value="253" >SCHOOL BAG</option>
+                                                            <option  value="254" >SCHOOL BAG</option>
+                                                            <option  value="255" >SCHOOL BAG</option>
+                                                            <option  value="256" >SCHOOL BAG</option>
+                                                            <option  value="257" >SCHOOL BAG</option>
+                                                            <option  value="258" >SCHOOL BAG</option>
+                                                            <option  value="259" >SCHOOL BAG</option>
+                                                            <option  value="260" >SCHOOL BAG</option>
+                                                            <option  value="261" >SCHOOL BAG</option>
+                                                            <option  value="262" >SCHOOL BAG</option>
+                                                            <option  value="263" >SCHOOL BAG</option>
+                                                            <option  value="264" >SCHOOL BAG</option>
+                                                            <option  value="265" >SCHOOL BAG</option>
+                                                            <option  value="266" >BELT</option>
+                                                            <option  value="267" >BELT</option>
+                                                            <option  value="268" >BELT</option>
+                                                            <option  value="269" >BELT</option>
+                                                            <option  value="270" >BELT</option>
+                                                            <option  value="271" >BELT</option>
+                                                            <option  value="272" >BELT</option>
+                                                            <option  value="273" >BELT</option>
+                                                            <option  value="274" >BELT</option>
+                                                            <option  value="275" >BELT</option>
+                                                            <option  value="276" >BELT</option>
+                                                            <option  value="277" >BELT</option>
+                                                            <option  value="278" >BELT</option>
+                                                            <option  value="279" >BELT</option>
+                                                            <option  value="280" >BELT</option>
+                                                            <option  value="281" >BELT</option>
+                                                            <option  value="282" >BELT</option>
+                                                            <option  value="283" >BELT</option>
+                                                            <option  value="284" >BELT</option>
+                                                            <option  value="285" >BELT</option>
+                                                            <option  value="286" >BELT</option>
+                                                            <option  value="287" >BELT</option>
+                                                            <option  value="288" >BELT</option>
+                                                            <option  value="289" >BELT</option>
+                                                            <option  value="290" >BELT</option>
+                                                            <option  value="291" >BELT</option>
+                                                            <option  value="292" >BELT</option>
+                                                            <option  value="293" >BELT</option>
+                                                            <option  value="294" >BELT</option>
+                                                            <option  value="295" >BELT</option>
+                                                            <option  value="296" >BELT</option>
+                                                            <option  value="297" >BELT</option>
+                                                            <option  value="298" >BELT</option>
+                                                            <option  value="299" >UNIFORM TIE</option>
+                                                            <option  value="300" >UNIFORM TIE</option>
+                                                            <option  value="301" >UNIFORM TIE</option>
+                                                            <option  value="302" >UNIFORM TIE</option>
+                                                            <option  value="303" >UNIFORM TIE</option>
+                                                            <option  value="304" >UNIFORM TIE</option>
+                                                            <option  value="305" >UNIFORM TIE</option>
+                                                            <option  value="306" >UNIFORM TIE</option>
+                                                            <option  value="307" >UNIFORM TIE</option>
+                                                            <option  value="308" >UNIFORM TIE</option>
+                                                            <option  value="309" >UNIFORM TIE</option>
+                                                            <option  value="310" >UNIFORM TIE</option>
+                                                            <option  value="311" >UNIFORM TIE</option>
+                                                            <option  value="312" >UNIFORM TIE</option>
+                                                            <option  value="313" >UNIFORM TIE</option>
+                                                            <option  value="314" >UNIFORM TIE</option>
+                                                            <option  value="315" >UNIFORM TIE</option>
+                                                            <option  value="316" >UNIFORM TIE</option>
+                                                            <option  value="317" >UNIFORM TIE</option>
+                                                            <option  value="318" >UNIFORM TIE</option>
+                                                            <option  value="319" >UNIFORM TIE</option>
+                                                            <option  value="320" >UNIFORM TIE</option>
+                                                            <option  value="321" >UNIFORM TIE</option>
+                                                            <option  value="322" >UNIFORM TIE</option>
+                                                            <option  value="323" >UNIFORM TIE</option>
+                                                            <option  value="324" >UNIFORM TIE</option>
+                                                            <option  value="325" >UNIFORM TIE</option>
+                                                            <option  value="326" >UNIFORM TIE</option>
+                                                            <option  value="327" >UNIFORM TIE</option>
+                                                            <option  value="328" >UNIFORM TIE</option>
+                                                            <option  value="329" >UNIFORM TIE</option>
+                                                            <option  value="330" >UNIFORM TIE</option>
+                                                            <option  value="331" >UNIFORM TIE</option>
+                                                            <option  value="332" >NOTE BOOK</option>
+                                                            <option  value="333" >NOTE BOOK</option>
+                                                            <option  value="334" >NOTE BOOK</option>
+                                                            <option  value="335" >NOTE BOOK</option>
+                                                            <option  value="336" >NOTE BOOK</option>
+                                                            <option  value="337" >NOTE BOOK</option>
+                                                            <option  value="338" >NOTE BOOK</option>
+                                                            <option  value="339" >NOTE BOOK</option>
+                                                            <option  value="340" >NOTE BOOK</option>
+                                                            <option  value="341" >NOTE BOOK</option>
+                                                            <option  value="342" >NOTE BOOK</option>
+                                                            <option  value="343" >NOTE BOOK</option>
+                                                            <option  value="344" >NOTE BOOK</option>
+                                                            <option  value="345" >NOTE BOOK</option>
+                                                            <option  value="346" >NOTE BOOK</option>
+                                                            <option  value="347" >NOTE BOOK</option>
+                                                            <option  value="348" >NOTE BOOK</option>
+                                                            <option  value="349" >NOTE BOOK</option>
+                                                            <option  value="350" >NOTE BOOK</option>
+                                                            <option  value="351" >NOTE BOOK</option>
+                                                            <option  value="352" >NOTE BOOK</option>
+                                                            <option  value="353" >NOTE BOOK</option>
+                                                            <option  value="354" >NOTE BOOK</option>
+                                                            <option  value="355" >NOTE BOOK</option>
+                                                            <option  value="356" >NOTE BOOK</option>
+                                                            <option  value="357" >NOTE BOOK</option>
+                                                            <option  value="358" >NOTE BOOK</option>
+                                                            <option  value="359" >NOTE BOOK</option>
+                                                            <option  value="360" >NOTE BOOK</option>
+                                                            <option  value="361" >NOTE BOOK</option>
+                                                            <option  value="362" >NOTE BOOK</option>
+                                                            <option  value="363" >NOTE BOOK</option>
+                                                            <option  value="399" >NOTE BOOK</option>
+                                                            <option  value="434" >BLACK SHOE</option>
+                                                            <option  value="435" >BLACK SHOE</option>
+                                                            <option  value="436" >BLACK SHOE</option>
+                                                            <option  value="437" >BLACK SHOE</option>
+                                                            <option  value="438" >BLACK SHOE</option>
+                                                            <option  value="439" >BLACK SHOE</option>
+                                                            <option  value="440" >BLACK SHOE</option>
+                                                            <option  value="441" >BLACK SHOE</option>
+                                                            <option  value="442" >BLACK SHOE</option>
+                                                            <option  value="443" >BLACK SHOE</option>
+                                                            <option  value="444" >BLACK SHOE</option>
+                                                            <option  value="445" >BLACK SHOE</option>
+                                                            <option  value="446" >BLACK SHOE</option>
+                                                            <option  value="447" >BLACK SHOE</option>
+                                                            <option  value="448" >BLACK SHOE</option>
+                                                            <option  value="449" >BLACK SHOE</option>
+                                                            <option  value="450" >BLACK SHOE</option>
+                                                            <option  value="451" >BLACK SHOE</option>
+                                                            <option  value="452" >BLACK SHOE</option>
+                                                            <option  value="453" >BLACK SHOE</option>
+                                                            <option  value="454" >BLACK SHOE</option>
+                                                            <option  value="455" >BLACK SHOE</option>
+                                                            <option  value="456" >BLACK SHOE</option>
+                                                            <option  value="457" >BLACK SHOE</option>
+                                                            <option  value="458" >BLACK SHOE</option>
+                                                            <option  value="459" >BLACK SHOE</option>
+                                                            <option  value="460" >BLACK SHOE</option>
+                                                            <option  value="461" >BLACK SHOE</option>
+                                                            <option  value="462" >BLACK SHOE</option>
+                                                            <option  value="463" >BLACK SHOE</option>
+                                                            <option  value="464" >BLACK SHOE</option>
+                                                            <option  value="465" >BLACK SHOE</option>
+                                                            <option  value="466" >BLACK SHOE</option>
+                                                            <option  value="467" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="468" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="469" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="470" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="471" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="472" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="473" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="474" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="475" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="476" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="477" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="478" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="479" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="480" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="481" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="482" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="483" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="484" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="485" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="486" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="487" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="488" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="489" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="490" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="491" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="492" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="493" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="494" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="495" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="496" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="497" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="498" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="499" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="500" >School Cotton Socks For Boys &amp; Girls(Pack of 5 Pairs)(Navy Blue with Red stripes)</option>
+                                                            <option  value="501" >UMBRELLA</option>
+                                                            <option  value="502" >UMBRELLA</option>
+                                                            <option  value="503" >UMBRELLA</option>
+                                                            <option  value="504" >UMBRELLA</option>
+                                                            <option  value="505" >UMBRELLA</option>
+                                                            <option  value="506" >UMBRELLA</option>
+                                                            <option  value="507" >UMBRELLA</option>
+                                                            <option  value="508" >UMBRELLA</option>
+                                                            <option  value="509" >UMBRELLA</option>
+                                                            <option  value="510" >UMBRELLA</option>
+                                                            <option  value="511" >UMBRELLA</option>
+                                                            <option  value="512" >UMBRELLA</option>
+                                                            <option  value="513" >UMBRELLA</option>
+                                                            <option  value="514" >UMBRELLA</option>
+                                                            <option  value="515" >UMBRELLA</option>
+                                                            <option  value="516" >UMBRELLA</option>
+                                                            <option  value="517" >UMBRELLA</option>
+                                                            <option  value="518" >UMBRELLA</option>
+                                                            <option  value="519" >UMBRELLA</option>
+                                                            <option  value="520" >UMBRELLA</option>
+                                                            <option  value="521" >UMBRELLA</option>
+                                                            <option  value="522" >UMBRELLA</option>
+                                                            <option  value="523" >UMBRELLA</option>
+                                                            <option  value="524" >UMBRELLA</option>
+                                                            <option  value="525" >UMBRELLA</option>
+                                                            <option  value="526" >UMBRELLA</option>
+                                                            <option  value="527" >UMBRELLA</option>
+                                                            <option  value="528" >UMBRELLA</option>
+                                                            <option  value="529" >UMBRELLA</option>
+                                                            <option  value="530" >UMBRELLA</option>
+                                                            <option  value="531" >UMBRELLA</option>
+                                                            <option  value="532" >UMBRELLA</option>
+                                                            <option  value="533" >UMBRELLA</option>
+                                                            <option  value="538" >UKG TEXT BOOKS COMPLETE SET</option>
+                                                            <option  value="539" >UKG TEXT BOOKS COMPLETE SET</option>
+                                                            <option  value="540" >LKG TEXT BOOKS COMPLETE SET</option>
+                                                            <option  value="541" >LKG TEXT BOOKS COMPLETE SET</option>
+                                                            <option  value="542" >SLATE BOARD</option>
+                                                            <option  value="543" >SLATE BOARD</option>
+                                                            <option  value="544" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="545" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="546" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="547" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="548" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="549" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="550" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="551" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="552" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="553" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="554" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="555" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="556" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="557" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="558" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="559" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="560" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="561" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="562" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="563" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="564" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="565" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="566" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="567" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="568" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="569" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="570" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="571" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="572" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="573" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="574" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="575" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="576" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="577" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="578" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="579" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="580" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="581" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="582" >CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="583" >UKG &amp; LKG CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="584" >LKG &amp; UKG CLASSMATE NOTEBOOKS</option>
+                                                            <option  value="585" >FULL SET KG UNIFORM (TSHIRT &amp; PANT)</option>
+                                                            <option  value="627" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="628" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="629" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="630" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="631" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="632" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="633" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="634" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="635" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="636" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="637" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="638" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="639" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="640" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="641" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="642" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="643" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="644" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="645" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="646" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="647" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="648" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="649" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="650" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="651" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="652" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="653" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="654" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="655" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="656" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="657" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="658" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="659" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="660" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="661" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="662" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="663" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="664" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="665" >ODYSSIA UNIFORM SHOES I GEN 01</option>
+                                                            <option  value="666" >ODYSSIA UNIFORM SHOES I CL3012</option>
+                                                            <option  value="668" >TIE, KG to 4th STD  STUDENTS</option>
+                                                            <option  value="669" >BEN TEN SCHOOL BAG</option>
+                                                            <option  value="670" >DORA  SCHOOL BAG</option>
+                                                            <option  value="671" >POCKETS LOCKETS SCHOOL BAG</option>
+                                                            <option  value="672" >DISNEY PRINCESS SCHOOL BAG</option>
+                                                            <option  value="673" >SPIDERMAN SCHOOL BAG</option>
+                                                            <option  value="674" >Classmate Uniform Shoes</option>
+                                                            <option  value="675" >Classmate Uniform Shoes</option>
+                                                            <option  value="676" >Classmate Uniform Shoes</option>
+                                                            <option  value="677" >Classmate Uniform Shoes</option>
+                                                            <option  value="678" >Classmate Uniform Shoes</option>
+                                                            <option  value="679" >Classmate Uniform Shoes</option>
+                                                            <option  value="680" >Classmate Uniform Shoes</option>
+                                                            <option  value="681" >Classmate Uniform Shoes</option>
+                                                            <option  value="682" >Classmate Uniform Shoes</option>
+                                                            <option  value="683" >Classmate Uniform Shoes</option>
+                                                            <option  value="684" >Classmate Uniform Shoes</option>
+                                                            <option  value="685" >Classmate Uniform Shoes</option>
+                                                            <option  value="686" >Classmate Uniform Shoes</option>
+                                                            <option  value="687" >Classmate Uniform Shoes</option>
+                                                            <option  value="688" >Classmate Uniform Shoes</option>
+                                                            <option  value="689" >Classmate Uniform Shoes</option>
+                                                            <option  value="690" >Classmate Uniform Shoes</option>
+                                                            <option  value="691" >Classmate Uniform Shoes</option>
+                                                            <option  value="692" >Classmate Uniform Shoes</option>
+                                                            <option  value="693" >Classmate Uniform Shoes</option>
+                                                            <option  value="694" >Classmate Uniform Shoes</option>
+                                                            <option  value="695" >Classmate Uniform Shoes</option>
+                                                            <option  value="696" >Classmate Uniform Shoes</option>
+                                                            <option  value="697" >Classmate Uniform Shoes</option>
+                                                            <option  value="698" >Classmate Uniform Shoes</option>
+                                                            <option  value="699" >Classmate Uniform Shoes</option>
+                                                            <option  value="700" >Classmate Uniform Shoes</option>
+                                                            <option  value="701" >Classmate Uniform Shoes</option>
+                                                            <option  value="702" >Classmate Uniform Shoes</option>
+                                                            <option  value="703" >Classmate Uniform Shoes</option>
+                                                            <option  value="704" >Classmate Uniform Shoes</option>
+                                                            <option  value="705" >Classmate Uniform Shoes</option>
+                                                            <option  value="706" >Classmate Uniform Shoes</option>
+                                                            <option  value="707" >Classmate Uniform Shoes</option>
+                                                            <option  value="708" >Classmate Uniform Shoes</option>
+                                                            <option  value="709" >Classmate Uniform Shoes</option>
+                                                            <option  value="710" >Classmate Uniform Shoes</option>
+                                                            <option  value="711" >Classmate Uniform Shoes</option>
+                                                            <option  value="712" >Classmate Uniform Shoes</option>
+                                                            <option  value="713" >Classmate Uniform Shoes</option>
+                                                            <option  value="714" >Classmate Uniform Shoes</option>
+                                                            <option  value="715" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="716" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="717" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="718" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="719" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="720" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="721" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="722" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="723" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="724" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="725" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="726" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="727" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="728" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="729" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="730" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="731" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="732" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="733" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="734" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="735" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="736" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="737" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="738" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="739" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="740" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="741" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="742" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="743" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="744" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="745" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="746" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="747" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="748" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="749" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="750" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="751" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="752" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="753" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="754" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="755" >Classmate Girls Uniform Shoes</option>
+                                                            <option  value="756" >BEN TEN SCHOOL BAG</option>
+                                                            <option  value="757" >DORA  SCHOOL BAG</option>
+                                                            <option  value="758" >POCKETS LOCKETS SCHOOL BAG</option>
+                                                            <option  value="759" >DISNEY PRINCESS SCHOOL BAG</option>
+                                                            <option  value="760" >SPIDERMAN SCHOOL BAG</option>
+                                                            <option  value="761" >KG UNIFORM COMPLETE SET</option>
+                                                            <option  value="763" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="764" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="765" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="766" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="767" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="768" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="769" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="770" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="771" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="772" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="773" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="774" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="775" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="776" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="777" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="778" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="779" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="780" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="781" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="782" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="783" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="784" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="785" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="786" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="787" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="788" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="789" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="790" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="791" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="792" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="793" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="794" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="795" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="796" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="797" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="798" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="799" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="800" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="801" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="802" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="803" >STATIONARIES COMPLETE  KIT</option>
+                                                            <option  value="805" >uniform</option>
+                                                            <option  value="806" >KIT</option>
+                                                            <option  value="807" >KG UNIFORM COMPLETE SET</option>
+                                                            <option  value="808" >1ST STANDARD GIRLS SKIRT MATERIAL / CLOTH FOR BOYS PANT</option>
+                                                            <option  value="809" >AL HIKKAMIYA BELT KG TO 4TH STD</option>
+                                                            <option  value="810" >NAVY BLUE KNEE LONG SOCKS WITH WHITE STRIPES</option>
+                                                            <option  value="811" >NAVY BLUE KNEE SOCKS WITH WHITE STRIPES</option>
+                                                            <option  value="812" >NAVY BLUE SOCKS WITH WHITE STRIPES</option>
+                                                            <option  value="813" >NAVY BLUE SOCKS WITH WHITE STRIPES</option>
+                                                            <option  value="814" >RAINBOW UMBRELLA</option>
+                                                            <option  value="815" >RAINBOW UMBRELLA</option>
+                                                            <option  value="816" >RAINBOW UMBRELLA</option>
+                                                            <option  value="817" >RAINBOW UMBRELLA</option>
+                                                            <option  value="818" >RAINBOW UMBRELLA</option>
+                                                            <option  value="819" >RAINBOW UMBRELLA</option>
+                                                            <option  value="820" >RAINBOW UMBRELLA</option>
+                                                            <option  value="821" >RAINBOW UMBRELLA</option>
+                                                            <option  value="822" >RAINBOW UMBRELLA</option>
+                                                            <option  value="823" >RAINBOW UMBRELLA</option>
+                                                            <option  value="824" >RAINBOW UMBRELLA</option>
+                                                            <option  value="825" >RAINBOW UMBRELLA</option>
+                                                            <option  value="826" >RAINBOW UMBRELLA</option>
+                                                            <option  value="827" >RAINBOW UMBRELLA</option>
+                                                            <option  value="828" >RAINBOW UMBRELLA</option>
+                                                            <option  value="829" >RAINBOW UMBRELLA</option>
+                                                            <option  value="830" >RAINBOW UMBRELLA</option>
+                                                            <option  value="831" >RAINBOW UMBRELLA</option>
+                                                            <option  value="832" >RAINBOW UMBRELLA</option>
+                                                            <option  value="833" >RAINBOW UMBRELLA</option>
+                                                            <option  value="834" >RAINBOW UMBRELLA</option>
+                                                            <option  value="835" >RAINBOW UMBRELLA</option>
+                                                            <option  value="836" >RAINBOW UMBRELLA</option>
+                                                            <option  value="837" >RAINBOW UMBRELLA</option>
+                                                            <option  value="838" >RAINBOW UMBRELLA</option>
+                                                            <option  value="839" >RAINBOW UMBRELLA</option>
+                                                            <option  value="840" >RAINBOW UMBRELLA</option>
+                                                            <option  value="841" >RAINBOW UMBRELLA</option>
+                                                            <option  value="842" >RAINBOW UMBRELLA</option>
+                                                            <option  value="843" >RAINBOW UMBRELLA</option>
+                                                            <option  value="844" >RAINBOW UMBRELLA</option>
+                                                            <option  value="845" >RAINBOW UMBRELLA</option>
+                                                            <option  value="846" >RAINBOW UMBRELLA</option>
+                                                            <option  value="847" >RAINBOW UMBRELLA</option>
+                                                            <option  value="848" >RAINBOW UMBRELLA</option>
+                                                            <option  value="849" >RAINBOW UMBRELLA</option>
+                                                            <option  value="850" >RAINBOW UMBRELLA</option>
+                                                            <option  value="851" >RAINBOW UMBRELLA</option>
+                                                            <option  value="852" >RAINBOW UMBRELLA</option>
+                                                            <option  value="853" >RAINBOW UMBRELLA</option>
+                                                            <option  value="854" >RAINBOW UMBRELLA</option>
+                                                            <option  value="855" >RAINBOW UMBRELLA</option>
+                                                            <option  value="856" >RAINBOW UMBRELLA</option>
+                                                            <option  value="857" >RAINBOW UMBRELLA</option>
+                                                            <option  value="858" >RAINBOW UMBRELLA</option>
+                                                            <option  value="859" >RAINBOW UMBRELLA</option>
+                                                            <option  value="860" >RAINBOW UMBRELLA</option>
+                                                            <option  value="861" >RAINBOW UMBRELLA</option>
+                                                            <option  value="862" >RAINBOW UMBRELLA</option>
+                                                            <option  value="863" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="864" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="865" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="866" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="867" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="868" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="869" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="870" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="871" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="872" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="873" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="874" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="875" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="876" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="877" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="878" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="879" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="880" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="881" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="882" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="883" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="884" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="885" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="886" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="887" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="888" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="889" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="890" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="891" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="892" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="893" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="894" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="895" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="896" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="897" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="898" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="899" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="900" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="901" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="902" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="903" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="904" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="905" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="906" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="907" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="908" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="909" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="910" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="911" >MARVEL AVENGER ASSEMBLE LOCK AND SEAL 800ML LUNCH BOX</option>
+                                                            <option  value="913" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="914" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="915" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="916" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="917" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="918" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="919" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="920" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="921" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="922" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="923" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="924" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="925" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="926" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="927" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="928" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="929" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="930" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="931" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="932" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="933" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="934" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="935" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="936" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="937" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="938" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="939" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="940" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="941" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="942" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="943" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="944" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="945" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="946" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="947" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="948" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="949" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="950" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="951" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="952" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="953" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="954" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="955" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="956" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="957" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="958" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="959" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="960" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="961" >COMBO COLA CANDY WATER BOTTLE  1000ML</option>
+                                                            <option  value="962" >LKG &amp; UKG UNIFORMS FOR GIRLS &amp; BOYS</option>
+                                                            <option  value="963" >READYMADE SHIRT &amp; PANT LP SECTION</option>
+                                                            <option  value="964" >5th STD FULL SET TEXT BOOKS UNDER KERALA SYLLABUS</option>
+                                                            <option  value="965"  selected  >TSHIRT ONLY, (PRIDE KG UNIFORMS)</option>
+                                                            <option  value="966" >SHIRTING &amp; GIRLS TOP</option>
+                                                      
+                        </select>
+                        <span class="validate" id="product_err" style="display:none;color:red;"></span>
+                    </div>
+                    <div class="form-group name">
+                        <label for="sku" class="col-form-label">SKU</label>
+                        <input type="text" class="form-control" placeholder="Enter SKU Code" id="sku" name="sku" value="" />
+                    </div>
+                    <div class="form-group name">
+                        <label for="color" class="col-form-label">Color</label>
+                        <div class="input-group colorpicker colorpicker-component">
+                            <input type="text" class="form-control" placeholder="Enter Color Name" id="color" name="color" value="default" />
+                            <span class="input-group-addon"><i id="picker" style="width:150px;height:33px;"></i></span> </input>
+                        </div>
+                    </div>
+                    <div class="form-group name">
+                        <label for="size" class="col-form-label">Size</label>
+                        <input type="text" class="form-control" placeholder="Enter Size" id="size" name="size" value="free size" />
+                    </div>
+                    <div class="form-group name">
+                        <label for="price" class="col-form-label">Price</label>
+                        <input type="text" class="form-control" placeholder="Enter Price" id="price" name="price"  value="290"  />
+                        <span class="validate" id="price_err" style="display:none;color:red;"></span>
+                    </div>
+                    <div class="form-group name">
+                        <label for="offer_price" class="col-form-label">Offer Price</label>
+                        <input type="text" class="form-control" placeholder="Enter Offer Price" id="offer_price" name="offer_price"  value="275"  />
+                        <span class="validate" id="offer_err" style="display:none;color:red;"></span>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="closeModal btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="btnSubmit" class="btn btn-primary create-submit-btn">Save</button>
+            </div>
+             </form>
+        </div>
+    </div>
+
+<script type="text/javascript">
+  $('.colorpicker').colorpicker({});
+</script>         
+
+<!-- End Contentbar -->
+    <!-- Start Footerbar -->
+    <!-- <div class="footerbar">
+        <footer class="footer">
+            <p class="mb-0">© 2021 cPanel - All Rights Reserved.</p>
+        </footer>
+    </div> -->
+    <!-- End Footerbar -->
+</div>          
+            
+            <!-- End Rightbar --> 
+            <!-- Modal -->
+            <div class="modal fade " id="agent-modal" tabindex="-1" role="dialog" aria-labelledby="create-modal-label"   aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog  " role="document">
+                    <div class="modal-content ">
+                        <form class="" method="POST">
+                            <input type="hidden" name="_token" value="pQwjoxBXbM5MHFrsWMzHOgdYWZcCHLUmJ9sGZslm">                        <div class="modal-header">
+                            <h5 class="modal-title" id="create-modal-label">Select Vendor</h5>
+                            <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group name">
+                                <label for="vendor" class="col-form-label">Agent</label>
+                                <select class="form-control" id='vendorReport' name='vendorReport'>
+                                    <option id="opt" value="">default</option>
+
+                                </select>
+                                <span class="validate" id="vendor_error" style="display:none;color:red;">Please Select Vendor</span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="closeModal btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button id="btnSubmitvendor" class="btn btn-primary create-submit-btn">Submit</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal -->
+        </div>
+        <!-- End Containerbar -->
+        <!-- Start JS -->        
+        <script src="https://neritt.in/assets/admin/custom.js"></script>
+        <script src="https://neritt.in/assets/js/jquery.min.js"></script>
+        <script src="https://neritt.in/assets/js/popper.min.js"></script>
+        <script src="https://neritt.in/assets/js/bootstrap.min.js"></script>
+        <script src="https://neritt.in/assets/js/modernizr.min.js"></script>
+        <script src="https://neritt.in/assets/js/detect.js"></script>
+        <script src="https://neritt.in/assets/js/jquery.slimscroll.js"></script>
+        <!-- <script src="https://neritt.in/assets/js/horizontal-menu.js"></script>  -->
+        <script src="https://neritt.in/assets/js/vertical-menu.js"></script> 
+        <script src="https://neritt.in/assets/plugins/switchery/switchery.min.js"></script> 
+        <script src="https://neritt.in/assets/js/moment.js"></script>
+        <script src="https://neritt.in/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+        <script src="https://neritt.in/assets/js/datepicker.min.js"></script>
+        <script src="https://neritt.in/assets/js/datepicker.en.js"></script>
+        <script src="https://neritt.in/assets/js/custom-form-datepicker.js"></script>
+
+        <script src="/assets/plugins/bootstrap-inputmask/jquery.inputmask.bundle.min.js"></script>
+        <script src="/assets/js/custom/custom-form-inputmask.js"></script>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+        <script src="/assets/plugins/pnotify/js/pnotify.custom.min.js"></script>
+
+        <script src="https://neritt.in/assets/js/app.js"></script>
+
+        <script src="https://neritt.in/assets/admin/variant/js/app.js" defer></script>
+
+        <!-- Core JS -->
+
+        <script src="https://neritt.in/assets/js/core.js"></script> 
+        <!-- End JS -->
+        <script>
+            
+            var $html = $("html");
+            var dark_data   = localStorage.getItem("theme_dark");
+            if(dark_data == "1")
+            {
+                $('#toggle-switch').trigger('click');
+                $html.addClass("dark-mode");
+            }
+            // dark mode switch
+            $("#toggle-switch").on("change", function() {
+                if (this.checked) {
+                    localStorage.setItem("theme_dark", "1");
+                    $html.addClass("dark-mode");
+                } else {
+                    localStorage.setItem("theme_dark", "0");
+                    $html.removeClass("dark-mode");
+                }
+            });
+
+        </script>
+    </body>
+</html>    

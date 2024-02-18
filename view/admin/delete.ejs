@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .confirmation-container {
+            width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        form {
+            display: inline-block;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .yes-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+        .no-btn {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <h1>Delete Confirmation</h1>
+        <p>Are you sure you want to delete the user: <%= user.name %>?</p>
+
+        <form action="/delete/<%= user.id %>" method="POST" >
+            <!-- Pass user ID or any necessary information for deletion -->
+            <input type="hidden" name="userId" value="<%= user.name %>">
+            <button type="submit" class="yes-btn" >Yes</button>
+        </form>
+
+        <a href="/dashboard"><button class="no-btn">No, Go Back</button></a>
+    </div>
+</body>
+</html>
