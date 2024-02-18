@@ -5,7 +5,6 @@ const authController = require('../controller/user/authController');
 const miscellaneousController = require('../controller/user/miscellaneousController');
 const productController = require('../controller/user/productController');
 const schoolController = require('../controller/user/schoolController');
-const userController = require('../controller/user/userController');
 const userProfileController = require('../controller/user/userProfileController');
 const Cart = require('../model/cartSchema');
 const multer = require('multer');

@@ -1,12 +1,7 @@
 require("../../db/mongoose")
 const fs = require('fs')
 const User = require('../../model/userSchema')
-const School = require('../../model/schoolSchema');
-const Product = require('../../model/productSchema');
 const Category = require('../../model/categorySchema');
-const Address = require('../../model/addressSchema');
-const Cart = require('../../model/cartSchema');
-const Order = require('../../model/orderSchema');
 const Swal = require('sweetalert2');
 const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer'); 
@@ -26,7 +21,7 @@ const login = async (req, res) => {
     }
   }
   
-  const loginPost = async (req, res) => {
+const loginPost = async (req, res) => {
     try {
   
       const email = req.body.email
@@ -60,7 +55,7 @@ const login = async (req, res) => {
     }
   }
 
-  const signup = async (req, res) => {
+const signup = async (req, res) => {
     const isUser = req.session.user;
   
     if (req.session.user) {
@@ -69,9 +64,7 @@ const login = async (req, res) => {
     } else {
       const category = await Category.find();
   
-      const school = await School.find({ blocked: false });
-  
-      res.render('user/signup', { msg1: { name: 'Login' }, isUser,category, school });
+      res.render('user/signup', { msg1: { name: 'Login' }, isUser,category });
   
   
     }
@@ -222,7 +215,6 @@ const forgotPage = async (req, res) => {
     }
   }
 
-  
 const getGenerateOTP = async (req, res) => {
     const isUser = req.session.user;
   
@@ -387,7 +379,6 @@ const sendOtpEmail = async (email, otp) => {
     return transporter.sendMail(mailOptions);
   };
   
-
 const passwordChanged = async (req, res) => {
     if (req.session.forgotpasswordEmail) {
       email = req.session.forgotpasswordEmail

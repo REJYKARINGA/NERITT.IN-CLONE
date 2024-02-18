@@ -1,12 +1,7 @@
 require("../../db/mongoose")
 const fs = require('fs')
-const User = require('../../model/userSchema')
 const School = require('../../model/schoolSchema');
-const Product = require('../../model/productSchema');
-const Category = require('../../model/categorySchema');
-const Address = require('../../model/addressSchema');
 const Cart = require('../../model/cartSchema');
-const Order = require('../../model/orderSchema');
 const Swal = require('sweetalert2');
 const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer'); 
