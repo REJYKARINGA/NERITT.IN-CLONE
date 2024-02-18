@@ -1,16 +1,19 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 const { body, validationResult } = require('express-validator');
-const userController = require('../controller/usercontroller')
-const Cart = require('../model/cartSchema')
-
+const authController = require('../controller/user/authController');
+const miscellaneousController = require('../controller/user/miscellaneousController');
+const productController = require('../controller/user/productController');
+const schoolController = require('../controller/user/schoolController');
+const userController = require('../controller/user/userController');
+const userProfileController = require('../controller/user/userProfileController');
+const Cart = require('../model/cartSchema');
 const multer = require('multer');
-const path  = require('path')
- 
-// Configure multer to handle file uploads
+const path = require('path');
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/') // Adjust the destination folder as needed
+        cb(null, 'public/uploads/'); // Adjust the destination folder as needed
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -23,90 +26,77 @@ const upload = multer({
         fileSize: 1024 * 1024, // 1 MB limit
     },
     fileFilter: function (req, file, cb) {
-       
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
         } else {
             cb(new Error('Only images are allowed.'));
-        }
-    },
+        }  },
 });
 
- 
-router.get('/',userController.neritt)
-router.get('/getCategory',userController.category)
-router.get('/shop',userController.displayProducts)
-router.get('/view-product/:id', userController.showProduct);
-router.get("/login-status/:id",userController.buyProduct)
-router.get('/cart', userController.showCart);
-router.get('/add-to-cart/:productId', userController.addToCart);
-router.get('/update-cart-quantity/:productId', userController.updateCartItemQuantity)
 
-router.get('/checkout', userController.showCheckoutPage);
-router.get('/store_checkout', userController.showCheckoutPage);
-router.post('/store_checkout', userController.storeCheckout);
-
-router.post('/remove-from-cart/:productId', userController.removeFromCart);
-
-
-router.get('/orders', userController.getAllOrders);
-router.post('/orders/:orderId', userController.deleteOrderById)
-router.post('/cancel-order/:id', userController.cancelOrder)
+// Authentication and User Management
+router.get('/login', authController.login);
+router.post('/login', authController.loginPost);
+router.get('/signup', authController.signup);
+router.post('/signup', authController.signupPost);
+router.post('/signupVerifyOtp', authController.signupVerifyOtp);
+router.post('/signResendOtp', authController.emailResendOtp);
+router.get('/logout', authController.logout);
+router.get('/forgotPage', authController.forgotPage);
+router.get('/generate-otp', authController.getGenerateOTP);
+router.post('/reset-password', authController.resetPassword);
+router.post('/generate-otp', authController.generateOtp);
+router.post('/verify-otp', authController.forgotVerifyOtp);
+router.get('/reset-password', authController.forgotVerifyOtp);
+router.post('/resend-otp', authController.resendOtp);
 
 
-router.get('/wishlist',userController.wishlist)
-
-router.get('/login',userController.login) 
-router.post('/login',userController.loginpost) /* */
-router.get('/forgotPage',userController.forgotPage) /* 1*/
-router.get('/generate-otp', userController.getGenerateOTP);/*2 */
-router.post('/generate-otp', userController.generateOtp);/*2 */
-router.post('/resend-otp', userController.resendOtp);
-
-router.post('/verify-otp', userController.forgotVerifyOtp);/*3*/
-router.get('/reset-password', userController.forgotVerifyOtp);/*4*/
-router.post('/reset-password', userController.resetPassword);/*5*/
-
-router.get('/signup',userController.signup)
-
-
-router.post('/signup',userController.signupPost)
-router.post('/signupVerifyOtp', userController.signupVerifyOtp);/*3*/
-router.post('/signResendOtp', userController.emailResendOtp);
-
-  
-router.get('/logout',userController.logout)
- 
-router.get('/school-registration',userController.schoolRegister)
-router.post('/schoolRegister', upload.fields([{ name: 'school_logo', maxCount: 1 }]), userController.createSchool);
+// Product Display and Management
+router.get('/', productController.neritt);
+router.get('/getCategory', productController.category);
+router.get('/shop', productController.displayProducts);
+router.get("/set-session", productController.displayProducts);
+router.get('/view-product/:id', productController.showProduct);
+router.get("/login-status/:id", productController.buyProduct);
+router.get('/cart', productController.showCart);
+router.get('/add-to-cart/:productId', productController.addToCart);
+router.get('/update-cart-quantity/:productId', productController.updateCartItemQuantity);
+router.get('/checkout', productController.showCheckoutPage);
+router.get('/store_checkout', productController.showCheckoutPage);
+router.post('/store_checkout', productController.storeCheckout);
+router.post('/remove-from-cart/:productId', productController.removeFromCart);
+router.get('/wishlist', productController.wishlist);
 
 
-router.get("/test",userController.testDrive)
+// Order Management
+router.get('/orders', productController.getAllOrders);
+router.post('/orders/:orderId', productController.deleteOrderById);
+router.post('/cancel-order/:id', productController.cancelOrder);
+
+// School Registration
+router.get('/school-registration', schoolController.schoolRegister);
+router.post('/schoolRegister', upload.fields([{ name: 'school_logo', maxCount: 1 }]), schoolController.createSchool);
+
+// User Account Management
+router.get("/myAccountPage", userProfileController.myAccountPage);
+router.get("/account", userProfileController.myAccountPage);
+router.get("/account/personal-data", userProfileController.myPersonalData);
+router.post("/profile/update", upload.fields([{ name: 'profileImage', maxCount: 1 }]), userProfileController.updateUserProfile);
+router.post("/password/update", userProfileController.updateUserPassword);
+router.get("/account/addresses", userProfileController.myAddressesPage);
+router.get("/account/AddAddress", userProfileController.AddAddress);
+router.post("/address/add", userProfileController.addAddressPost);
+router.get('/address/:id/edit', userProfileController.renderEditForm);
+router.post('/address/:id/edit', userProfileController.updateAddress);
+router.post('/address/:id/delete', userProfileController.deleteAddress);
+router.get("/account/payments", userProfileController.myPayment);
+router.get("/account/orders", userProfileController.myOrder);
+router.get("/account/wishlist", userProfileController.myWishlist);
+router.get("/account/award", userProfileController.myAccountPage); // Not Designed yet
 
 
-
-router.get("/myAccountPage",userController.myAccountPage)
-router.get("/account",userController.myAccountPage)
-router.get("/account/personal-data",userController.myPersonalData)
-router.post("/profile/update",upload.fields([{ name: 'profileImage', maxCount: 1 }]),userController.updateUserProfile)
-
-router.post("/password/update",userController.updateUserPassword)
-router.get("/account/addresses",userController.myAddressesPage)
-router.get("/account/AddAddress",userController.AddAddress)
-router.post("/address/add",userController.addAddressPost)
-
-router.get('/address/:id/edit',userController.renderEditForm);
-router.post('/address/:id/edit', userController.updateAddress);
-router.post('/address/:id/delete', userController.deleteAddress);
-
-router.get("/account/payments",userController.myPayment)
-router.get("/account/orders",userController.myOrder) 
-router.get("/account/wishlist",userController.myWishlist)
-
-// Not Designed yet
-router.get("/account/award",userController.myAccountPage)
+// Test Drive Management
+router.get("/test", miscellaneousController.testDrive);
 
 
-
-router.get("/set-session",userController.displayProducts)
-module.exports = router; 
+module.exports = router;
