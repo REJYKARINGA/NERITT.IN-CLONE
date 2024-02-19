@@ -42,8 +42,7 @@ const neritt = async (req, res) => {
     if (cart && cart.products) {
       totalProduct = cart.products.length;
     }
-    console.log(totalProduct, "totalProduct")
-    console.log(totalProduct)
+    
 
     const school = await School.find({ blocked: false });
 
@@ -480,51 +479,44 @@ const orders = await Order.find({ user: req.session.user._id })
 
 const cancelOrder = async (req, res) => {
   try {
-    // Check if user is logged in
+
+    
     if (!req.session.user) {
-      return res.redirect('/login');
+
+      res.redirect('/login')}
+      const orderId = req.params.id;
+      console.log(orderId,'orderzId')
+      
+      // Find the order by its ID and update its status to 'cancelled'
+      const updatedOrder = await Order.findOneAndUpdate(
+          { _id: orderId },
+          { $set: { status: 'cancelled' } },
+          { new: true }
+      );
+
+       // Check if the order exists
+       if (!updatedOrder) {
+        return res.status(404).json({ message: 'Order not found' });
     }
 
-    const orderId = req.params.id;
-    console.log(orderId, 'orderId');
+    // Retrieve the product details from the cancelled order
+    const products = updatedOrder.products;
 
-    // Find the order by its ID and update its status to 'cancelled'
-    const updatedOrder = await Order.findOneAndUpdate(
-      { _id: orderId },
-      { $set: { status: 'cancelled' } },
-      { new: true }
-    );
-
-    // Check if the order exists
-    if (!updatedOrder) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-
-    // Check if the order status is already 'cancelled' or 'cancelledByAdmin'
-    if (
-      updatedOrder.status !== 'cancelled' &&
-      updatedOrder.status !== 'cancelledByAdmin'
-    ) {
-      // Retrieve the product details from the cancelled order
-      const products = updatedOrder.products;
-
-      // Iterate over each product in the cancelled order
-      for (const product of products) {
+    // Iterate over each product in the cancelled order
+    for (const product of products) {
         const productId = product.product; // Extract productId from the product
         const productQuantity = product.quantity; // Extract product quantity
 
         // Find the product by its ID and increment the quantity
         await Product.findByIdAndUpdate(
-          productId,
-          { $inc: { quantity: productQuantity } },
-          { new: true }
+            productId,
+            { $inc: { quantity: productQuantity } },
+            { new: true }
         );
-      }
     }
-
-    console.log(updatedOrder, 'updatedOrder');
-    res.redirect('/orders'); // Redirect to my orders page after cancelling the order
-  } catch (error) {
+      console.log(updatedOrder,'updatedOrder')
+      res.redirect('/orders'); // Redirect to my orders page after cancelling the order
+    } catch (error) {
     console.error('Error cancelling order:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
@@ -538,7 +530,7 @@ const deleteOrderById = async (req, res) => {
   } catch (error) {
       console.log(error.message);
       res.status(500).json({ message: 'Failed to delete order' });
-  }
+  } 
 };
  
 const wishlist = async (req, res) => {
@@ -677,8 +669,7 @@ const updateCartItemQuantity = async (req, res) => {
     const userId = req.session.user._id;
 
     
-    const cart = await Cart.findOne({ user: userId });
-    console.log(cart)
+    const cart = await Cart.findOne({ user: userId }); 
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }

@@ -25,7 +25,7 @@ const loginPost = async (req, res) => {
     try {
   
       const email = req.body.email
-      console.log(email, "email")
+      
       const password = req.body.password
       const userCorrect = await User.findOne({ email: email, blocked: false })
       if (!userCorrect) return res.redirect("back")
