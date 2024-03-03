@@ -602,40 +602,25 @@
     </div>
     <div class="d-flex justify-content-right pagination">
         <nav>
-        <ul class="pagination">
-            
-                            <li class="page-item disabled" aria-disabled="true" aria-label="&laquo; Previous">
-                    <span class="page-link" aria-hidden="true">&lsaquo;</span>
-                </li>
-            
-            
-                            
-                
-                
-                                                                                        <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
-                                                                                                <!-- <li class="page-item"><a class="page-link" href="https://neritt.in/products?page=2">2</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/products?page=3">3</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/products?page=4">4</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/products?page=5">5</a></li>
-                                                                                                
-                                                                                        
-                                    <li class="page-item disabled" aria-disabled="true"><span class="page-link">...</span></li>
-                
-                
-                                            
-                
-                
-                                                                                        <li class="page-item"><a class="page-link" href="https://neritt.in/products?page=51">51</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/products?page=52">52</a></li> -->
-                                                                        
-            
-                            <li class="page-item">
-                    <a class="page-link" href="https://neritt.in/products?page=2" rel="next" aria-label="Next &raquo;">&rsaquo;</a>
-                </li>
-                    </ul>
-    </nav>
-
-    </div>
+          <ul class="pagination">
+            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+              <a class="page-link" href="/admin/products?page=<%= currentPage - 1 %>" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <% for (let i = 1; i <= totalPages; i++) { %>
+              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="/admin/products?page=<%= i %>"><%= i %></a>
+              </li>
+            <% } %>
+            <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+              <a class="page-link" href="/admin/products?page=<%= currentPage + 1 %>" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
 </div>            </div>
 
         </div>

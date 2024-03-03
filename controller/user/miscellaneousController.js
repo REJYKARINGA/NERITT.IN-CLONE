@@ -7,6 +7,8 @@ const nodemailer = require('nodemailer');
 const sizeOf = require('image-size'); 
 const orderId = require('../../public/js/orderId')
 
+const { ObjectId } = require('mongoose').Types;
+
 const isSquare = (width, height) => {
   return width === height;
 };
@@ -19,6 +21,8 @@ const isLessThan1MP = (width, height) => {
 
 const testDrive = async (req, res) => {
   const isUser = req.session.user;
+
+    let walletBalance = 0;
 
   if (req.session.user) {
     const name = req.session.user.name;

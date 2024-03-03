@@ -11,6 +11,8 @@ const orderId = require('../../public/js/orderId')
 
 const login = async (req, res) => {
     const isUser = req.session.user;
+
+    let walletBalance = 0;
   
     if (req.session.user) {
   
@@ -57,6 +59,8 @@ const loginPost = async (req, res) => {
 
 const signup = async (req, res) => {
     const isUser = req.session.user;
+
+    let walletBalance = 0;
   
     if (req.session.user) {
   
@@ -217,6 +221,10 @@ const forgotPage = async (req, res) => {
 
 const getGenerateOTP = async (req, res) => {
     const isUser = req.session.user;
+
+    
+
+    let walletBalance = 0;
   
     if (req.session.user) {
   

@@ -107,7 +107,7 @@
                             </div> -->
                             <div class="single-buttons-wishlist">
                                 <div class="buy-cart-buttons">
-                                    <a href="/login-status/<%=product.id%>"  class="btn btn-primary">Buy Now</a>
+                                    <a href="/wishlist/add/<%=product.id%>"  class="btn btn-primary">Add to Wishlist</a>
                                     <a href="/add-to-cart/<%= product.id %>" id="addToCartBtn" class="btn btn-primary">Add to Cart</a>
 
                                 </div>
@@ -482,7 +482,46 @@
     });
   }
 </script>
-
+<script>
+    // Function to parse query parameters from URL
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+  
+    // Check if alreadyInCart query parameter is true
+    const alreadyInWishlist = getQueryParam('alreadyInWishlist');
+    if (alreadyInWishlist === 'true') {
+      // Display SweetAlert indicating that the product is already in the cart
+      Swal.fire({
+        icon: 'info',
+        title: 'Product Already in Wishlist',
+        text: 'This product is already in your Wishlist.',
+        showConfirmButton: false,
+        timer: 2000
+      });
+    }
+  </script>
+  <script>
+    // Function to parse query parameters from URL
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+  
+    // Check if alreadyInCart query parameter is true
+    const addedInWishlist = getQueryParam('addedInWishlist');
+    if (addedInWishlist === 'true') {
+      // Display SweetAlert indicating that the product is already in the cart
+      Swal.fire({
+        icon: 'success',
+        title: 'Product Added in Wishlist',
+        text: 'This product is added in your Wishlist.',
+        showConfirmButton: false,
+        timer: 2000
+      });
+    }
+  </script>
  <script>
     function redirectToCheckout() {
         // Redirect to checkout page

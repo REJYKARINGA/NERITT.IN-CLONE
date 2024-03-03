@@ -29,13 +29,27 @@ const orderSchema = new mongoose.Schema({
         type: Number,
          required: true
     },
+    discountedAmount: {
+        type: Number,
+        defult: 0,
+         required: true
+    },
+    OfferedAmount: {
+        type: Number,
+        defult: 0,
+         required: true
+    },
+    category: {
+        type: String,
+         required: true
+    },
     address: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address'
     },
     status: {
         type: String,
-        enum: ['pending', 'Accepted', 'shipped', 'completed', 'cancelled', 'cancelledByAdmin'],
+        enum: ['pending', 'Accepted', 'shipped', 'completed', "Returned", 'cancelled', 'cancelledByAdmin', 'failed' ],
         default: 'pending'
     },
     billingDetails: {
@@ -59,7 +73,7 @@ const orderSchema = new mongoose.Schema({
             type: String,
             enum: districtEnum,
              // required: true
-        },
+        }, 
         address: {
             type: String,
              // required: true
@@ -85,8 +99,8 @@ const orderSchema = new mongoose.Schema({
         default: Date.now
     },
     payment_type: {
-        type: String,
-        enum: ['Cash on Delivery', 'online payment', 'wallet']
+        type: String, 
+        enum: ['Cash on Delivery', 'Online Payment', 'Wallet'],
     }
 });
 

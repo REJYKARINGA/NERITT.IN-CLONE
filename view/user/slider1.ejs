@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Slider</title>
+</head>
+<body>
+    <div class="slider-container">
+        <% if(coupons && coupons.length > 0) { %>
+            <% coupons.forEach(function(coupon, index) { %>
+        <div class="slider">
+            <div class="coupon" style="margin-left: 10px; border: 1px solid #000000; border-radius: 5px; padding: 10px; width: 300px; background-image: url('/public/images/coup.png'); object-fit: cover; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0;"><%= coupon.discountValue %> OFF</h3>
+                    <p style="margin-bottom: 5px;">Code: <span id="coupon-code"><%= coupon.code %></span></p>
+                    <p style="margin-bottom: 5px;">Valid Upto: <span id="coupon-code"><%= coupon.endDate.toISOString().split('T')[0] %></span></p>
+                </div>
+                <button style="background-color: #007bff; color: #fff; border: none; border-radius: 3px; padding: 5px 10px; cursor: pointer;" onclick="copyCouponCode()">Copy Code</button>
+            </div>
+        </div>
+        <% }); %>
+                              
+                                <% } %>
+    </div>
+
+    <script>
+        function copyCouponCode() {
+            const couponCodeElement = document.getElementById('coupon-code');
+            const couponCode = couponCodeElement.textContent;
+
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = couponCode;
+            document.body.appendChild(tempTextarea);
+            
+            tempTextarea.select();
+            tempTextarea.setSelectionRange(0, 99999); /* For mobile devices */
+            
+            document.execCommand('copy');
+            
+            document.body.removeChild(tempTextarea);
+            
+            alert('Coupon code copied to clipboard!');
+        }
+    </script>
+
+    <style>
+        .slider-container {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 2s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .coupon {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 200px;
+            background-image: url('/public/images/coup.png');
+            object-fit: cover;
+        }
+
+        h3 {
+            margin-top: 0;
+        }
+
+        p {
+            margin-bottom: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const slider = document.querySelector(".slider");
+            const slideCount = slider.children.length;
+            const sliderWidth = slider.offsetWidth;
+            let slideIndex = 0;
+            const slideWidth = sliderWidth / slideCount;
+            
+            // Clone the first slide and append it to the end
+            const firstSlideClone = slider.firstElementChild.cloneNode(true);
+            slider.appendChild(firstSlideClone);
+
+            let autoSlideInterval;
+
+            function slide() {
+                slider.style.transform = `translateX(${-slideIndex * slideWidth}px)`;
+            }
+
+            // Next slide (0.075, 0.82, 0.165, 1)
+            function nextSlide() {
+                slideIndex++;
+                slider.style.transition = 'transform 1s cubic-bezier(10, 0.82, 1, .07)';
+                slide();
+            }
+
+            // Start automatic slide
+            function startAutoSlide() {
+                autoSlideInterval = setInterval(() => {
+                    nextSlide();
+                    if (slideIndex === slideCount) {
+                        setTimeout(() => {
+                            slider.style.transition = 'none';
+                            slideIndex = 0;
+                            slide();
+                        }, 1000); // Adjust timeout to match transition duration
+                    }
+                }, 3000); // Change interval as needed
+            }
+
+            // Pause automatic slide
+            function pauseAutoSlide() {
+                clearInterval(autoSlideInterval);
+            }
+
+            // Automatic slide on hover
+            slider.addEventListener('mouseenter', () => {
+                pauseAutoSlide();
+            });
+
+            slider.addEventListener('mouseleave', () => {
+                startAutoSlide();
+            });
+
+            // Start automatic slide initially
+            startAutoSlide();
+        });
+    </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 const express = require('express')
 var app = express();
 const router = express.Router()
-const multer = require('multer');
+const multer = require('multer'); 
 const path  = require('path')
 
 const authController = require('../controller/admin/authController');
@@ -10,9 +10,10 @@ const categoryController = require('../controller/admin/categoryController');
 const schoolController = require('../controller/admin/schoolController');
 const productController = require('../controller/admin/productController');
 const orderController = require('../controller/admin/orderController');
-
+const couponController = require('../controller/admin/couponController');
   
 
+ 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/uploads/') 
@@ -46,7 +47,12 @@ router.get('/logout', authController.logout);
 
 // Dashboard and User Management routes
 router.get('/dashboard', userController.dashboard);
-router.get('/salesReport', userController.salesReport);
+router.get('/admin-dashboard', userController.dashboard);
+router.get('/salesReport', userController.salesReportDate);
+router.post('/salesReport', userController.salesReportDate);
+router.get('/sales-export', userController.salesExport);
+router.get('/generate-pdf-sales-report', userController.salesReportPdf);
+ 
 router.get('/users', userController.users);
 router.get('/users/:id/block', userController.toggleBlockStatus);
 
@@ -60,6 +66,8 @@ router.post('/edit/:id', upload.fields([{ name: 'logo_image', maxCount: 1 }]), c
 router.get('/orders', orderController.displayOrders);
 router.get('/order-details/:orderId/:productId', orderController.getOrderDetailsById);
 router.post('/updateOrderStatus/:orderId', orderController.updateOrderStatus);
+router.get('/failed-orders', orderController.displayPendingOrders);
+router.get('/cancelled-orders', orderController.displayCancelledOrders);
 
 // School Routes
 router.get('/schools', schoolController.displaySchools);
@@ -76,9 +84,14 @@ router.post('/products/store', upload.fields([{ name: 'gallery[]', maxCount: 100
 router.get('/edit-products/:id', productController.editProduct);
 router.post('/products/update/:id', upload.fields([{ name: 'gallery[]', maxCount: 100 }]), productController.updateProduct);
 router.post('/delete-products/:id', productController.deleteProduct);
+ 
 
-
-
+// Coupon Routes
+router.get('/coupons', couponController.getAllCoupons);
+router.post('/coupon/store', couponController.storeCoupon);
+router.get('/coupon/edit/:id', couponController.editCoupon);
+router.post('/coupon/edit/:id', couponController.updateCoupon);
+router.get('/coupon/delete/:id', couponController.deleteCoupon);
 
 
 

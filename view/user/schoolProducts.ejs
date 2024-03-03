@@ -199,28 +199,27 @@
                 </div>
                 
                 <!-- Edit only this with data -->
-                <% if(typeof products !== "undefined" && products !== null){%>
+                <% if(typeof schoolData !== "undefined" && schoolData !== null){%>
                 <div class="col-md-9 prodct-loop-items">
                     <div class="shop-header">
                         <div class="header-title">
-                            <% if (products.length > 0) { %>
+                           
                                 <div class="School-Logo">
-                                    <img src="/<%= products[0].school[0].school_logo %>" alt="">
+                                    <img src="/<%= schoolData.school_logo %>" alt="">
                                 </div>
                             
                                 <h1>
-                                    <%= products[0].school[0].school_name %>
+                                    <%= schoolData.school_name %>
                                     <p class="school_address">
-                                        <%= products[0].school[0].school_address %>
+                                        <%= schoolData.school_address %>
                                     </p>
                                 </h1>
-                            <% } else { %>
+                            <!-- <% } else { %>
                                 <p class="school_address" style="color: white;">No products available.</p>
-                            <% } %>
+                            <% } %> -->
                             
                         </div>
-                        
-                <%}%>
+                    
                     </div>
                     
                 <% if(typeof products !== "undefined" && products !== null){%>
@@ -296,10 +295,12 @@
                                         <div class="product-item-inner" style="border: 2px solid #129393;">
                                             <div class="featured-image">
                                                 <div class="add-to-fav">
-                                                                                  <a href="#">
-                                                        <img src="https://neritt.in/assets/images/assets/heart.svg"
-                                                            alt="">
-                                                    </a>
+                                                    <!-- Add to Wishlist Button -->
+                                                    <form action="/wishlist/add/<%= product._id %>" method="get">
+                                                        <button type="submit" class="wishlist-btn" style="background: none; border: none;">
+                                                            <img src="https://neritt.in/assets/images/assets/heart.svg"  alt="Add to Wishlist">
+                                                        </button>
+                                                    </form>
                                                 </div>
                                                  <a href="#">
                                                     <img style="width:225px;height:225px;"

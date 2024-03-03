@@ -15,15 +15,34 @@ const isLessThan1MP = (width, height) => {
 
 // School Management
 const displaySchools = async (req, res) => {
-  if (req.session.admin) {
-    const admin = await schoolSchema.find();
-    console.log(admin); 
-    res.render('admin/schoolDetails', { admin: admin }); 
+  try {
+    if (req.session.admin) {
+      const pageSize =10; // Number of products per page
+      const currentPage = parseInt(req.query.page) || 1;
+      const skip = (currentPage - 1) * pageSize;
 
-  } else {
-    res.redirect('/admin');
+      const totalProducts = await schoolSchema.countDocuments();
+      const totalPages = Math.ceil(totalProducts / pageSize);
+
+      const schools = await schoolSchema.find()
+        .sort({ createdAt: -1 }) // Sort by creation date
+        .skip(skip)
+        .limit(pageSize);
+
+      res.render('admin/schoolDetails', {
+        admin: schools,
+        currentPage,
+        totalPages
+      });
+    } else {
+      res.redirect('/admin');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+};
+
 
 const displayCreateSchool = (req, res) => {
   console.log('create School');

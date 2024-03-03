@@ -7,7 +7,7 @@ const cartSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'userDetails',
     required: true
-  },
+  }, 
 
   products: [
     {
@@ -16,6 +16,7 @@ const cartSchema = new mongoose.Schema({
         ref: 'productDetails'
       },
       name: String,
+      category: String, 
       price: Number,
       image: String, // Add image field for each product in the cart
       quantity: {
@@ -24,6 +25,10 @@ const cartSchema = new mongoose.Schema({
       }
     }
   ],
+  appliedCoupon: {
+    type: String,
+    default: null
+  }
   
 });
 

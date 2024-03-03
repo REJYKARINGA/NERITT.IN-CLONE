@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logo Slider</title>
+
+</head>
+<body>
+<div class="slider-container">
+    <div class="slider">
+        <% if(coupons && coupons.length > 0) { %>
+            <% coupons.forEach(function(coupon, index) { %>
+                <div class="coupon" style="">
+                    <h3 style="color: white;"> <b>Special Offer!</b></h3>
+                    <p>Get upto <b>50%</b> off your purchase!</p>
+                    <p>Use code: <%= coupon.code %></p>
+                    <p>Valid Upto: <%= coupon.endDate.toISOString().split('T')[0] %></p>
+                    <button class="copy-button btn   "  style="border: 2px solid white; color: white;" data-code="<%= coupon.code %>"><b>Copy Code</b></button>
+                </div>
+            <% }); %>
+        <% } %>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.copy-button').click(function() {
+            var couponCode = $(this).data('code');
+            var tempInput = $('<input>');
+            $('body').append(tempInput);
+            tempInput.val(couponCode).select();
+            document.execCommand('copy');
+            tempInput.remove();
+            alert('Coupon code copied: ' + couponCode);
+        });
+    });
+</script>
+
+        
+        <!-- Add more logos as needed -->
+    </div>
+</div>
+
+<style>
+    .slider-container {
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    .slider {
+    display: flex;
+    transition: transform 2s cubic-bezier(0.25, 0.1, 0.25, 1); /* Smooth cubic-bezier timing function and increased transition duration */
+}
+
+.coupon {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Adjust values as needed */
+    padding: 20px;
+    width: 400px; /* Adjust size as needed */
+    /* height: 100%; Adjust size as needed */
+    background-size: cover;
+    padding: 10px; /* Add margin between images */
+    border-radius: 5px;   
+    margin: 10px; 
+    /* border: 1px solid black;   */
+    object-fit: cover;
+    background-image: url('/public/images/coupon.png');
+}
+
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const slider = document.querySelector(".slider");
+        const slideCount = slider.children.length;
+        const sliderWidth = slider.offsetWidth;
+        let slideIndex = 0;
+        const slideWidth = sliderWidth / slideCount;
+        
+        // Clone the first slide and append it to the end
+        const firstSlideClone = slider.firstElementChild.cloneNode(true);
+        slider.appendChild(firstSlideClone);
+
+        let autoSlideInterval;
+
+        function slide() {
+            slider.style.transform = `translateX(${-slideIndex * slideWidth}px)`;
+        }
+
+        // Next slide (0.075, 0.82, 0.165, 1)
+        function nextSlide() {
+            slideIndex++;
+            slider.style.transition = 'transform 1s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            slide();
+        }
+
+        // Start automatic slide
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(() => {
+                nextSlide();
+                if (slideIndex === slideCount) {
+                    setTimeout(() => {
+                        slider.style.transition = 'none';
+                        slideIndex = 0;
+                        slide();
+                    }, 1000); // Adjust timeout to match transition duration
+                }
+            }, 3000); // Change interval as needed
+        }
+
+        // Pause automatic slide
+        function pauseAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        // Automatic slide on hover
+        slider.addEventListener('mouseenter', () => {
+            pauseAutoSlide();
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            startAutoSlide();
+        });
+
+        // Start automatic slide initially
+        startAutoSlide();
+    });
+</script>
+</body>
+</html>

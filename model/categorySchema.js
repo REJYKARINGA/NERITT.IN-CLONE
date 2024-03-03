@@ -1,4 +1,4 @@
-// category.js (category schema/model)
+// category.js (category schema/model) 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 

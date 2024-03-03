@@ -636,37 +636,29 @@ Schools List
         </table>
     </div>
 
-    <!-- pagination -->
-
-
-    <!-- <div class="d-flex justify-content-right">
-        <nav>
-        <ul class="pagination">
-            
-                            <li class="page-item disabled" aria-disabled="true" aria-label="&laquo; Previous">
-                    <span class="page-link" aria-hidden="true">&lsaquo;</span>
-                </li>
-            
-            
-                            
-                
-                
-                                                                                        <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/schools?page=2">2</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/schools?page=3">3</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/schools?page=4">4</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/schools?page=5">5</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/schools?page=6">6</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/schools?page=7">7</a></li>
-                                                                        
-            
-                            <li class="page-item">
-                    <a class="page-link" href="https://neritt.in/schools?page=2" rel="next" aria-label="Next &raquo;">&rsaquo;</a>
-                </li>
-                    </ul>
+   <!-- Pagination -->
+<div class="d-flex justify-content-right">
+    <nav>
+      <ul class="pagination">
+        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="/admin/schools?page=<%= currentPage - 1 %>" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+            <a class="page-link" href="/admin/schools?page=<%= i %>"><%= i %></a>
+          </li>
+        <% } %>
+        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="/admin/schools?page=<%= currentPage + 1 %>" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
     </nav>
-
-    </div> -->
+  </div>
+  
 </div>            </div>
         </div>
         <!-- End col -->

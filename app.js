@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 const path = require('path');
@@ -8,15 +9,16 @@ const Category = require('./model/categorySchema');
 const Product = require('./model/productSchema');
 const adminRouter = require('./router/adminRouter');
 const userRouter = require('./router/userRouter');
+const errorMiddleware = require('./middlewares/errorMiddleware');
 const nocache = require('nocache');
 const morgan = require('morgan');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const dotenv = require('dotenv');
-
-dotenv.config();
+const dotenv = require("dotenv");
+// PORT process.env.PORT
 require('./db/mongoose');
-
+const dbUser = process.env.DB_USER;
+const dbPassword = process.env.DB_PASSWORD;
 // Set up Express
 app.set('views', path.join(__dirname, 'view'));
 app.set('view engine', 'ejs');
@@ -32,15 +34,26 @@ app.use(nocache());
 app.use(morgan('tiny'));
 app.use(flash());
 
+// Parse URL-encoded bodies (as sent by HTML forms)
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Parse JSON bodies (as sent by API clients)
+app.use(bodyParser.json());
+// Routes
+// app.use('/', require('./controller/user/paymentController'));
+
 // Routes
 app.use('/admin', adminRouter);
 app.use('/', userRouter);
 
-// Middleware
-app.get('*', function (req, res, next) { 
-    res.locals.cart = req.session.cart;
-    next(); 
-});
+// Error handling middleware
+app.use(errorMiddleware);
+
+// // Middleware
+// app.get('*', function (req, res, next) { 
+//     res.locals.cart = req.session.cart;
+//     next(); 
+// });
 
 // Route handlers
 app.get('/delete-category/:id', async (req, res) => {
@@ -64,7 +77,7 @@ app.get('/delete-products/:id', async (req, res) => {
         if (!deletedProduct) {
             return res.status(404).send('Product not found');
         }
-        res.redirect('/admin/products');
+        res.redirect('/admin/products'); 
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');

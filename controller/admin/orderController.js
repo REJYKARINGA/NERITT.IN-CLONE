@@ -2,29 +2,42 @@ require('express')
 
 const Product = require('../../model/productSchema');
 const Order = require('../../model/orderSchema');
+const Wallet = require('../../model/walletSchema');
 
 
 
 // Order Management
-const displayOrders =async (req, res) => {
+const displayOrders = async (req, res) => {
   try {
-
-     if (!req.session.admin) {
+    if (!req.session.admin) {
       console.log('Unauthorized. Please log in.');
       return res.redirect('/admin');
     }
 
-      const orders = await Order.find()
-          .populate('user')
-          .populate('products.product')
-          .populate('address');
+    const pageSize = 2; // Number of orders per page
+    const currentPage = parseInt(req.query.page) || 1;
+    const skip = (currentPage - 1) * pageSize;
 
-      res.render('admin/orders', { orders });
+    const orders = await Order.find()
+      .populate('user')
+      .populate('products.product')
+      .populate('address')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize);
+
+    const totalOrders = await Order.countDocuments();
+    const totalPages = Math.ceil(totalOrders / pageSize);
+
+    
+    console.log(orders,'displayOrders orders')
+    res.render('admin/orders', { orders, currentPage, totalPages });
   } catch (error) {
-      console.error('Error fetching orders:', error);
-      res.status(500).send('Internal server error');
+    console.error('Error fetching orders:', error);
+    res.status(500).send('Internal server error');
   }
 };
+
 
 const getOrderDetailsById = async (req, res) => {
   try {
@@ -110,9 +123,96 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// const displayPendingOrders = async (req, res) => {
+//   try {
+//     if (!req.session.admin) {
+//       console.log('Unauthorized. Please log in.');
+//       return res.redirect('/admin');
+//     }
+ 
+    
+//     const orders = await Order.find({status:'pending'})
+//     .populate('user')
+//     .populate('products.product')
+//     .populate('address')
+//     .sort({ createdAt: -1 });
+
+//     res.render('admin/orderPending', { orders });
+//   } catch (error) {
+//     console.error('Error fetching orders:', error);
+//     res.status(500).send('Internal server error');
+//   }
+// };
+
+const displayPendingOrders = async (req, res) => {
+  try {
+    if (!req.session.admin) {
+      console.log('Unauthorized. Please log in.');
+      return res.redirect('/admin');
+    }
+
+    const page = parseInt(req.query.page) || 1; // Get the requested page number or default to 1
+    const perPage = 2; // Number of orders per page
+    const skip = (page - 1) * perPage;
+
+    const ordersPromise = Order.find({ status: 'pending' })
+      .populate('user')
+      .populate('products.product')
+      .populate('address')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(perPage);
+    
+      
+      console.log(ordersPromise,'displayPendingOrders orders')
+    const countPromise = Order.countDocuments({ status: 'pending' }); // Count total pending orders
+    
+    const [orders, totalCount] = await Promise.all([ordersPromise, countPromise]);
+
+    const totalPages = Math.ceil(totalCount / perPage); // Calculate total number of pages
+
+    res.render('admin/orderPending', { orders, totalPages, currentPage: page });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).send('Internal server error');
+  }
+};
+
+
+const displayCancelledOrders = async (req, res) => {
+  try {
+    if (!req.session.admin) {
+      console.log('Unauthorized. Please log in.');
+      return res.redirect('/admin');
+    }
+
+    
+    const orders = await Order.find({ status: { $in: ['cancelled', 'cancelledByAdmin'] } })
+    .populate('user')
+    .populate('products.product')
+    .populate('address')
+    .sort({ createdAt: -1 });
+
+    console.log(orders,'displayCancelledOrders orders')
+    res.render('admin/ordersCancelled', { orders });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).send('Internal server error');
+  }
+};
+
+
+
+
+
 
 module.exports = {
     displayOrders,
     getOrderDetailsById,
-    updateOrderStatus
+    updateOrderStatus,
+    displayPendingOrders,
+    displayCancelledOrders
+    
+
+  
   }

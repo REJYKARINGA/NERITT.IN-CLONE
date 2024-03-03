@@ -156,12 +156,12 @@ Dashboard
         <div class="sidebar" >
             <!-- Start Logobar -->
             <div class="logobar">
-                <a href="/dashboard" class="logo logo-large">
+                <a href="/admin/dashboard" class="logo logo-large">
                     <!-- <h3>Neritt</h3> -->
 
                     <img src="https://neritt.in/assets/user/images/assets/logo-dark.png" class="img-fluid" alt="logo">
                 </a>
-                <a href="/dashboard" class="logo logo-small">
+                <a href="/admin/dashboard" class="logo logo-small">
                     <!-- <h3>Neritt</h3> -->
                     <img src="https://neritt.in/assets/user/images/assets/logo-dark.png" class="img-fluid" alt="logo">
                 </a>
@@ -206,6 +206,13 @@ Dashboard
                         <a href="/admin/school">
                             <i class="ti ti-home"></i>
                             <span>School Registration</span>
+
+                        </a>
+                    </li>
+                    <li  >
+                        <a href="/admin/coupons">
+                            <i class="ti ti-menu-alt"></i>
+                            <span>Coupon</span>
 
                         </a>
                     </li>
@@ -344,17 +351,13 @@ Dashboard
                             <li class="list-inline-item" style="padding:5px 6px!important; margin:5px 5px">
                                 <div class="settingbar">
                                     <div class="breadcrumbbar" style="padding:5px 6px!important; margin:5px 5px">
-    <div class="row align-items-center">
-        <div class="col-md-8 col-lg-8" style="display:flex;">
-            <input type="date" placeholder="start date" class="form-control w-100 mx-2" id="start_date" name="start_date"  />
-            <input type="date" placeholder="end date" class="form-control w-100 mx-2" id="end_date" name="end_date"  />
-        </div>
-        <div class="col-md-4 col-lg-4" style="display:flex;">
-            <button id="btnSearch" style="width:100px;height:40px;" class="btn btn-success mx-2">Search</button>
-            <button id="btnReset"  style="width:100px;height:40px;" class="btn btn-primary">Reset</button>
-        </div>
-    </div>
-</div>
+                                        <div class="row align-items-center">
+                                            
+                                        </div>
+                                        
+                                        
+                                    </div>
+
                                 </div>
                             </li>
                             <li class="list-inline-item">
@@ -397,7 +400,7 @@ Dashboard
 </h4>
                 <div class="breadcrumb-list">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/admin-dashboard">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/admin/dashboard">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page"> 
 Dashboard
 </li>
@@ -420,7 +423,54 @@ Dashboard
         </div>          
     </div>
     <!-- End Breadcrumbbar -->
-   
+    <div class="breadcrumbbar" style="margin:15px 30px!important;">
+        <div class="row align-items-center">
+            <div class="col-md-8 col-lg-8" style="display:flex; align-items: center;">
+                <form action="/admin/dashboard" method="GET" style="display: flex; align-items: center;">
+                    <!-- <label for="start_date" style="margin-right: 10px;"></label> -->
+                    <input type="date" id="start_date" name="start_date" class="form-control mx-2" placeholder="Start Date:" required />
+                    
+                    <!-- <label for="end_date" style="margin-right: 10px;">End Date:</label> -->
+                    <input type="date" id="end_date" name="end_date" class="form-control mx-2" placeholder="End Date:" required />
+                    
+                    <!-- Hidden field to store the selected filter -->
+                    <input type="hidden" id="filter" name="filter" value="">
+                    
+                    <!-- Submit button -->
+                    <button type="submit" id="btnSubmit" class="btn btn-success mx-2" style="    background-color: #18d26b;
+                    border-color: #18d26b;">Filter</button>
+                    
+                    
+                    <!-- <label for="end_date" style="margin-right: 10px;">Check Last:</label> -->
+                    
+                    <!-- Year filter -->
+                    <button type="submit" id="btnYear" style="width:100px;height:35px; border-radius:  5% 0% 0% 5%;" class="btn btn-primary">Year</button>
+                    
+                    <!-- Month filter -->
+                    <button type="submit" id="btnMonth" style="width:100px;height:35px; border-radius: 0%; " class="btn btn-primary">Month</button>
+                    
+                    <!-- Weekly filter -->
+                    <button type="submit" id="btnWeek" style="width:100px;height:35px; border-radius: 0%;" class="btn btn-primary">Weekly</button>
+                    
+                    <!-- Day filter -->
+                    <!-- <button type="submit" id="btnDayLast" style="width:100px;height:35px; border-radius: 0%;" class="btn btn-primary">Yesterday</button> -->
+                    
+                    <!-- Day filter -->
+                    <button type="submit" id="btnDayToday" style="width:100px;height:35px; border-radius: 0% 5% 5% 0%;;" class="btn btn-primary">Today</button>
+                    
+                    
+                </form>
+            </div>
+            <div class="col-md-4 col-lg-4" style="display:flex;">
+                <form action="/admin/dashboard">
+                <button  style="width:100px;height:35px;" class="btn btn-primary">Reset</button>
+                </form>
+            </div>
+        </div>
+        
+        
+        
+        
 <!-- Start Contentbar -->    
 <div class="contentbar">  
     
@@ -435,7 +485,7 @@ Dashboard
         </div>
         <div class="details">
           <div class="number">
-            <span>₹7032.32</span>
+            <span>₹<%= totalSales %></span>
           </div>
           <div class="desc">Total Revenue</div>
         </div>
@@ -448,43 +498,120 @@ Dashboard
         </div>
         <div class="details">
           <div class="number">
-            <span>47</span>
+            <span><%= totalOrdersCount %></span>
           </div>
           <div class="desc">Total Orders</div>
         </div>
       </a>
     </div>
     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-      <a class="dashboard-stat hoki" href="#">
-        <div class="visual">
-          <i ></i>
-        </div>
-        <div class="details">
-          <div class="number">
-            <span>+ 2.13%</span>
+        <a class="dashboard-stat hoki" href="#">
+          <div class="visual">
+            <i ></i>
           </div>
-          <div class="desc">Sales</div>
-        </div>
-      </a>
+          
+          <div class="details">
+            <div class="number">
+              <span>+ <%= sales  %>%</span>
+              
+            </div>
+            <div class="desc">Sales</div>
+          </div>
+        </a>
+      </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a class="dashboard-stat purple" href="#">
+          <div class="visual">
+            <i ></i>
+          </div>
+          <div class="details">
+            <div class="number">
+              <span><%= newOrdersCount  %></span>
+            </div>
+            <div class="desc">New Orders</div>
+          </div>
+        </a>
+      </div><div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a class="dashboard-stat " style="background-color: #129393;" href="#">
+          <div class="visual">
+            <i ></i>
+          </div>
+          <div class="details">
+            <div class="number">
+              <span><%= newOrdersCount  %></span>
+            </div>
+            <div class="desc">Total Offer </div>
+          </div>
+        </a>
     </div>
     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-      <a class="dashboard-stat purple" href="#">
-        <div class="visual">
-          <i ></i>
-        </div>
-        <div class="details">
-          <div class="number">
-            <span>34</span>
+        <a class="dashboard-stat " style="background-color:#117A65;" href="#">
+          <div class="visual">
+            <i ></i>
           </div>
-          <div class="desc">New Orders</div>
-        </div>
-      </a>
-    </div>
+          <div class="details">
+            <div class="number">
+              <span><%= newOrdersCount  %></span>
+            </div>
+            <div class="desc">Total  Discounted</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a  class="dashboard-stat " style="background-color:darkslategray;" href="#">
+          <div class="visual">
+            <i ></i>
+          </div>
+          
+          <div class="details">
+            <div class="number">
+              <span><%= usersCount  %></span>
+              
+            </div>
+            <div class="desc">Total Users</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a  class="dashboard-stat " style="background-color:firebrick;" href="#">
+          <div class="visual">
+            <i ></i>
+          </div>
+          
+          <div class="details">
+            <div class="number">
+              <span>1</span>
+              
+            </div>
+            <div class="desc">Help Desk</div>
+          </div>
+        </a>
+      </div>
   </div>
    </div>
    <div class="Graphs">
     <div class="row">
-    <div class="col-md-6">
+
+        <div class="col-md-3">
+            <div class=" card Categories-card">
+            <h4>Categories </h4>
+            
+            <canvas id="CategoriesReport"></canvas>
+            </div>
+     
+     
+     </div>
+     
+     <div class="col-md-3">
+            <div class=" card Categories-card">
+            <h4>New Orders </h4>
+            <canvas id="NewOrders"></canvas>
+     
+            </div>
+     
+     </div>
+
+<div class="col-md-6">
    <div class=" card blackBg">
        <div class="line-chart">
        <h4>Total Revenue</h4>
@@ -496,24 +623,7 @@ Dashboard
 </div>
 
 
-<div class="col-md-3">
-       <div class=" card Categories-card">
-       <h4>Categories </h4>
-       
-       <canvas id="CategoriesReport"></canvas>
-       </div>
 
-
-</div>
-
-<div class="col-md-3">
-       <div class=" card Categories-card">
-       <h4>New Orders </h4>
-       <canvas id="NewOrders"></canvas>
-
-       </div>
-
-</div>
 
 
    </div>
@@ -614,6 +724,34 @@ Dashboard
   type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.1/mdb.min.js"
 ></script>
+
+<script>
+    // Year filter button click event
+    document.getElementById('btnYear').addEventListener('click', function() {
+        document.getElementById('filter').value = 'year';
+    });
+
+    // Month filter button click event
+    document.getElementById('btnMonth').addEventListener('click', function() {
+        document.getElementById('filter').value = 'month';
+    });
+
+     // Weekly filter button click event
+     document.getElementById('btnWeek').addEventListener('click', function() {
+        document.getElementById('filter').value = 'weekly';
+    });
+
+    // Yesturday filter button click event 
+    // document.getElementById('btnDayLast').addEventListener('click', function() {
+    //     document.getElementById('filter').value = 'yesterday';
+    // });
+
+    // Day filter button click event
+    document.getElementById('btnDayToday').addEventListener('click', function() {
+        document.getElementById('filter').value = 'today';
+    });
+</script>
+
 <script>
    // ============================================
 // As of Chart.js v2.5.0
@@ -707,15 +845,15 @@ flatpickr("input[type=date]");
 
 var chart = document.getElementById("CategoriesReport").getContext("2d")
 
-let label_datas = ["Text Books","Uniforms","Stationeries(Kit)","Ties","Umbrellas","Socks","Note Books"]
-let data_set  = [1,41,1,1,1,1,1]
+// let label_datas = <%= JSON.stringify(labelDatas) %>;
+// let data_set  = <%= JSON.stringify(dataSet) %>; 
 
 var data = {
-    labels: label_datas,
-    datasets: [{
-    label: 'My First Dataset',
-    data: data_set,
-    backgroundColor: [
+    labels: <%= JSON.stringify(labelDatas) %>,
+        datasets: [{
+            label: 'Sales Report',
+            data: <%= JSON.stringify(dataSet) %>,
+            backgroundColor: [
       'rgb(255, 99, 132)',
       'rgb(54, 162, 235)',
       'rgb(255, 205, 86)',

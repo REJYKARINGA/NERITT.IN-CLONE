@@ -9,20 +9,50 @@ const categorySchema = require('../../model/categorySchema');
 
 // Product Management
 const displayProducts = async (req, res) => {
-  if (req.session.admin) {
-    const products = await productSchema.find().populate('school').populate('category');
-    console.log("displayProducts loading")
-   
-    const category = await categorySchema.find();
-    const school = await schoolSchema.find();
+  try {
+    if (req.session.admin) {
+      // Extract query parameters for sorting and pagination
+      const { sortBy, sortOrder, page } = req.query;
+      const pageSize = 10; // Number of products per page
+      const currentPage = parseInt(page) || 1;
+      const skip = (currentPage - 1) * pageSize;
 
-    res.render('admin/productsDetails', { category, school, products });
-    
+     
+      // Fetch products from the database with sorting and pagination applied
+      const products = await productSchema.find()
+        .populate('school')
+        .populate('category')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize);
 
-  } else {
-    res.redirect('/admin');
+      // Get the total count of products for pagination
+      const totalProducts = await productSchema.countDocuments();
+
+      // Calculate the total number of pages
+      const totalPages = Math.ceil(totalProducts / pageSize);
+
+      // Fetch categories and schools for filtering options
+      const categories = await categorySchema.find();
+      const schools = await schoolSchema.find();
+
+      res.render('admin/productsDetails', {
+        products,
+        categories,
+        schools,
+        currentPage,
+        totalPages,
+        sortBy,
+        sortOrder
+      });
+    } else {
+      res.redirect('/admin');
+    }
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+};
 
 const displayCreateProduct = async (req, res) => {
   console.log('display create Product page');

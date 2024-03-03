@@ -9,7 +9,8 @@
     <link rel="manifest" href="https://neritt.in/assets/user/images/assets/favicons/site.webmanifest" />
     <meta name="description" content="Nerhin" />
     
-
+    <link rel="stylesheet" href="/public/css/themify-icons.css">
+    
     <meta name="csrf-token" content="AH0aJhbsRx4bTW5m8p6CS0ai2CFmAk1tXCgyjURi" />
     <link rel=" preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -6389,7 +6390,8 @@
 </head>
 
 <body>
-                                <%-include('cursor.ejs')-%>
+                                
+    <%-include('cursor.ejs')-%>
                                 <!--Both Header Section  -->
 
                                 <% if(typeof school !== "undefined" && school !== null){%>
@@ -6450,7 +6452,7 @@
                             
                                                             <ul class="main-navigation-menu">
                             
-                                                                <li><a href="/">Home</a></li>
+                                                                <!-- <li><a href="/">Home</a></li> -->
                                                                 <li><a href="/about">About Us</a></li>
                                                                 <li><a href="/contact">Contact Us</a></li>
                                                                 <li><a href="/wishlist">Wishlist</a></li>
@@ -6579,6 +6581,64 @@
                                                                 </div>
                                                             </div>
                                                         </li>
+                                                        <li>
+                                                            <a href="cart" id="min-cart" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <div class="text-with-icon">
+                                                                    <div class="icon icon-cart">
+                                                                        <!-- Wallet icon -->
+                                                                        <div class="wallet-icon">
+                                                                            <span class="wallet-container">
+                                                                                <span class="ti-wallet"></span>
+                                                                                <p class="wallet-amount"></p>
+                                                                            </span>
+                                                                            
+                                                                        </div>
+                                                                        <style>/* Show wallet icon always */
+                                                                            .wallet-icon {
+                                                                                display: block;
+                                                                            }
+                                                                            
+                                                                            /* Adjust wallet icon size as needed */
+                                                                            .wallet-icon span {
+                                                                                font-size: 25px; /* Example size */
+                                                                                color: #ffffff; /* Example color */
+                                                                            }
+                                                                            wallet-container {
+                                                                            display: inline-block;
+                                                                            vertical-align: middle; /* Aligns the icon and text vertically */
+                                                                        }
+
+                                                                        .wallet-amount {
+                                                                            font-size: 20px;
+                                                                            display: inline-block;
+                                                                            margin: 0; /* Remove any default margin */
+                                                                            vertical-align: middle; /* Aligns the text vertically with the icon */
+                                                                        }
+                                                                            </style>
+                                                                        <!-- Cart count -->
+                                                                        <span class="notify cart_count">
+                                                                            <% if (typeof cart !== "undefined") { %>
+                                                                                ₹ <br>&nbsp;&nbsp;&nbsp;&nbsp;<%= walletBalance %>
+                                                                            <% } else { %>
+                                                                                ₹ 0
+                                                                            <% } %>
+                                                                        </span>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="min-cart">
+                                                                <h3 class="cart_title"></h3>
+                                                                <div class="mini-cart-container" id="mini-cart"></div>
+                                                                <div class="mini-cart-btn">
+                                                                    <a href="/wallet" style="width: 100%;" class="btn btn-blue">View Wallet</a>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        
+                                                        
+                                                        
+                                                        
                                                         
                                                     </ul>
                                                 </div>
@@ -6713,7 +6773,7 @@
 
 
 
-
+                                           
     
     </body>
                                  <!-- Script -->

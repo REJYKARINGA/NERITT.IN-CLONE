@@ -51,8 +51,9 @@
                 <div class="col-md-12">
                    
                     <div class="block-wrap cats">
+                       
                         <% category.forEach((cate_gory,index)=>{ %>
-                                            <a href="" url="/shop?value=<%=cate_gory.category_name%>_<%=cate_gory.id%>" class="item categ-item" name="<%=cate_gory.category_name%>" data-id="<%=cate_gory._id%>">
+                            <a href="" url="/shop?value=<%=cate_gory.id%>" class="bg-1 goto-shop" class="item categ-item" style="padding-left: 20px;">
 
                             <div class="box-prt red"><img src="/<%=cate_gory.logo_image%>" alt="" style="width:115px;height:150px">
                                 <span><%=cate_gory.category_name%></span>

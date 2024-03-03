@@ -416,7 +416,7 @@
 </h4>
                 <div class="breadcrumb-list">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="https://neritt.in/admin-dashboard">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/admin/dashboard">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page">    Sales Report
 </li>
                     </ol>
@@ -425,13 +425,126 @@
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
                          <button class="btn btn-success upload-image" id="filter"><i class="feather mr-1"></i>Filter</button>
-    <!-- <button class="btn btn-primary-rgba design-image"><i class="feather icon-image mr-2"></i>Design Image</button> -->
                    
-                </div>                        
+                </div>    
+                 
+                <!-- <form action="/admin/salesReport">
+                    <button  style="width:100px;height:40px;" class="btn btn-primary">Reset</button>
+                    </form>                    -->
             </div>
+            <script>
+                // JavaScript code to handle filtering based on the selected dates
+                
+                document.addEventListener("DOMContentLoaded", function () {
+                    const filterButton = document.getElementById("filter");
+                    const startDateInput = document.getElementById("start_date");
+                    const endDateInput = document.getElementById("end_date");
+                
+                    filterButton.addEventListener("click", function () {
+                        const startDate = startDateInput.value;
+                        const endDate = endDateInput.value;
+                
+                        // Construct the URL with query parameters representing the selected dates
+                        const url = `/admin/salesReport?start_date=${startDate}&end_date=${endDate}`;
+                
+                        // Fetch filtered data from the server
+                        fetch(url)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                // Handle the filtered data (e.g., update the UI with the filtered data)
+                                console.log(data);
+                            })
+                            .catch(error => {
+                                console.error('There was a problem with the fetch operation:', error);
+                            });
+                    });
+                });
+                </script>
         </div>          
     </div>
     <!-- End Breadcrumbbar -->
+    <div class="breadcrumbbar" style="margin:15px 30px!important;">
+        <div class="row align-items-center">
+            <div class="col-md-8 col-lg-8" style="display:flex; align-items: center;">
+                <form action="/admin/salesReport" method="GET" style="display: flex; align-items: center;">
+                    
+                    <!-- Hidden field to store the selected filter -->
+                    <input type="hidden" id="filter" name="filter" value="">
+                    
+                  
+                    <!-- Year filter -->
+                    <button type="submit" id="btnYear" class="btn btn-primary mx-2">Last Year</button>
+                    
+                    <!-- Month filter -->
+                    <button type="submit" id="btnMonth" class="btn btn-primary mx-2">Last Month</button>
+                    
+                    
+                    <!-- Weekly filter -->
+                    <button type="submit" id="btnWeek" class="btn btn-primary mx-2">Weekly</button>
+                    
+                    <!-- Yesterday filter -->
+                    <!-- <button type="submit" id="btnDayLast" class="btn btn-primary mx-2">Yesterday</button> -->
+                    
+                    <!-- Day filter -->
+                    <button type="submit" id="btnDayToday" class="btn btn-primary mx-2">Today</button>
+                    
+                    
+                </form>
+                <script>
+                    // Year filter button click event
+                    document.getElementById('btnYear').addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent default form submission behavior
+                        document.getElementById('filter').value = 'year';
+                        document.getElementById('btnSubmit').click(); // Manually trigger form submission
+                    });
+                
+                    // Month filter button click event
+                    document.getElementById('btnMonth').addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent default form submission behavior
+                        document.getElementById('filter').value = 'month';
+                        document.getElementById('btnSubmit').click(); // Manually trigger form submission
+                    });
+                
+                    // Weekly filter button click event
+                    document.getElementById('btnWeek').addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent default form submission behavior
+                        document.getElementById('filter').value = 'weekly';
+                        document.getElementById('btnSubmit').click(); // Manually trigger form submission
+                    });
+                
+                    // Day filter button click event
+                    document.getElementById('btnDayToday').addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent default form submission behavior
+                        document.getElementById('filter').value = 'today';
+                        document.getElementById('btnSubmit').click(); // Manually trigger form submission
+                    });
+                </script>
+                
+            </div>
+            <div class="col-md-4 col-lg-4" style="display:flex;">
+                <div>
+                    <a
+                        href="/admin/sales-export"><button
+                            type="button" class="btn btn-success">Excel</button></a>
+                </div>
+                <div style="margin-left: 10px;">
+                    <a
+                        href="/admin/generate-pdf-sales-report"><button
+                            type="button" class="btn btn-success">PDF</button></a>
+                </div>
+                <!-- <form action="/admin/salesReport">
+                <button  style="width:100px;height:40px;" class="btn btn-primary">Reset</button>
+                </form> -->
+            </div>
+        </div>
+        
+       
+        </div>
         <!-- Start Contentbar -->
     <div class="contentbar">
         <!-- Start row -->
@@ -439,6 +552,7 @@
             <!-- Start col -->
             <div class="col-lg-12">
                 <div class="card m-b-30">
+                    
                     <div class="card-header">
                         <div class="row align-items-center">
                             <div class="col-6">
@@ -462,59 +576,72 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Order Number</th>
-                                        <th>Agent</th>
+                                        <th>Order Date</th>
+                                        <!-- <th>Agent</th> -->
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Phone Number</th>
                                         <th>Address</th>
                                         <th>Product Name</th>
-                                        <th>Amount</th>
-                                        <th>Delivery Charge</th>
+                                        <!-- <th>Amount</th>
+                                        <th>Delivery Charge</th> -->
+                                        <th>Coupon<br>Discounted</th> 
+                                        <th>Offer<br>Discounted</th>
                                         <th>Total</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="report_body">
-                                                                                                                <tr>
+                                    <% orders.forEach((order, index) => { %>
+                                        <% order.products.forEach((product,) => { %>                                                                            <tr>
                                             <td>
-                                                <div class="td-content">1</div>
+                                                <div class="td-content"><%= index + 1 %></div>
                                             </td>
-                                            <td>#000036</td>
+                                            <td><%= order.orderId %></td>
+                                            <td><%= order.createdAt.toDateString() %></td>
+                                            
                                             <td>
-                                                <div class="td-content"></div>
-                                            </td>
-                                            <td>
-                                                <div class="td-content">REJY KP</div>
-                                            </td>
-                                            <td>
-                                                <div class="td-content">KP.REJY1972@GMAIL.COM</div>
+                                                <div class="td-content"><%= order.billingDetails.studentName %></div>
                                             </td>
                                             <td>
-                                                <div class="td-content">7994870262</div>
+                                                <div class="td-content"><%= order.billingDetails.email %></div>
                                             </td>
                                             <td>
-                                                <div class="td-content">AKRA SOLUTION KADAMPUZHA <br>
-                                                    KADMAPUZHA  NEAR OPPOSIT FUEL BUNK
-                                                    676553
+                                                <div class="td-content"><%= order.billingDetails.phone %></div>
+                                            </td>
+                                            <td>
+                                                <div class="td-content"><%= order.billingDetails.address %><br><%= order.billingDetails.landmark %><br>
+                                                    <%= order.billingDetails.district %>, <%= order.billingDetails.pincode %><br>
                                                 </div>
                                             </td>
-                                            <td>KIT</td>
-                                            <td>
+                                            <td><%= product.name %> </td>
+                                            <!-- <td>
                                                 <div class="td-content">100</div>
                                             </td>
                                             <td>
                                                 <div class="td-content">30</div>
-                                            </td>
+                                            </td> -->
                                             <td>
-                                                <div class="td-content">130
+                                                <div class="td-content"><%= order.discountedAmount %>
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="td-content">Order Placed</div>
+                                                <div class="td-content"><%= order.totalAmount %>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="td-content"><%= order.totalAmount %>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="td-content"><%= order.status %></div>
                                             </td>
                                         </tr>
+
                                                                                                                     
-                                                                                                            </tbody>
+                                        <% }); %>
+                                        <% }); %>                                                                  
+                                    </tbody>
                             </table>
                         </div>
                     </div>
@@ -523,28 +650,42 @@
                 </div>
                 <div class="d-flex justify-content-right">
                     <nav>
-        <ul class="pagination">
-            
-                            <li class="page-item disabled" aria-disabled="true" aria-label="&laquo; Previous">
-                    <span class="page-link" aria-hidden="true">&lsaquo;</span>
-                </li>
-            
-            
+                        <ul class="pagination">
+                            <% if (currentPage === 1) { %>
+                                <li class="page-item disabled" aria-disabled="true" aria-label="&laquo; Previous">
+                                    <span class="page-link" aria-hidden="true">&lsaquo;</span>
+                                </li>
+                            <% } else { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/admin/salesReport?page=<%= currentPage - 1 %>" aria-label="Previous">&lsaquo;</a>
+                                </li>
+                            <% } %>
                             
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <% if (i === currentPage) { %>
+                                    <li class="page-item active" aria-current="page">
+                                        <span class="page-link"><%= i %></span>
+                                    </li>
+                                <% } else { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="/admin/salesReport?page=<%= i %>"><%= i %></a>
+                                    </li>
+                                <% } %>
+                            <% } %>
                 
-                
-                                                                                        <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/sales-report?page=2">2</a></li>
-                                                                                                <li class="page-item"><a class="page-link" href="https://neritt.in/sales-report?page=3">3</a></li>
-                                                                        
-            
-                            <li class="page-item">
-                    <a class="page-link" href="https://neritt.in/sales-report?page=2" rel="next" aria-label="Next &raquo;">&rsaquo;</a>
-                </li>
-                    </ul>
-    </nav>
-
+                            <% if (currentPage === totalPages || totalPages === 0) { %>
+                                <li class="page-item disabled" aria-disabled="true" aria-label="Next &raquo;">
+                                    <span class="page-link" aria-hidden="true">&rsaquo;</span>
+                                </li>
+                            <% } else { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="/admin/salesReport?page=<%= currentPage + 1 %>" aria-label="Next">&rsaquo;</a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </nav>
                 </div>
+                
             </div>
         </div>
         <!-- End col -->
@@ -555,7 +696,7 @@
     <div class="modal fade " id="sales-modal" tabindex="-1" role="dialog" aria-labelledby="create-modal-label"   aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog  " role="document">
         <div class="modal-content ">
-             <form action="https://neritt.in/sales-report"  id="report_form" class="" method="POST">
+             <form action="/admin/salesReport"  id="report_form" class="" method="POST">
                 <input type="hidden" name="_token" value="6jlCUJPv4SbRfw2zZsAiMnbKqZCrnJbdoeTSD97q">             <div class="modal-header">
                 <h5 class="modal-title" id="create-modal-label">Select Date</h5>
                 <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
@@ -575,8 +716,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="closeModal btn btn-secondary" data-dismiss="modal">Close</button>
                 <button id="btnSubmit" class="btn btn-primary create-submit-btn">Save</button>
+                <button type="button" class="closeModal btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
             </form>
         </div>
@@ -598,27 +739,31 @@
                 <div class="modal-dialog  " role="document">
                     <div class="modal-content ">
                         <form class="" method="POST">
-                            <input type="hidden" name="_token" value="6jlCUJPv4SbRfw2zZsAiMnbKqZCrnJbdoeTSD97q">                        <div class="modal-header">
-                            <h5 class="modal-title" id="create-modal-label">Select Vendor</h5>
-                            <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group name">
-                                <label for="vendor" class="col-form-label">Agent</label>
-                                <select class="form-control" id='vendorReport' name='vendorReport'>
-                                    <option id="opt" value="">default</option>
-
-                                </select>
-                                <span class="validate" id="vendor_error" style="display:none;color:red;">Please Select Vendor</span>
+                            <input type="hidden" name="_token" value="6jlCUJPv4SbRfw2zZsAiMnbKqZCrnJbdoeTSD97q">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="create-modal-label">Select Vendor</h5>
+                                <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="closeModal btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button id="btnSubmitvendor" class="btn btn-primary create-submit-btn">Submit</button>
-                        </div>
+                            <div class="modal-body">
+                                <div class="form-group name">
+                                    <label for="vendor" class="col-form-label">Agent</label>
+                                    <select class="form-control" id="vendorReport" name="vendorReport">
+                                        <option value="">Default</option>
+                                        <option value="month">Month</option>
+                                        <option value="year">Year</option>
+                                        <option value="day">Day</option>
+                                    </select>
+                                    <span class="validate" id="vendor_error" style="display:none;color:red;">Please Select Vendor</span>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="closeModal btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="btnSubmitvendor" class="btn btn-primary create-submit-btn">Submit</button>
+                            </div>
                         </form>
+                        
                     </div>
                 </div>
             </div>

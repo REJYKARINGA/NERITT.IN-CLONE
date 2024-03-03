@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema({
                 return value >= 0 && value <= 100; // Assuming that CGST should be between 0 and 100
             },
             message: 'CGST must be a percentage between 0 and 100',
-        },
+        }, 
     },
 
     sgst: {
@@ -65,24 +65,12 @@ const productSchema = new mongoose.Schema({
         type: String
 
     },
-    // gallery: [
-    //     {
-    //         buffer: {
-    //             type: Buffer,
-    //             required: true,
-    //         },
-    //         contentType: {
-    //             type: String,
-    //             required: true,
-    //         },
-    //     },
-    // ],
     school: [{
         type: Schema.Types.ObjectId,
         ref: 'School',
     }],
     category: [{
-        type: Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId, 
         ref: 'categoryDetails'
     }],
     gender: {

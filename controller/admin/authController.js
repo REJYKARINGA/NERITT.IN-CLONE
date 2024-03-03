@@ -1,6 +1,9 @@
 require('express')
-
-
+const dotenv = require("dotenv");
+dotenv.config({ path:  './view/config.env'})
+const name =process.env.ADMIN_USERNAME;
+const password =process.env.ADMIN_PASSWORD;
+console.log(typeof name, typeof password,'admin details')
 
 // Authentication and Session Management
 const login = (req, res) => {
@@ -17,8 +20,7 @@ const login = (req, res) => {
   }
   
   const loginValidate = (req, res) => {
-    const name = 'RejiMan'
-    const password = '12345'
+    
    
     if (name === req.body.username && password == req.body.password) {
   

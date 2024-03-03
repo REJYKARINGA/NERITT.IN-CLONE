@@ -16,7 +16,7 @@ const districtList = [
     'Wayanad',
     'Kannur',
     'Kasargod'
-];
+]; 
 
 const userRole = [
     'Manager',

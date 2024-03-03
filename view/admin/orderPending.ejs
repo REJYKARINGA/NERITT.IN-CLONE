@@ -10,8 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
         <meta name="csrf-token" content="m4pnVcNZKVaXC46bfUBONcH1vZtKvr3eVrnkXrmP">
 
-        <title>  
-Coupon Management
+        <title> All Orders
  </title>
  
                 <!-- icon style sheet css -->
@@ -23,10 +22,8 @@ Coupon Management
         <!-- Fevicon -->
         <link rel="shortcut icon" href="https://neritt.in/assets/user/images/assets/favicons/favicon-32x32.png">
         <!-- Start CSS -->   
-        <!-- 
+        <!--
 <link href="/assets/css/image-uploader.css" rel="stylesheet" type="text/css"> -->
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-
 
         <link href="https://neritt.in/assets/plugins/switchery/switchery.min.css" rel="stylesheet" type="text/css">
         <link href="/assets/plugins/animate/animate.css" rel="stylesheet" type="text/css">
@@ -198,13 +195,6 @@ Coupon Management
 
                         </a>
                     </li>
-                    <li style="background: #129393; ">
-                        <a href="/admin/categories">
-                            <i class="ti ti-menu-alt"></i>
-                            <span>Coupon</span>
-
-                        </a>
-                    </li>
                     <li class="">
                         <a href="/admin/user">
                             <i class="ti ti-user"></i>
@@ -220,7 +210,7 @@ Coupon Management
 
                         </a>
                     </li>
-                    <li >
+                    <li class="">
                         <a href="/admin/categories">
                             <i class="ti ti-menu-alt"></i>
                             <span>Categories</span>
@@ -262,7 +252,7 @@ Coupon Management
 
                         </a>
                     </li>
-                    <li class="">
+                    <li style="background: #129393; ">
                         <a href="/admin/orders">
                             <i class="ti ti-write"></i>
                             <span>Orders</span>
@@ -394,7 +384,7 @@ Coupon Management
                                                 <div class="userbox">
                                                     <ul class="list-unstyled mb-0">                                    
                                                           <li class="media dropdown-item">
-                                                                <a href="#" class="profile-icon" href="https://neritt.in/logout"
+                                                                <a href="#" class="profile-icon" href="/logout"
                                                                      onclick="event.preventDefault();
                                                                          document.getElementById('logout-form').submit();">
                                                                          <img src="https://neritt.in/assets/images/svg-icon/logout.svg " class="img-fluid" alt="logout">
@@ -432,56 +422,19 @@ Coupon Management
     <div class="breadcrumbbar">
         <div class="row align-items-center">
             <div class="col-md-8 col-lg-8">
-                <h4 class="page-title"> 
-Coupon Management
-</h4> 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                <h4 class="page-title">All Orders
+</h4>
                 <div class="breadcrumb-list">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="https://neritt.in/admin-dashboard">Home ></a></li>
-                        <li class="active" aria-current="page"> 
-Coupon List 
+                        <li class="breadcrumb-item"><a href="/admin-dashboard">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">All Orders
 </li>
                     </ol>
                 </div>
             </div>
             <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
-                      
-<button id="upload" class="btn btn-success upload-image"><i class="ti ti-plus mr-1"></i>Add Coupon</button>
+                     <!-- <a href = "https://neritt.in/add-products"><button class="btn btn-success upload-image"><i class="feather icon-plus mr-1"></i>Add Products</button></a> -->
  <!-- <button class="btn btn-primary-rgba design-image"><i class="feather icon-image mr-2"></i>Design Image</button> -->
 
                    
@@ -490,201 +443,107 @@ Coupon List
         </div>          
     </div>
     <!-- End Breadcrumbbar -->
-    <!-- Start Contentbar -->    
-<div class="contentbar">                
+    <!-- Start Contentbar -->
+<div class="contentbar">
     <!-- Start row -->
     <div class="row">
         <!-- Start col -->
         <div class="col-lg-12">
             <div class="card m-b-30">
-            <div class="card-header">                                
+            <div class="card-header">
                     <div class="row align-items-center">
-                        <div class="col-6">
-                            <h5 class="card-title mb-0">All Categories</h5>
+                        <div class="col-6" style="display:inline-flex;">
+                            <a href="/admin/orders"><h5 class="card-title mx-2   ">Order Details</h5></a>
+                            <a href="/admin/failed-orders"><h5 class="card-title mx-2 badge badge-pill badge-primary ">Failed/Pending Orders</h5></a>
+                            <a href="/admin/cancelled-orders"><h5 class="card-title mx-2  ">Cancelled Orders</h5></a>
                         </div>
                         <div class="col-6">
                             <ul class="list-inline-group text-right mb-0 pl-0">
                                  <li class="list-inline-item">
                                       <div class="form-group mb-0 amount-spent-select">
                                         <input type="text" id="search" class="form-control" placeholder="Search">
-                                        <input type="hidden" id="ajax-path" value=""/>
                                     </div>
                                 </li>
-                            </ul>                                        
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="order_view">
                     <div class="table-responsive">
                         <table class="table table-borderless">
-                            <thead>
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Order Number</th>
+                              <th>Name</th>
+                              <th>Email</th>
+                              <th>Product Name</th>
+                              <th>Image</th>
+                              <th>Date</th>
+                              <th>Status</th>
+                              <th>Order Details</th>
+                            </tr>
+                          </thead>
+                          <tbody id="order_body">
+                            <% orders.forEach((order, index) => { %>
+                              <% order.products.forEach((product,) => { %>
                                 <tr>
-                                    <th>#</th>
-                                    <!-- <th>Logo</th>
-                                    <th>Banner</th> -->
-                                    <th>Coupon Code</th>
-                                    <th>Discount</th>
-                                    <th>Expiry Date</th>
-                                    <!-- <th>Priority</th> -->
-                                    <!-- <th>Status</th> -->
-                                    <th>Actions</th>
+                                  <td><%= index + 1 %></td>
+                                  <td><%= order.orderId %></td>
+                                  <td><%= order.billingDetails.studentName %></td>
+                                  <td><%= order.billingDetails.email %></td>
+                                  <td><%= product.name %> </td> 
+                                  <td> 
+                                    <img src="/<%= product.image %>" alt="<%= product.name %>" width="50">
+                                  </td> 
+                                  <td><%= order.createdAt.toDateString() %></td>
+                                  <td>
+                                    <div class="td-content">
+                                      <span class="badge badge-info"><%= order.status %></span>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <a href="/admin/order-details/<%= order._id %>/<%= product.product.id %>">
+                                      <button type="button" class="edit-button btn btn-sm btn-success" style="float: none; margin: 5px;">
+                                        <span class="ti-eye"></span>
+                                      </button>
+                                    </a>
+                                  </td>
                                 </tr>
-                            </thead>
-                            <tbody id="categ_body">
-                                                                                                <tr>
-                                    <td><div class="td-content">1</div></td>
-                                    <!-- <td><div class="ProductTableImage"><img src='https://neritt.in/storage/images/category/20230317061458_.png' style="width:50px;" class="img-fluid"></div></td>
-                                    <td><div class="ProductTableImage"><img src='https://neritt.in/storage/images/category/20230317061458_banner.png' style="width:50px;" class="img-fluid"></div></td> -->
-                                    <td><div class="td-content">Coupon123</div></td>
-                                    <td><div class="td-content">10%</div></td>
-                                    <td><div class="td-content">2024-12-31</div></td>
-                                    <!-- <td>
-                                        <div class="td-content">
-                                            <button type="button" data-id = "1" data-class="0" data-value = "1" class="btn btn-sm btn-danger btn-add set-priority"
-                                                    data-toggle="tooltip" data-placement="bottom" title="Set Priority"
-                                                    style="float: none; margin: 5px;">
-                                                    <span class="ti-pin2"></span>
-                                            </button>
-                                        </div>
-                                    </td> -->
-                                    <!-- <td value="1">
-                                        <div class="dropdown">
-                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                             Active                                             </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <a data-value="1" data-id ="1" class="dropdown-item status" href="#">Active</a>
-                                                <a data-value="0" data-id ="1" class="dropdown-item status" href="#">In Active</a>
-                                            </div>
-                                        </div>
-                                    </td> -->
-                                    
-                                    <td>
-                                        <div class="btn-group btn-group-sm ">
-                                            <a><button type="button" data-id="1" class="edit-button btn btn-sm btn-info btnEdit" style="float: none; margin: 5px;"><span class="ti-pencil"></span></button></a>
-                                            <a><button type="button" url="https://neritt.in/delete-category/1" class="delete-button btn btn-sm btn-danger" style="float: none; margin: 5px;"><span class="ti-trash"></span></button></a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                                                                <tr>
-                                    <td><div class="td-content">2</div></td>
-                                    <!-- <td><div class="ProductTableImage"><img src='https://neritt.in/storage/images/category/20230316102017_.png' style="width:50px;" class="img-fluid"></div></td>
-                                    <td><div class="ProductTableImage"><img src='https://neritt.in/storage/images/category/20230316102017_banner.png' style="width:50px;" class="img-fluid"></div></td> -->
-                                    <td><div class="td-content">Coupon456</div></td>
-                                    <td><div class="td-content">20%</div></td>
-                                    <td><div class="td-content">2025-12-31</div></td>
-                                    <!-- <td>
-                                        <div class="td-content">
-                                            <button type="button" data-id = "3" data-class="0" data-value = "11" class="btn btn-sm btn-danger btn-add set-priority"
-                                                    data-toggle="tooltip" data-placement="bottom" title="Set Priority"
-                                                    style="float: none; margin: 5px;">
-                                                    <span class="ti-pin2"></span>
-                                            </button>
-                                        </div>
-                                    </td> -->
-                                    <!-- <td value="1">
-                                        <div class="dropdown">
-                                            <button class="btn    btn-success  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                             Active                                             </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <a data-value="1" data-id ="3" class="dropdown-item status" href="#">Active</a>
-                                                <a data-value="0" data-id ="3" class="dropdown-item status" href="#">In Active</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                     -->
-                                    <td>
-                                        <div class="btn-group btn-group-sm ">
-                                            <a><button type="button" data-id="3" class="edit-button btn btn-sm btn-info btnEdit" style="float: none; margin: 5px;"><span class="ti-pencil"></span></button></a>
-                                            <a><button type="button" url="https://neritt.in/delete-category/3" class="delete-button btn btn-sm btn-danger" style="float: none; margin: 5px;"><span class="ti-trash"></span></button></a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                                                                
-                                
-                                                            </tbody>
+                              <% }); %>
+                            <% }); %>
+                          </tbody>
                         </table>
-                    </div>
-                </div>
-                         
-
-                </div>
-                <div class="d-flex justify-content-right">
-                    
-                </div>
-            </div>
+                      </div>
+                      
+                      <nav>
+                        <ul class="pagination">
+                          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                            <a class="page-link" href="/admin/failed-orders?page=<%= currentPage - 1 %>" aria-label="Previous">
+                              <span aria-hidden="true">&lsaquo;</span>
+                            </a>
+                          </li>
+                          <% for(let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                              <a class="page-link" href="/admin/failed-orders?page=<%= i %>"><%= i %></a>
+                            </li>
+                          <% } %>
+                          <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                            <a class="page-link" href="/admin/failed-orderse?page=<%= currentPage + 1 %>" aria-label="Next">
+                              <span aria-hidden="true">&rsaquo;</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </nav>
+                      
+</div>
+</div>            </div>
         </div>
         <!-- End col -->
-      
+
     </div>
     <!-- End row -->
 </div>
-
-<div class="modal fade " id="create-modal" tabindex="-1" role="dialog" aria-labelledby="create-modal-label"   aria-hidden="true">
-    <div class="modal-dialog  " role="document">
-        <div class="modal-content ">
-             <form action="https://neritt.in/categories/store"  id="categ_form" class="" method="POST"  enctype="multipart/form-data">
-                <input type="hidden" name="_token" value="m4pnVcNZKVaXC46bfUBONcH1vZtKvr3eVrnkXrmP">             <div class="modal-header">
-                <h5 class="modal-title" id="create-modal-label">Create Coupon</h5>
-                <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                    <input type="hidden" name="id" id="categ_id" value="">
-                    <div class="form-group name">
-                        <label for="coupon" class="col-form-label">Coupon Code</label>
-                        <input type="text" class="form-control" placeholder="Enter Coupon Code" id="txtTitle" name="coupon_code" value="" />
-                        <span class="validate" id="title_err" style="display:none;color:red;"></span>
-                    </div>
-                    <div class="form-group name">
-                        <label for="discount" class="col-form-label">Discount</label>
-                        <input type="number" class="form-control" placeholder="Enter Discount" id="discount" name="discount" value=""/>
-                        <span class="validate" id="desc_err" style="display:none;color:red;"></span>
-                    </div>
-                    <div class="form-group name">
-                        <label for="expiry_date" class="col-form-label">Discount</label>
-                        <input type="date" class="form-control"  id="end_date" name="expiry_date" value=""/>
-                        <span class="validate" id="end_error" style="display:none;color:red;"></span>
-                    </div>
-                    <!-- <div class="form-group image">
-                        <label for="inHome" class="col-form-label">In Home</label></br> -->
-                        <!-- <label style="padding-left:180px;" for="class_type" class="col-form-label">Class Type</label></br> -->
-                        <!-- <input id="in_home" name="in_home" value="0" type="checkbox"/> -->
-                        <!-- <input style="margin-left:227px;" name="class_type" id="class_type" value="0" type="checkbox"/> -->
-                    <!-- </div> -->
-                    <!-- <div class="form-group image">
-                        <label for="file" class="col-form-label">Logo</label><br>
-                        <img src="" id="logo-view" width="150" height="150" alt="No Image Selected">
-                        <div class="custom-file">
-                          <input type="file" class="custom-file-input" id="logo_image" name="logo_image" />
-                          <label class="custom-file-label logo-image" for="customFile">Choose file</label>
-                          <span class="validate" id="logo_err" style="display:none;color:red;"></span>
-                        </div>
-                    </div> -->
-                    <!-- <div class="form-group image">
-                        <label for="file" class="col-form-label">Banner</label><br>
-                        <img src="" id="banner-view" width="150" height="150" alt="No Image Selected">
-                        <div class="custom-file">
-                          <input type="file" class="custom-file-input" id="banner_image" name="banner_image" />
-                          <label class="custom-file-label banner-image" for="customFile">Choose file</label>
-                          <span class="validate" id="banner_err" style="display:none;color:red;"></span>
-                          <label class="description text-info">*Note:The input should be image and less than 1MB size & no smaller than 100X50 px and ratio must be 2:1</label>
-                        </div>
-                    </div> -->
-            </div>
-            <div class="modal-footer">
-                <input type="hidden" id="old_logo" name="old_logo" value=""/>
-                <input type="hidden" id="old_banner" name="old_banner" value=""/>
-                <button type="button" class="closeModal btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="btnSubmit" class="btn btn-primary create-submit-btn">Save</button>
-            </div>
-             </form>
-        </div>
-    </div>
-
-         
 
 <!-- End Contentbar -->
     <!-- Start Footerbar -->
@@ -758,7 +617,7 @@ Coupon List
 
         <script src="https://neritt.in/assets/js/app.js"></script>
 
-        <script src="https://neritt.in/assets/admin/category/js/app.js" defer></script>
+        <script src="https://neritt.in/assets/admin/order/js/app.js" defer></script>
 
         <!-- Core JS -->
 

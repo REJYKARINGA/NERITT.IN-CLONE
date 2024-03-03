@@ -6,8 +6,12 @@ const miscellaneousController = require('../controller/user/miscellaneousControl
 const productController = require('../controller/user/productController');
 const schoolController = require('../controller/user/schoolController');
 const userProfileController = require('../controller/user/userProfileController');
+const exampleController = require('../controller/user/exampleController');
+
+router.get('/divide', exampleController.divide);
+const walletController = require('../controller/user/walletController');
 const Cart = require('../model/cartSchema');
-const multer = require('multer');
+const multer = require('multer'); 
 const path = require('path');
 
 const storage = multer.diskStorage({
@@ -41,15 +45,15 @@ router.post('/signup', authController.signupPost);
 router.post('/signupVerifyOtp', authController.signupVerifyOtp);
 router.post('/signResendOtp', authController.emailResendOtp);
 router.get('/logout', authController.logout);
-router.get('/forgotPage', authController.forgotPage);
+router.get('/forgotPage', authController.forgotPage); 
 router.get('/generate-otp', authController.getGenerateOTP);
 router.post('/reset-password', authController.resetPassword);
 router.post('/generate-otp', authController.generateOtp);
 router.post('/verify-otp', authController.forgotVerifyOtp);
 router.get('/reset-password', authController.forgotVerifyOtp);
 router.post('/resend-otp', authController.resendOtp);
-
-
+  
+     
 // Product Display and Management
 router.get('/', productController.neritt);
 router.get('/getCategory', productController.category);
@@ -61,16 +65,27 @@ router.get('/cart', productController.showCart);
 router.get('/add-to-cart/:productId', productController.addToCart);
 router.get('/update-cart-quantity/:productId', productController.updateCartItemQuantity);
 router.get('/checkout', productController.showCheckoutPage);
-router.get('/store_checkout', productController.showCheckoutPage);
+router.get('/store_checkout', productController.showCheckoutPage); 
 router.post('/store_checkout', productController.storeCheckout);
 router.post('/remove-from-cart/:productId', productController.removeFromCart);
 router.get('/wishlist', productController.wishlist);
+router.get('/wallet', productController.getWallet);
+router.get('/wishlist/add/:id', productController.addToWishlist);
+router.get('/wishlist/remove/:productId', productController.removeFromWishlist);
+ 
+// Assuming you have imported the necessary models and middleware
 
+router.post('/applyCoupon', productController.applyCoupon)
 
-// Order Management
+// Order Management  
 router.get('/orders', productController.getAllOrders);
 router.post('/orders/:orderId', productController.deleteOrderById);
 router.post('/cancel-order/:id', productController.cancelOrder);
+router.post('/return-order/:id', productController.returnOrder);
+// // router.post('/return-order/:id', productController.downloadInvoice);
+// // // Example route setup using Express.js
+// router.get('/download-invoice/:orderId',productController.downloadTabularInvoice);
+
 
 // School Registration
 router.get('/school-registration', schoolController.schoolRegister);
@@ -94,8 +109,11 @@ router.get("/account/wishlist", userProfileController.myWishlist);
 router.get("/account/award", userProfileController.myAccountPage); // Not Designed yet
 
 
+
 // Test Drive Management
 router.get("/test", miscellaneousController.testDrive);
+
+
 
 
 module.exports = router;

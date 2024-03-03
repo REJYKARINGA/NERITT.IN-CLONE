@@ -7,11 +7,24 @@ const Category = require('../../model/categorySchema');
 const Address = require('../../model/addressSchema');
 const Cart = require('../../model/cartSchema');
 const Order = require('../../model/orderSchema');
+const Wallet = require('../../model/walletSchema');
+const Wishlist = require('../../model/wishlistSchema');
+const Coupon = require('../../model/couponSchema');
+
+const { ObjectId } = require('mongoose').Types;
 const Swal = require('sweetalert2');
 const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer'); 
 const sizeOf = require('image-size'); 
 const orderId = require('../../public/js/orderId')
+const Razorpay = require('razorpay');
+const dotenv = require("dotenv");
+dotenv.config({ path:  './view/config.env'})
+const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
+const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
+
+console.log(razorpayKeyId, razorpayKeySecret,'Razorpay details')
+
 
 const isSquare = (width, height) => {
   return width === height;
@@ -22,41 +35,76 @@ const isLessThan1MP = (width, height) => {
   return megapixels < 1;
 };
 
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
+});
+
+
+
+
 const neritt = async (req, res) => {
-
-  const isUser = req.session.user;
-
-  if (req.session.user) {
-    const name = req.session.user.name;
-    const category = await Category.find();
-
-    const userId = req.session.user._id;
-
-    const cart = await Cart.findOne({ user: userId }).populate({
-      path: 'products.product',
-      model: 'productDetails',
-      select: 'title sales_cost gallery quantity stock_status'
-    });
-
+  try {
+    const isUser = req.session.user;
     let totalProduct = 0;
-    if (cart && cart.products) {
-      totalProduct = cart.products.length;
+    let walletBalance = 0; // Default wallet balance
+
+    if (req.session.user) {
+      const name = req.session.user.name;
+      const userId = req.session.user._id;
+
+      // Fetch user's wallet balance
+      const wallet = await Wallet.findOne({ user: userId });
+      if (wallet) {
+        walletBalance = wallet.balance;
+      }
+
+      const category = await Category.find();
+
+      const cart = await Cart.findOne({ user: userId }).populate({
+        path: 'products.product',
+        model: 'productDetails',
+        select: 'title sales_cost gallery quantity stock_status'
+      });
+
+      let totalProduct = 0;
+      if (cart && cart.products) {
+        totalProduct = cart.products.length;
+      }
+
+      
+      const school = await School.find({ blocked: false });
+
+      res.render('user/landingPage', { 
+        msg1: { name }, 
+        isUser, 
+        cart, 
+        category, 
+        school, 
+        totalProduct, 
+        walletBalance // Pass wallet balance to the view
+      });
+
+    } else {
+      const category = await Category.find();
+      const school = await School.find({ blocked: false });
+      res.render('user/landingPage', { 
+        msg1: { name: 'Login' }, 
+        category, 
+        school, 
+        totalProduct, 
+        isUser, 
+        walletBalance // Pass wallet balance to the view
+      });
     }
-    
-
-    const school = await School.find({ blocked: false });
-
-    res.render('user/landingPage', { msg1: { name }, isUser, cart, category, school, totalProduct });
-
-  } else {
-    const category = await Category.find();
-
-    const school = await School.find({ blocked: false });
-    let totalProduct = 0
-    res.render('user/landingPage', { msg1: { name: 'Login' }, category, school, totalProduct, isUser });
-
+  } catch (error) {
+    console.error('Error fetching wallet balance:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+
 
 const category = async (req, res) => {
   const isLogin = await User.findOne({ email: req.session.email, blocked: false })
@@ -64,24 +112,26 @@ const category = async (req, res) => {
 
     const isUser = req.session.user;
 
+    let walletBalance = 0;
+  
     if (req.session.user) {
 
-
+ 
       const name = req.session.user.name;
       const category = await Category.find();
-
+ 
 
       const school = await School.find({ blocked: false });
 
+ 
+      res.render('user/allCategory', {  msg1: { name }, walletBalance ,isUser, category, school });
 
-      res.render('user/allCategory', { msg1: { name }, isUser, category, school });
-
-    } else {
+    } else { 
       const category = await Category.find();
 
       const school = await School.find({ blocked: false });
 
-      res.render('user/allCategory', { msg1: { name: 'Login' }, isUser, category, school, });
+      res.render('user/allCategory', { msg1: { name: 'Login' }, walletBalance , isUser, category, school, });
 
     }
   } else {
@@ -90,7 +140,8 @@ const category = async (req, res) => {
 
     const school = await School.find({ blocked: false });
     isUser = ''
-    res.render('user/allCategory', { msg1: { name: 'Login' }, category, school, isUser });
+    let walletBalance = 0
+    res.render('user/allCategory', { msg1: { name: 'Login' }, walletBalance , category, school, isUser });
   }
 
 }
@@ -98,13 +149,15 @@ const category = async (req, res) => {
 const getSchoolProduct = async (req, res) => {
   const isUser = req.session.user;
 
+    let walletBalance = 0;
+
   if (req.session.user) {
     const name = req.session.user.name;
     const category = await Category.find();
     const product = await Product.find({ blocked: false });
     const school = await School.find({ blocked: false });
 
-    res.render('user/schoolProducts', { msg1: { name: 'Login' }, category, school, product });
+    res.render('user/schoolProducts', { msg1: { name: 'Login' }, walletBalance , category, school, product });
 
 
   }
@@ -114,29 +167,51 @@ const getSchoolProduct = async (req, res) => {
     const school = await School.find({ blocked: false });
 
 
-    res.render('user/schoolProducts', { msg1: { name: 'Login' }, category, school, product });
+    res.render('user/schoolProducts', { msg1: { name: 'Login' }, walletBalance , category, school, product });
   }
 }
 
 const displayProducts = async (req, res) => {
   const isUser = req.session.user;
 
+    let walletBalance = 0;
+
   if (req.session.user) {
     const name = req.session.user.name;
 
     const schoolId = req.query.sch;
+    const categoryId = req.query.value || '';
 
-    console.log(schoolId, "schoolId ");
+    console.log(schoolId, "schoolId ", categoryId, 'categoryId');
 
-
-    const products = await Product.find({ school: { $in: [schoolId] }, blocked: false })
-      .populate('school') 
-      .exec();
+    let productsQuery = { blocked: false };
+    if (schoolId) {
+      productsQuery.school = schoolId;
+    }
+    if (categoryId) {
+      productsQuery.category = categoryId || '';  
+    }
+console.log(productsQuery,'productsQuery user check')
+    const products = await Product.find(productsQuery)
+    .populate({
+      path: 'school',
+      model: 'School', 
+      select: 'school_name school_logo school_address'
+    })  
+    .populate('category')
+    .exec(); 
+  const schoolData = await School.findById(schoolId)
 
     const category = await Category.find({});
     const school = await School.find({ blocked: false });
 
-    const userId = req.session.user._id;
+    const userId = req.session.user._id; 
+
+      // Fetch user's wallet balance
+      const wallet = await Wallet.findOne({ user: userId });
+      if (wallet) {
+        walletBalance = wallet.balance;
+      }
 
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
@@ -150,28 +225,46 @@ const displayProducts = async (req, res) => {
     }
     console.log(totalProduct, "totalProduct")
 
-    res.render('user/schoolProducts', { msg1: { name }, isUser, cart, totalProduct, products, school, category });
+    res.render('user/schoolProducts', {  msg1: { name }, walletBalance ,isUser, cart, totalProduct, products, school, category, schoolData });
 
 
   }
   else {
     const schoolId = req.query.sch;
-    console.log(schoolId, "schoolId ");
+    const categoryId = req.query.value || '';
 
-    const products = await Product.find({ school: { $in: [schoolId] }, blocked: false })
-      .populate('school').populate('category') 
-      .exec();
-    console.log(products)
+    console.log(schoolId, "schoolId ", categoryId, 'categoryId');
+
+    let productsQuery = { blocked: false };
+    if (schoolId) {
+      productsQuery.school = schoolId;
+    }
+    if (categoryId) {
+      productsQuery.category = categoryId;
+    }
+console.log(productsQuery,'productsQuery check')
+    const products = await Product.find(productsQuery)
+    .populate({
+      path: 'school',
+      model: 'School',
+      select: 'school_name school_logo school_address'
+    })
+    .populate('category')
+    .exec();
+  const schoolData = await School.findById(schoolId)
+  // console.log(schoolData.school_name,'schoolData')
     const category = await Category.find({});
     const school = await School.find({ blocked: false });
 
 
-    res.render('user/schoolProducts', { msg1: { name: 'Login' }, isUser, products, school, category });
+    res.render('user/schoolProducts', { msg1: { name: 'Login' }, walletBalance , isUser, products, school, category,schoolData });
   }
 }
 
 const showProduct = async (req, res) => {
   const isUser = req.session.user;
+
+    let walletBalance = 0;
 
   if (req.session.user) {
     const name = req.session.user.name;
@@ -209,6 +302,12 @@ const showProduct = async (req, res) => {
 
     const userId = req.session.user._id;
 
+      // Fetch user's wallet balance
+      const wallet = await Wallet.findOne({ user: userId });
+      if (wallet) {
+        walletBalance = wallet.balance;
+      }
+
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       model: 'productDetails',
@@ -221,7 +320,7 @@ const showProduct = async (req, res) => {
     }
     console.log(totalProduct, "totalProduct")
 
-    res.render('user/product', { msg1: { name }, isUser, cart, totalProduct, products, school, category, productsAll });
+    res.render('user/product', {  msg1: { name }, walletBalance ,isUser, cart, totalProduct, products, school, category, productsAll });
 
 
   }
@@ -246,7 +345,7 @@ const showProduct = async (req, res) => {
       const category = await Category.find({});
       const school = await School.find({ blocked: false });
 
-      res.render('user/product', { msg1: { name: 'Login' }, isUser, products, school, category, productsAll });
+      res.render('user/product', { msg1: { name: 'Login' }, walletBalance , isUser, products, school, category, productsAll });
     } catch (error) {
       console.error(error);
       res.status(500).send(error.message);
@@ -256,9 +355,191 @@ const showProduct = async (req, res) => {
   }
 }
 
+const addToWishlist = async (req, res) => {
+  try {
+    if (!req.session.user) {
+      // User not logged in
+      return res.redirect('/login');
+    }
+
+    const userId = req.session.user._id;
+    const productId = req.params.id;
+
+    // Find the product to be added to the wishlist
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      // Product not found
+      return res.status(404).send('Product not found');
+    }
+
+    // Check if the user already has a wishlist
+    let wishlist = await Wishlist.findOne({ user: userId });
+
+    // If the user doesn't have a wishlist, create a new one
+    if (!wishlist) {
+      wishlist = new Wishlist({
+        user: userId,
+        products: []
+      });
+    }
+
+    // Check if the product is already in the wishlist
+    const existingProductIndex = wishlist.products.findIndex(
+      item => item.product.toString() === productId
+    );
+
+    if (existingProductIndex !== -1) {
+      return res.redirect(`/view-product/${productId}?alreadyInWishlist=true`);
+    }
+console.log(product.category)
+    // Add the product details to the wishlist
+    wishlist.products.push({ 
+      product: productId,
+      name: product.title,
+      category:product.category,
+      price: product.sales_cost,
+      image: product.gallery.length > 0 ? product.gallery[0] : null
+    });
+
+    // Save the updated wishlist
+    await wishlist.save();
+
+    return res.redirect(`/view-product/${productId}?addedInWishlist=true`);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
+  }
+};
+
+// Controller function to remove a product from the wishlist
+const removeFromWishlist = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    const productId = req.params.productId;
+
+    // Find the user's wishlist
+    const wishlist = await Wishlist.findOne({ user: userId });
+
+    if (!wishlist) {
+      // Wishlist not found
+      return res.status(404).send('Wishlist not found');
+    }
+
+    // Remove the product from the wishlist
+    wishlist.products = wishlist.products.filter(item => item.product.toString() !== productId);
+    await wishlist.save();
+
+    // Redirect back to the wishlist page or any other page as needed
+    res.redirect('/wishlist');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
+
 const showCheckoutPage = async (req, res) => {
   try {
     const isUser = req.session.user;
+
+    let walletBalance = 0;
+    const ordId = orderId();
+    console.log(ordId);
+
+    if (!req.session.user) {
+      return res.redirect('/login');
+    }
+    const userId = req.session.user._id;
+
+    // Fetch user's wallet balance
+    const wallet = await Wallet.findOne({ user: userId });
+    if (wallet) {
+      walletBalance = wallet.balance;
+    }
+
+    const addresses = await Address.find({ userId: req.session.user._id });
+
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: 'products.product',
+      model: 'productDetails',
+      select: 'title sales_cost quantity category'
+    });
+
+    if (!cart || (cart.products && cart.products.length === 0)) {
+      return res.redirect('/cart');
+    }
+
+    let totalAmount = 0;
+    let totalCGST = 0;
+    let totalSGST = 0;
+    let totaldeliveryCost = 0;
+    let finalAmount = 0;
+
+    if (cart && cart.products) {
+      for (const product of cart.products) {
+        const products = await Product.find({ _id: product.product.id, blocked: false });
+        const cgstValue = products[0].cgst;
+        const sgstValue = products[0].sgst;
+        const deliveryCharge = products[0].delivery_charge;
+
+        totalAmount += product.price * product.quantity;
+        totalCGST += (cgstValue / 100) * product.price * product.quantity;
+        totalSGST += (sgstValue / 100) * product.price * product.quantity;
+        totaldeliveryCost += deliveryCharge * product.quantity;
+        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost;
+        console.log(totaldeliveryCost, 'totalCGST');
+
+        // Add category names to each product
+        const categories = products[0].category.map(cat => cat.category_name);
+        product.category = categories;
+      }
+    }
+    const name = req.session.user.name;
+    const school = await School.find({ blocked: false });
+    let totalProduct = 0;
+    if (cart && cart.products) {
+      totalProduct = cart.products.length;
+    }
+   let  discount = 0
+
+   
+        // Fetch all coupons from the database
+        const coupons = await Coupon.find();
+
+        // res.render('admin/couponManagement', { coupons }); // Pass coupons to the EJS template
+// console.log(product.category,'product.category')
+    res.render('user/checkout', {
+      cart,
+      addresses,
+      totalAmount,
+      totalCGST,
+      totalSGST,
+      totaldeliveryCost,
+      msg1: { name },
+      walletBalance,
+      school,
+      isUser,
+      totalProduct,
+      finalAmount,
+      ordId, 
+      discount,
+      coupons
+    });
+  } catch (error) {
+    console.error('Error showing checkout page:', error);
+    res.redirect('/');
+  }
+};
+
+
+const applyCoupon =  async (req, res) => {
+  try {
+    const isUser = req.session.user;
+
+    let walletBalance = 0;
     const ordId = orderId();
     console.log(ordId);
 
@@ -267,6 +548,12 @@ const showCheckoutPage = async (req, res) => {
       return res.redirect('/login');
     }
     const userId = req.session.user._id;
+
+      // Fetch user's wallet balance
+      const wallet = await Wallet.findOne({ user: userId });
+      if (wallet) {
+        walletBalance = wallet.balance;
+      }
 
     
     const addresses = await Address.find({ userId: req.session.user._id });
@@ -281,45 +568,97 @@ const showCheckoutPage = async (req, res) => {
       if (!cart || (cart.products && cart.products.length === 0)) {
         return res.redirect('/cart');
       } 
-  
-   
-    let totalAmount = 0;
-    let totalCGST = 0;
-    let totalSGST = 0;
-    let totaldeliveryCost = 0;
-    let finalAmount = 0;
 
-    if (cart && cart.products) {
-      for (const product of cart.products) {
-       
-        const products = await Product.find({ _id: product.product.id, blocked: false })
-        const cgstValue = products[0].cgst;
-        const sgstValue = products[0].sgst;
-        const deliveryCharge = products[0].delivery_charge;
+      const { couponCode } = req.body;
+        console.log(couponCode,'couponCode is this')
 
-        totalAmount += product.price * product.quantity;
-        totalCGST += (cgstValue / 100) * product.price * product.quantity; 
-        totalSGST += (sgstValue / 100) * product.price * product.quantity; 
-        totaldeliveryCost += deliveryCharge * product.quantity; 
-        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost
-        console.log(totaldeliveryCost, 'totalCGST')
-      }
-    }
+       // Validate the coupon
+const coupon = await Coupon.findOne({ code: couponCode });
+
+console.log(coupon,'coupon is this ')
+if (!coupon) {
+  return res.status(400).json({ success: false, message: 'Invalid coupon code' });
+}
+
+
+
+// Check if the user has already used this coupon
+if (coupon.usedByUsers.includes(userId)) {
+  console.log("User has already used this coupon");
+  return res.status(200).json({ success: false, alreadyUsed: true, message: 'You have already used this coupon' });
+}
+
+
+// Update usedByUsers array with the current user
+coupon.usedByUsers.push(userId);
+
+// Check if coupon has exceeded maximum uses
+if (coupon.usedCount >= coupon.maxUses) {
+console.log("Coupon has reached maximum usage limit")
+  return res.status(400).json({ success: false, message: 'Coupon has reached maximum usage limit' });
+}
+
+// Check if coupon is expired
+const currentDate = new Date();
+if (currentDate.getTime() < coupon.startDate.getTime() || currentDate.getTime() > coupon.endDate.getTime()) {
+console.log(currentDate.getTime(), 'Coupon is expired')
+return res.status(400).json({ success: false, message: 'Coupon is expired' });
+}
+
+let totalAmount = 0;
+let totalCGST = 0;
+let totalSGST = 0;
+let totaldeliveryCost = 0;
+let finalAmount = 0;
+
+if (cart && cart.products) {
+for (const product of cart.products) {
+ 
+  const products = await Product.find({ _id: product.product.id, blocked: false })
+  const cgstValue = products[0].cgst;
+  const sgstValue = products[0].sgst;
+  const deliveryCharge = products[0].delivery_charge;
+
+  totalAmount += product.price * product.quantity;
+  totalCGST += (cgstValue / 100) * product.price * product.quantity; 
+  totalSGST += (sgstValue / 100) * product.price * product.quantity; 
+  totaldeliveryCost += deliveryCharge * product.quantity; 
+  finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost
+  console.log(totaldeliveryCost, 'totalCGST')
+}
+}
+
+// Calculate discount based on the coupon type
+let discount = 0;
+if (coupon.discountType === 'percentage') {
+  discount = (coupon.discountValue / 100) * totalAmount;
+} else if (coupon.discountType === 'fixedAmount') {
+  discount = coupon.discountValue;
+}
+
+// Update finalAmount with the discount applied by the coupon
+let discountedTotal = finalAmount - discount;
+
+// Check if discounted total is less than minimum amount
+if (discountedTotal < coupon.minimumAmount) {
+  discountedTotal = coupon.minimumAmount;
+}
+console.log(discount, discountedTotal,'discountedTotal minimum amount')
+// Update usedCount of the coupon
+coupon.usedCount += 1;
+
+await coupon.save(); 
+     console.log(discountedTotal,'this is my first discountedTotal')
     const name = req.session.user.name;
     const school = await School.find({ blocked: false });
     let totalProduct = 0;
     if (cart && cart.products) {
       totalProduct = cart.products.length;
     }
-
-    res.render('user/checkout', {
-      cart,
-      addresses,
-      totalAmount,
-      totalCGST, totalSGST,
-      totaldeliveryCost, msg1: { name }, school, isUser, totalProduct, finalAmount, ordId
-
-    });
+    
+    discountedTotal = discountedTotal -1;
+    res.status(200).json({ success: true, updatedTotalAmount: discountedTotal, discount});
+ 
   } catch (error) {
     console.error('Error showing checkout page:', error);
     res.redirect('/'); 
@@ -329,20 +668,30 @@ const showCheckoutPage = async (req, res) => {
 const storeCheckout = async (req, res) => {
   try {
     const isUser = req.session.user;
+    let walletBalance = 0;
+    const ordId = orderId();
+    console.log(ordId);
 
     if (!req.session.user) {
       return res.redirect('/login');
     }
+    const userId = req.session.user._id;
+
+    // Fetch user's wallet balance
+    const wallet = await Wallet.findOne({ user: userId });
+    if (wallet) {
+      walletBalance = wallet.balance;
+    }
+
+    console.log(walletBalance, 'walletBalance walletBalance')
     const name = req.session.user.name;
-    
     const currentUser = req.session.user;
     console.log(currentUser, "huiii");
 
-    const userId = req.session.user.id;
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       model: 'productDetails',
-      select: 'title sales_cost quantity' 
+      select: 'title sales_cost quantity category'
     });
 
     let totalProduct = 0;
@@ -350,9 +699,10 @@ const storeCheckout = async (req, res) => {
       totalProduct = cart.products.length;
     }
     const school = await School.find({ blocked: false });
-   
-    const { fatherName, studentName, email, phone, district, addressId, address, landmark, pincode, homeOrOffice, products, finalAmount, deliveryType, order_id } = req.body;
-    const paymentTypeValue = req.body.payment_type; 
+
+    const { fatherName, studentName, email, phone, district, addressId, address, landmark, pincode, homeOrOffice, products, finalAmount, deliveryType, order_id, category, discount } = req.body;
+    console.log(discount, 'discountdiscountdiscount')
+    const paymentTypeValue = req.body.payment_type;
     let paymentType;
     if (paymentTypeValue === '1') {
       paymentType = 'Cash on Delivery';
@@ -361,18 +711,31 @@ const storeCheckout = async (req, res) => {
     } else if (paymentTypeValue === '3') {
       paymentType = 'Wallet';
     } else {
-      
+
     }
 
-    
+    // Check if the order amount is less than Rs 1000 and payment type is COD
+    if (finalAmount < 1000 && paymentType === 'Cash on Delivery') {
+      // Send a flag to indicate that COD is not available for orders less than Rs 1000
+      return res.redirect('/checkout?lessThanLimit=true');
+    }
+
+    if (paymentType === 'Wallet' && (!wallet || wallet.balance < finalAmount)) {
+      // Display SweetAlert indicating insufficient wallet balance
+      return res.redirect('/checkout?outOfStock=true');
+    }
+
     const isExistingUser = await Cart.findOne({ user: currentUser._id }).populate('products');
     console.log(isExistingUser.products, "hello");
 
     const order = new Order({
       user: req.session.user._id,
       products: isExistingUser.products.map(prod => prod),
-      totalAmount: finalAmount, 
-      address: addressId, 
+      totalAmount: finalAmount,
+      discountedAmount: discount,
+      OfferedAmount: 0,
+      category,
+      address: addressId,
       billingDetails: {
         fatherName,
         studentName,
@@ -387,30 +750,69 @@ const storeCheckout = async (req, res) => {
       payment_type: paymentType,
       orderId: order_id,
       deliveryType,
-      status: 'pending' 
+      status: 'pending'
     });
-    const ordId = order_id;
+
     console.log(ordId, 'ordId');
+    await order.save();
+
+    // Deduct the amount from the wallet balance if payment type is 'Wallet'
+    if (paymentType === 'Wallet') {
+      wallet.balance -= finalAmount;
+      await wallet.save();
+      walletBalance = wallet.balance;
+    }
+    // Update product quantities and clear cart
+    for (const product of isExistingUser.products) {
+      await Product.findByIdAndUpdate(product.product._id, { $inc: { quantity: -product.quantity } });
+    }
+    const isCartExist = await Cart.findOneAndUpdate({ user: currentUser._id }, { products: [] });
+    console.log("isexist", isCartExist);
+
+
+    const isPaymentSuccessful = true; // Set it to true for testing
+
+    if (isPaymentSuccessful) {
+      // Payment successful, update order status
+      order.status = 'Accepted'; // Or 'Completed', depending on your business logic
+    } else {
+      // Payment failed, update order status
+      order.status = 'Failed';
+    }
 
     await order.save();
 
-     for (const product of isExistingUser.products) {
-      await Product.findByIdAndUpdate(product.product._id, { $inc: { quantity: -product.quantity } });
-    }
-
-   const isCartExist = await Cart.findOneAndUpdate({ user: currentUser._id }, { products: [] });
-    console.log("isexist", isCartExist);
-
-   res.render('user/myOrderSuccess', { user: req.session.user, ordId, msg1: { name }, isUser, cart, totalProduct, school, userId });
+    // Send necessary data to the template
+    res.render('user/myOrderSuccess', { 
+      user: req.session.user, 
+      ordId, 
+      msg1: { name }, 
+      walletBalance, 
+      isUser, 
+      cart, 
+      totalProduct, 
+      school, 
+      userId, 
+      lessThanLimit: false,  // Send a flag to indicate that COD is available for this order
+      isPaymentSuccessful 
+    });
   } catch (error) {
     console.error('Error storing checkout details:', error.message);
     res.status(500).send('Internal server error');
   }
 };
 
+
+
+
+
+
+
 const buyProduct = async (req, res) => {
   try {
     const isUser = req.session.user;
+
+    let walletBalance = 0;
     const ordId = orderId()
 
     console.log(ordId, "Heloo lo");
@@ -430,6 +832,12 @@ const buyProduct = async (req, res) => {
       const addresses = await Address.find({ userId: req.session.user._id });
       const userId = req.session.user._id;
 
+      // Fetch user's wallet balance
+      const wallet = await Wallet.findOne({ user: userId });
+      if (wallet) {
+        walletBalance = wallet.balance;
+      }
+
       const cart = await Cart.findOne({ user: userId }).populate({
         path: 'products.product',
         model: 'productDetails',
@@ -442,7 +850,7 @@ const buyProduct = async (req, res) => {
       }
       console.log(totalProduct, "totalProduct")
       console.log(products, "hello products")
-      res.render('user/productBuy', { user, addresses, products, msg1: { name }, isUser, ordId, cart, totalProduct, school, category });
+      res.render('user/productBuy', { user, addresses, products,  msg1: { name }, walletBalance ,isUser, ordId, cart, totalProduct, school, category });
     } else {
       console.log("Enter to login page");
       res.redirect('/login');
@@ -455,72 +863,315 @@ const buyProduct = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const isUser=req.session.user;
+    const isUser = req.session.user;
+    let totalProduct = 0;
+    let walletBalance = 0;
 
     if (!req.session.user) {
+      res.redirect('/login');
+      return; // Return here to prevent further execution of code
+    }
 
-      res.redirect('/login')}
-      
-      const name = req.session.user.name;
-      const user = await User.findById(req.session.user._id);
-const orders = await Order.find({ user: req.session.user._id })
-    .populate('user') 
-    .populate('products.product') 
-    .populate('address'); 
-        console.log(orders);
-        const school = await School.find({ blocked: false });
-   
-      res.render('user/myOrders1',{user:req.session.user._id,orders,msg1:{name},user,school, isUser})
-  } catch (error) {
-      console.log(error.message)
-      res.render('/login')
+    const userId = req.session.user._id;
+
+    // Fetch user's wallet balance
+    const wallet = await Wallet.findOne({ user: userId });
+    if (wallet) {
+      walletBalance = wallet.balance;
+    }
+
+    const name = req.session.user.name;
+    const user = await User.findById(req.session.user._id);
+
+    // Pagination logic
+    const pageSize = 5; // Number of orders per page
+    const currentPage = parseInt(req.query.page) || 1;
+    const skip = (currentPage - 1) * pageSize;
+
+    const ordersPromise = Order.find({ user: userId })
+      .populate('user')
+      .populate('products.product')
+      .populate('address')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize)
+      .lean(); // converting Mongoose document to plain JS object
+
+    const [orders, count] = await Promise.all([
+      ordersPromise,
+      Order.countDocuments({ user: userId }) // Count total number of orders
+    ]);
+
+    const school = await School.find({ blocked: false });
+
+    res.render('user/myOrders1', {
+      user: userId,
+      orders,
+      msg1: { name },
+      user,
+      school,
+      isUser,
+      currentPage,
+      totalPages: Math.ceil(count / pageSize),
+      totalProduct,
+      walletBalance
+    });
+  } catch (error) { 
+    console.log(error.message);
+    res.redirect('/login');
   }
 };
+ 
 
 const cancelOrder = async (req, res) => {
   try {
+      if (!req.session.user) {
+          res.redirect('/login');
+          return;
+      }
 
-    
-    if (!req.session.user) {
-
-      res.redirect('/login')}
       const orderId = req.params.id;
-      console.log(orderId,'orderzId')
-      
-      // Find the order by its ID and update its status to 'cancelled'
-      const updatedOrder = await Order.findOneAndUpdate(
-          { _id: orderId },
-          { $set: { status: 'cancelled' } },
-          { new: true }
-      );
 
-       // Check if the order exists
-       if (!updatedOrder) {
-        return res.status(404).json({ message: 'Order not found' });
-    }
+      // Find the order by its ID
+      const order = await Order.findById(orderId).populate('products.product');
+      if (!order) {
+          return res.status(404).json({ message: 'Order not found' });
+      }
 
-    // Retrieve the product details from the cancelled order
-    const products = updatedOrder.products;
+      const order_Id = order.orderId
+      console.log(order_Id,'order.orderId')
+      // Check if the payment type is "Online Payment"
+      if (order.payment_type === 'Online Payment' || order.payment_type === 'Wallet') {
+          // Retrieve the user's wallet
+          let wallet = await Wallet.findOne({ user: req.session.user._id });
 
-    // Iterate over each product in the cancelled order
-    for (const product of products) {
-        const productId = product.product; // Extract productId from the product
-        const productQuantity = product.quantity; // Extract product quantity
+          // If the wallet doesn't exist, create a new one
+          if (!wallet) {
+              wallet = new Wallet({
+                  user: req.session.user._id,
+                  balance: order.totalAmount
+              });
+          } else {
+              // Increment the wallet balance by the order's totalAmount
+              wallet.balance += order.totalAmount;
+          }
 
-        // Find the product by its ID and increment the quantity
-        await Product.findByIdAndUpdate(
-            productId,
-            { $inc: { quantity: productQuantity } },
-            { new: true }
-        );
-    }
-      console.log(updatedOrder,'updatedOrder')
-      res.redirect('/orders'); // Redirect to my orders page after cancelling the order
-    } catch (error) {
-    console.error('Error cancelling order:', error);
-    res.status(500).json({ message: 'Internal server error' });
+          // Add the order details to the wallet history
+          wallet.walletHistory.push({
+              process: 'Order cancellation',
+              orderId: order_Id,
+              description: 'Order cancelled',
+              amount: order.totalAmount,
+              balance: wallet.balance
+          });
+
+          // Save the updated wallet
+          await wallet.save();
+      }
+
+      // Update the order status to "cancelled"
+      order.status = 'cancelled';
+      await order.save();
+
+      // Restore product quantities
+      for (const item of order.products) {
+          const product = item.product;
+          product.quantity += item.quantity; // Increment product quantity by the cancelled order quantity
+          await product.save();
+      }
+
+      res.redirect('back'); // Redirect to my orders page after cancelling the order
+  } catch (error) {
+      console.error('Error cancelling order:', error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+const returnOrder = async (req, res) => {
+  try {
+      if (!req.session.user) {
+          res.redirect('/login');
+          return;
+      }
+
+      const orderId = req.params.id;
+
+      // Find the order by its ID
+      const order = await Order.findById(orderId).populate('products.product');
+      if (!order) {
+          return res.status(404).json({ message: 'Order not found' });
+      }
+
+      const order_Id = order.orderId
+      console.log(order_Id,'order.orderId')
+
+      // Check if the payment type is "Online Payment"
+      if (order.payment_type === 'Online Payment' || order.payment_type === 'Wallet' || order.payment_type === 'Cash on Delivery') {
+          // Retrieve the user's wallet
+          let wallet = await Wallet.findOne({ user: req.session.user._id });
+
+          // If the wallet doesn't exist, create a new one
+          if (!wallet) {
+              wallet = new Wallet({
+                  user: req.session.user._id,
+                  balance: order.totalAmount
+              });
+          } else {
+              // Increment the wallet balance by the order's totalAmount
+              wallet.balance += order.totalAmount;
+          }
+
+          // Add the order details to the wallet history
+          wallet.walletHistory.push({
+              process: 'Order Returned',
+              orderId: order_Id,
+              description: 'Order returned',
+              amount: order.totalAmount,
+              balance: wallet.balance
+          });
+
+          // Save the updated wallet
+          await wallet.save();
+      }
+
+      // Update the order status to "Returned"
+      order.status = 'Returned';
+      await order.save();
+
+      // Restore product quantities
+      for (const item of order.products) {
+          const product = item.product;
+          product.quantity += item.quantity; // Increment product quantity by the Returned order quantity
+          await product.save();
+      }
+
+      res.redirect('back'); // Redirect to my orders page after Returning the order
+  } catch (error) {
+      console.error('Error Returning  order:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+// const cancelOrder = async (req, res) => {
+//   try {
+//       if (!req.session.user) {
+//           res.redirect('/login');
+//           return;
+//       }
+
+//       const orderId = req.params.id;
+
+//       // Find the order by its ID
+//       const order = await Order.findById(orderId).populate('products.product');
+//       if (!order) {
+//           return res.status(404).json({ message: 'Order not found' });
+//       }
+
+//       // Check if the payment type is "Online Payment"
+//       if (order.payment_type === 'Online Payment' || order.payment_type === 'Wallet') {
+//           // Retrieve the user's wallet
+//           let wallet = await Wallet.findOne({ user: req.session.user._id });
+
+//           // If the wallet doesn't exist, create a new one
+//           if (!wallet) {
+//               wallet = new Wallet({
+//                   user: req.session.user._id,
+//                   balance: order.totalAmount
+//               });
+//           } else {
+//               // Increment the wallet balance by the order's totalAmount
+//               wallet.balance += order.totalAmount;
+//           }
+
+//           // Add the order amount to the wallet history
+//           wallet.walletHistory.push({
+//               process: 'Order cancellation',
+//               amount: order.totalAmount
+//           });
+
+//           // Save the updated wallet
+//           await wallet.save();
+//       }
+
+//       // Update the order status to "cancelled"
+//       order.status = 'cancelled';
+//       await order.save();
+
+//       // Restore product quantities
+//       for (const item of order.products) {
+//           const product = item.product;
+//           product.quantity += item.quantity; // Increment product quantity by the cancelled order quantity
+//           await product.save();
+//       }
+
+//       res.redirect('/orders'); // Redirect to my orders page after cancelling the order
+//   } catch (error) {
+//       console.error('Error cancelling order:', error);
+//       res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
+
+
+// const returnOrder = async (req, res) => {
+//   try {
+//       if (!req.session.user) {
+//           res.redirect('/login');
+//           return;
+//       }
+
+//       const orderId = req.params.id;
+
+//       // Find the order by its ID
+//       const order = await Order.findById(orderId).populate('products.product');
+//       if (!order) {
+//           return res.status(404).json({ message: 'Order not found' });
+//       }
+
+//       // Check if the payment type is "Online Payment"
+//       if (order.payment_type === 'Online Payment' || order.payment_type === 'Wallet') {
+//           // Retrieve the user's wallet
+//           let wallet = await Wallet.findOne({ user: req.session.user._id });
+
+//           // If the wallet doesn't exist, create a new one
+//           if (!wallet) {
+//               wallet = new Wallet({
+//                   user: req.session.user._id,
+//                   balance: order.totalAmount
+//               });
+//           } else {
+//               // Increment the wallet balance by the order's totalAmount
+//               wallet.balance += order.totalAmount;
+//           }
+
+//           // Add the order amount to the wallet history
+//           wallet.walletHistory.push({
+//               process: 'Order Returned',
+//               amount: order.totalAmount
+//           });
+
+//           // Save the updated wallet
+//           await wallet.save();
+//       }
+
+//       // Update the order status to "Returned"
+//       order.status = 'Returned';
+//       await order.save();
+
+//       // Restore product quantities
+//       for (const item of order.products) {
+//           const product = item.product;
+//           product.quantity += item.quantity; // Increment product quantity by the Returned order quantity
+//           await product.save();
+//       }
+
+//       res.redirect('/orders'); // Redirect to my orders page after Returning the order
+//   } catch (error) {
+//       console.error('Error Returning  order:', error);
+//       res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
+
 
 const deleteOrderById = async (req, res) => {
   try {
@@ -534,12 +1185,15 @@ const deleteOrderById = async (req, res) => {
 };
  
 const wishlist = async (req, res) => {
-  const isUser = req.session.user;
+  try {
+    const isUser = req.session.user;
+    let walletBalance = 0;
 
-  if (req.session.user) {
+    if (!isUser) {
+      return res.redirect('/login');
+    }
+
     const name = req.session.user.name;
-
-    const school = await School.find({ blocked: false });
     const userId = req.session.user._id;
 
     const cart = await Cart.findOne({ user: userId }).populate({
@@ -548,69 +1202,65 @@ const wishlist = async (req, res) => {
       select: 'title sales_cost gallery quantity stock_status'
     });
 
-    let totalProduct = 0;
-    if (cart && cart.products) {
-      totalProduct = cart.products.length;
-    }
-    console.log(totalProduct, "totalProduct")
-    res.render('user/wishlist', { msg1: { name }, isUser, cart, totalProduct, school })
-
-  }
-  else {
+    const category = await Category.find({});
     const school = await School.find({ blocked: false });
 
-    res.render('user/login', { msg1: { name: 'Login' }, school })
-  }
-}
-
-const addToCart = async (req, res) => {
-  try {
-    if (!req.session.user) {
-      console.log("Unauthorized login");
-      return res.redirect('/login');
+    // Fetch user's wallet balance
+    const wallet = await Wallet.findOne({ user: userId });
+    if (wallet) {
+      walletBalance = wallet.balance;
     }
 
-    const productId = req.params.productId;
-    const userId = req.session.user._id;
+    let totalProduct = 0;
+    let paginatedProducts = [];
 
-    
-    let cart = await Cart.findOne({ user: userId }).populate({
-      path: 'products.product',
-      model: 'productDetails',
-      select: 'title sales_cost gallery'
+    if (cart && cart.products) {
+      totalProduct = cart.products.length;
+
+      // Pagination variables
+      const page = parseInt(req.query.page) || 1;
+      const limit = 10;
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+
+      // Get paginated products
+      paginatedProducts = cart.products.slice(startIndex, endIndex);
+    }
+
+    // Fetch user's wishlist
+    const userWishlist = await Wishlist.findOne({ user: userId }).populate('products.product');
+
+    res.render('user/wishlist', {
+      msg1: { name },
+      walletBalance,
+      isUser,
+      cart, 
+      category, 
+      school, 
+      totalProduct, 
+      wishlist: userWishlist,
+      paginatedProducts,
     });
-
-    if (!cart) {
-      
-      cart = new Cart({ user: userId, products: [] });
-    }
-    req.session.cart = cart;
-    const product = await Product.findById(productId);
-
-     const existingProduct = cart.products.find(item => item.product.equals(productId));
-    if (existingProduct) {
-      return res.redirect(`/view-product/${productId}?alreadyInCart=true`);
-    }
-
-   cart.products.push({
-      product: product._id,
-      name: product.title,
-      price: product.sales_cost,
-      image: product.gallery.length > 0 ? product.gallery[0] : null
-    });
-
-    await cart.save();
-    console.log("addedSuccessfully")
-    return res.redirect(`/view-product/${productId}?addedSuccessfully=true`);
   } catch (error) {
-    res.redirect('/')
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
 };
+
+ 
+
+
+ 
+
+ 
+
 
 const showCart = async (req, res) => {
   try {
     const isUser = req.session.user;
 
+    let walletBalance = 0;
+
     if (!req.session.user) {
       return res.redirect('/login');
     }
@@ -619,19 +1269,25 @@ const showCart = async (req, res) => {
     const school = await School.find({ blocked: false });
 
     const userId = req.session.user._id;
+
+      // Fetch user's wallet balance
+      const wallet = await Wallet.findOne({ user: userId });
+      if (wallet) {
+        walletBalance = wallet.balance;
+      }
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       model: 'productDetails',
-      select: 'title sales_cost gallery quantity stock_status'
+      select: 'title sales_cost gallery quantity stock_status createdAt category'
     });
 
+    
     let totalItems = 0;
     let subtotal = 0;
     if (cart) {
       for (const product of cart.products) {
         totalItems += product.quantity;
         subtotal += product.price * product.quantity;
-        console.log(subtotal, "product.price");
 
         if (product.quantity === 0) {
           product.outOfStockMessage = 'Out of Stock';
@@ -639,18 +1295,46 @@ const showCart = async (req, res) => {
       }
     }
 
+    // Sort products by creation date (createdAt)
+    cart.products.sort((a, b) => {
+      // Convert createdAt string to Date object for comparison
+      const dateA = new Date(a.product.createdAt);
+      const dateB = new Date(b.product.createdAt);
+
+      // Compare the dates
+      return dateB - dateA; // Sort in descending order (most recent first)
+    });
+
+    // Pagination logic
+    const pageSize = 2; // Number of products per page
+    const currentPage = parseInt(req.query.page) || 1;
+    const start = (currentPage - 1) * pageSize;
+    const end = currentPage * pageSize;
+
+    let paginatedProducts = [];
     let totalProduct = 0;
+
     if (cart && cart.products) {
       totalProduct = cart.products.length;
+      paginatedProducts = cart.products.slice(start, end);
     }
-    console.log(totalProduct, "totalProduct");
+
+    // Get applied coupon code from the cart
+    const appliedCoupon = cart ? cart.appliedCoupon : null;
 
     res.render('user/cart', {
-      msg1: { name }, isUser, school,
-      cart: cart,
-      totalItems: totalItems,
-      subtotal: subtotal, 
-      totalProduct
+      msg1: { name }, 
+      walletBalance ,
+      isUser, 
+      school,
+      cart,
+      totalItems,
+      subtotal,
+      totalProduct,
+      paginatedProducts,
+      currentPage,
+      totalPages: Math.ceil(totalProduct / pageSize),
+      appliedCoupon
     });
   } catch (error) {
     console.error(error);
@@ -667,6 +1351,12 @@ const updateCartItemQuantity = async (req, res) => {
     const productId = req.params.productId;
     const action = req.query.action; 
     const userId = req.session.user._id;
+
+      // Fetch user's wallet balance
+      const wallet = await Wallet.findOne({ user: userId });
+      if (wallet) {
+        walletBalance = wallet.balance;
+      }
 
     
     const cart = await Cart.findOne({ user: userId }); 
@@ -708,13 +1398,73 @@ const updateCartItemQuantity = async (req, res) => {
     res.redirect('/cart');
 
     if (!cart || !cart.products || cart.products.length === 0) {
-      return res.render('user/cart', { msg1: { name }, isUser, school });
+      return res.redirect('/cart');
     }
+    
   } catch (error) {
     console.error('Error updating cart quantity:', error);
     res.redirect('/');
   }
 };
+
+const addToCart = async (req, res) => {
+  try {
+    if (!req.session.user) {
+      console.log("Unauthorized login");
+      return res.redirect('/login');
+    }
+
+    const productId = req.params.productId;
+    const userId = req.session.user._id;
+
+    // Fetch user's wallet balance
+    const wallet = await Wallet.findOne({ user: userId });
+    let walletBalance = 0; // Initialize wallet balance
+    if (wallet) {
+      walletBalance = wallet.balance;
+    }
+
+    let cart = await Cart.findOne({ user: userId }).populate({
+      path: 'products.product',
+      model: 'productDetails',
+      select: 'title sales_cost gallery category' // Populate category field
+    });
+
+    if (!cart) {
+      cart = new Cart({ user: userId, products: [] });
+    }
+
+    req.session.cart = cart;
+    const product = await Product.findById(productId).populate('category'); // Populate category field for the product
+
+    const existingProduct = cart.products.find(item => item.product.equals(productId));
+    if (existingProduct) {
+      return res.redirect(`/view-product/${productId}?alreadyInCart=true`);
+    }
+
+    // Map through categories of the product and extract category names
+    const categoryNames = product.category.map(cat => cat.category_name);
+console.log(categoryNames[0],'categoryNames')
+    cart.products.push({
+      product: product._id,
+      name: product.title,
+      category: categoryNames[0], // Assign the array of category names to category field
+      price: product.sales_cost,
+      image: product.gallery.length > 0 ? product.gallery[0] : null
+    });
+
+    await cart.save();
+    console.log("addedSuccessfully")
+    return res.redirect(`/view-product/${productId}?addedSuccessfully=true`);
+  } catch (error) {
+    console.error(error.message);
+    res.redirect('/')
+  }
+};
+
+
+
+
 
 const removeFromCart = async (req, res) => {
   try {
@@ -741,6 +1491,8 @@ const removeFromCart = async (req, res) => {
 
 const schoolProducts = async (req, res) => {
   const isUser = req.session.user;
+
+    let walletBalance = 0;
   const isLogin = await User.findOne({ email: req.session.email, blocked: false })
   if (isLogin) {
 
@@ -757,7 +1509,7 @@ const schoolProducts = async (req, res) => {
       const school = await School.find({ blocked: false });
 
 
-      res.render('user/allCategory', { msg1: { name }, isUser, category, school, product });
+      res.render('user/allCategory', {  msg1: { name }, walletBalance ,isUser, category, school, product });
 
     } else {
 
@@ -765,7 +1517,7 @@ const schoolProducts = async (req, res) => {
       const product = await Product.find({ blocked: false });
       const school = await School.find({ blocked: false });
 
-      res.render('user/allCategory', { msg1: { name: 'Login' }, category, school, product });
+      res.render('user/allCategory', { msg1: { name: 'Login' }, walletBalance , category, school, product });
 
     }
   } else {
@@ -775,6 +1527,66 @@ const schoolProducts = async (req, res) => {
 
 }
 
+const getWallet = async (req, res) => {
+  try {
+    const isUser = req.session.user;
+    let totalProduct = 0;
+    let walletBalance = 0;
+
+    if (!req.session.user) {
+      res.redirect('/login');
+      return; // Return here to prevent further execution of code
+    }
+
+    const userId = req.session.user._id;
+
+    // Fetch user's wallet balance
+    const wallet = await Wallet.findOne({ user: userId }).sort({ createdAt: -1 });
+    if (wallet) {
+      walletBalance = wallet.balance;
+    }
+
+    const name = req.session.user.name;
+    const user = await User.findById(req.session.user._id);
+
+    // Pagination logic
+    const pageSize = 5; // Number of orders per page
+    const currentPage = parseInt(req.query.page) || 1;
+    const skip = (currentPage - 1) * pageSize;
+
+    const ordersPromise = Order.find({ user: userId })
+      .populate('user')
+      .populate('products.product')
+      .populate('address')
+      .sort({ createdAt: -1 })
+     
+
+    const [orders, count] = await Promise.all([
+      ordersPromise,
+      Order.countDocuments({ user: userId }) // Count total number of orders
+    ]);
+
+    const school = await School.find({ blocked: false });
+    res.render('user/wallet', {
+      user: userId,
+      orders,
+      msg1: { name },
+      user,
+      walletHistory: wallet.walletHistory,
+      school,
+      isUser,
+      currentPage,
+      totalPages: Math.ceil(count / pageSize),
+      totalProduct,
+      walletBalance
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.redirect('/login');
+  }
+};
+
+
 module.exports = {
     neritt,
     category,
@@ -783,14 +1595,21 @@ module.exports = {
     showProduct,
     showCheckoutPage,
     storeCheckout,
+    applyCoupon,
+    addToWishlist,
     buyProduct,
     getAllOrders,
     cancelOrder,
+    returnOrder,
     deleteOrderById,
     wishlist,
+    addToWishlist,
+    removeFromWishlist,
     addToCart,
     showCart,
     updateCartItemQuantity,
     removeFromCart,
+    getWallet,
+    storeCheckout
     // schoolProducts
-  }
+  }  

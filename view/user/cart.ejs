@@ -97,83 +97,141 @@
           <div class="card-body">
             <% if (typeof cart !== "undefined" && cart !== null) { %>
               <% if (cart && cart.products && cart.products.length > 0) { %>
-                  <table class="table">
-                      <thead>
-                          <tr>
-                              <th scope="col">Sl. No</th>
-                              <th scope="col">Product Image</th>
-                              <th scope="col">Product Name</th>
-                              <th scope="col">Price</th>
-                              <th scope="col">Quantity</th>
-                              <th scope="col">Total</th>
-                              <th scope="col">Remove</th>
-                          </tr>
-                      </thead>
-                       <tbody>
-                          <% cart.products.forEach((product, index) => { %>
-                             <% console.log(product.product.stock_status,product.quantity,"hello quantity")%>
-                              <% if (product.product.quantity==0) { %>
-                                  <tr>
-                                      <td><b><%= index + 1 %></b></td>
-                                      <td><b><img src="<%= product.image %>" alt="Product Image" width="100"></b></td>
-                                      <td><b><%= product.name %></b></td>
-                                      <td><b><%= product.price %></b></td>
-                                      <td><b>
-                                        <a href="/update-cart-quantity/<%= product.product._id %>?action=decrease" class="update-quantity-link decrease" data-action="decrease"><b>-</b></a>
-                                          <span class="quantity"><b><%= product.quantity %></b></span>
-                                          <a href="/update-cart-quantity/<%= product.product._id %>?action=increase" class="update-quantity-link increase" data-action="increase"><b>+</b></a>
-                                      
-                                          </b></td>
-                                      <td><b>Out of Stock</b></td>
-                                      <td>
-                                          <form action="/remove-from-cart/<%= product._id %>" method="POST">
-                                              <button type="submit" class="btn btn-danger"><b>Remove</b></button>
-                                          </form>
-                                      </td>
-                                  </tr>
-                              <% } else { %>
-                                  <tr>
-                                      <td><b><%= index + 1 %></b></td>
-                                      <td><b><img src="<%= product.image %>" alt="Product Image" width="100"></b></td>
-                                      <td><b><%= product.name %></b></td>
-                                      <td><b><%= product.price %></b></td>
-                                      <td>
-                                          <a href="/update-cart-quantity/<%= product.product._id %>?action=decrease" class="update-quantity-link decrease" data-action="decrease"><b>-</b></a>
-                                          <span class="quantity"><b><%= product.quantity %></b></span>
-                                          <a href="/update-cart-quantity/<%= product.product._id %>?action=increase" class="update-quantity-link increase" data-action="increase"><b>+</b></a>
-                                      </td>
-                                      <td><b><span class="total"><%= product.price * product.quantity %></span></b></td>
-                                      <td>
-                                          <form action="/remove-from-cart/<%= product._id %>" method="POST">
-                                              <button type="submit" class="btn btn-danger"><b>Remove</b></button>
-                                          </form>
-                                      </td>
-                                  </tr>
-                              <% } %>
-                          <% }); %>
-                      </tbody>
-                  </table>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Sl. No</th>
+                      <th scope="col">Product Image</th>
+                      <th scope="col">Product Name</th>
+                      <th scope="col">category</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% paginatedProducts.forEach((product, index) => { %>
+                      <% if (product.product.quantity == 0) { %>
+                        <tr>
+                          <td><b><%= index + 1 %></b></td>
+                          <td><b><img src="<%= product.image %>" alt="Product Image" width="50"></b></td>
+                          <td><b><%= product.name %></b></td>
+                          <td><b><%= product.price %></b></td>
+                          <td><b>
+                            <a href="/update-cart-quantity/<%= product.product._id %>?action=decrease" class="update-quantity-link decrease" data-action="decrease"><b>-</b></a>
+                              <span class="quantity"><b><%= product.quantity %></b></span>
+                              <a href="/update-cart-quantity/<%= product.product._id %>?action=increase" class="update-quantity-link increase" data-action="increase"><b>+</b></a>
+                          
+                              </b></td>
+                          <td><b>Out of Stock</b></td>
+                          <td>
+                              <form action="/remove-from-cart/<%= product._id %>" method="POST">
+                                  <button type="submit" class="btn btn-danger"><b>Remove</b></button>
+                              </form>
+                          </td>
+                      </tr>
+                  <% } else { %>
+                      <tr>
+                          <td><b><%= index + 1 %></b></td>
+                          <td><b><img src="<%= product.image %>" alt="Product Image" width="50"></b></td>
+                          <td><b><%= product.name %></b></td>
+                          <td><b><%= product.category %></b></td>
+                          <td><b><%= product.price %></b></td>
+                          <td>
+                              <a href="/update-cart-quantity/<%= product.product._id %>?action=decrease" class="update-quantity-link decrease" data-action="decrease"><b>-</b></a>
+                              <span class="quantity"><b><%= product.quantity %></b></span>
+                              <a href="/update-cart-quantity/<%= product.product._id %>?action=increase" class="update-quantity-link increase" data-action="increase"><b>+</b></a>
+                         
+                            </td>
+                          <td><b><span class="total" id="total-<%= product.product._id %>"><%= product.price * product.quantity %></span></b></td>
+                          <td>
+                            <form action="/remove-from-cart/<%= product._id %>" method="POST">
+                              <button type="submit" class="btn btn-danger"><b>Remove</b></button>
+                            </form>
+                          </td>
+                        </tr>
+                      <% } %>
+                    <% }); %>
+                    
+                  </tbody>
+                </table>
+      
+                <!-- Pagination -->
+                <div class="d-flex justify-content-right pagination">
+                  <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                      <% if (currentPage > 1) { %>
+                        <li class="page-item">
+                          <a class="page-link" href="?page=<%= currentPage - 1 %>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+                      <% } else { %>
+                        <li class="page-item disabled">
+                          <span class="page-link" aria-hidden="true">&laquo;</span>
+                        </li>
+                      <% } %>
+      
+                      <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                        </li>
+                      <% } %>
+      
+                      <% if (currentPage < totalPages) { %>
+                        <li class="page-item">
+                          <a class="page-link" href="?page=<%= currentPage + 1 %>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>
+                        </li>
+                      <% } else { %>
+                        <li class="page-item disabled">
+                          <span class="page-link" aria-hidden="true">&raquo;</span>
+                        </li>
+                      <% } %>
+                    </ul>
+                  </nav>
+                </div>
+      
               <% } else { %>
-                  <div class="empty-cart-message">
-                      <p><b>Cart is empty</b></p>
-                  </div>
+                  <div class="empty-cart-container">
+                    <img class="empty-cart-image" src="/public/images/emptyCart.jpg" alt="Empty Wishlist">
+                </div>
               <% } %>
           <% } else { %>
-              <div class="empty-cart-message">
-                  <p><b>Cart is empty</b></p>
-              </div>
+            <div class="empty-cart-container">
+              <img class="empty-cart-image" src="/public/images/emptyCart.jpg" alt="Empty Wishlist">
+          </div>
           <% } %>
-            <style>
-              .empty-cart-message {
-                padding-top: 1%;
-                padding-left: 50%;
-                background-color: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
-                border-radius: 5px;
-                margin-bottom: 20px;
-              }
-            </style>
+          <style>
+        .empty-cart-container {
+            display: flex;
+            justify-content: center; /* Horizontally center the content */
+            align-items: center; /* Vertically center the content */
+            height: 45vh; /* Make the container full height of the viewport */
+        }
+        .cart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; /* Allow items to wrap if they exceed container width */
+        }
+        .empty-cart-image {
+            width: 250px; /* Adjust image width as needed */
+        }
+
+        .empty-cart-message {
+          padding-top: 1%;
+          padding-left: 50%;
+          background-color: #abeeff;
+          color: #1c7172;
+          border: 1px solid #a0fdff;
+          border-radius: 5px;
+          margin-bottom: 20px;
+        }
+      </style>
+           
             
             
           </div>
@@ -204,11 +262,11 @@
               <span id="promoError" class="text-danger"></span>
             </div>
             <button id="applyBtn" type="button" onclick="applyPromo()" class="btn btn-primary w-100">Apply</button> -->
-            <hr class="mt-3">
+            <!-- <hr class="mt-3">
             <div class="d-flex align-items-center justify-content-between mb-2">
               <span class="text-muted">Discount:</span>
               <span id="discount">₹ 0</span>
-            </div>
+            </div> -->
             <div class="d-flex align-items-center justify-content-between mb-2">
               <span class="text-muted"><b>Total:</b></span>
               <span ><b>₹ <%= subtotal %> </b></span>
@@ -339,7 +397,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-  <script>
+  <!-- <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Function to handle updating the quantity
       function updateQuantity(productId, action) {
@@ -385,7 +443,7 @@
         });
       });
     });
-  </script>
+  </script> -->
   
   
   <!-- Add this script at the end of your EJS file -->

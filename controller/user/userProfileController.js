@@ -4,11 +4,14 @@ const User = require('../../model/userSchema')
 const School = require('../../model/schoolSchema');
 const Address = require('../../model/addressSchema');
 const Cart = require('../../model/cartSchema');
+const Wallet = require('../../model/walletSchema');
 const Swal = require('sweetalert2');
 const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer'); 
 const sizeOf = require('image-size'); 
 const orderId = require('../../public/js/orderId')
+// const mongoose = require('mongoose');
+const { ObjectId } = require('mongoose').Types;
 
 const isSquare = (width, height) => {
   return width === height;
@@ -19,28 +22,69 @@ const isLessThan1MP = (width, height) => {
   return megapixels < 1;
 };
 
+let walletBalance = 0;
+
 const myAccountPage = async (req, res) => {
     const isUser = req.session.user;
-  
+
     if (req.session.user) {
       const name = req.session.user.name;
       const user = await User.findById(req.session.user._id);
       const school = await School.find({ blocked: false });
       const userId = req.session.user._id;
   
-      const cart = await Cart.findOne({ user: userId }).populate({
-        path: 'products.product',
-        model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status'
-      });
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
+       console.log(userId,'userId founded')
+
+       const userIdObject = new ObjectId(userId);
+
+// Perform aggregation
+const cart = await Cart.aggregate([
+  {
+    $match: { user: userIdObject }
+  },
+  {
+    $unwind: "$products" // Deconstruct the products array
+  },
+  {
+    $lookup: {
+      from: "productDetails",
+      localField: "products.product",
+      foreignField: "_id",
+      as: "products.productDetails"
+    }
+  },
+  {
+    $addFields: {
+      "products.name": { $arrayElemAt: ["$products.productDetails.title", 0] },
+      "products.category": { $arrayElemAt: ["$products.productDetails.category", 0] },
+      "products.price": { $arrayElemAt: ["$products.productDetails.sales_cost", 0] },
+      "products.image": { $arrayElemAt: ["$products.productDetails.gallery", 0] }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id", // Group by cart ID
+      user: { $first: "$user" },
+      products: { $push: "$products" }, // Push products back into an array
+      appliedCoupon: { $first: "$appliedCoupon" }
+    }
+  }
+]);
+
+console.log(cart, "cart found");
+
+let totalProduct = 0;  // Initialize totalProducts count
+if (cart.length > 0 && cart[0].products) {  // Check if cart and products array exist
+  totalProduct = cart[0].products.length;  // Get the length of products array
+}
+      console.log(totalProduct, "totalProduct",walletBalance,'walletBalance')
   
-      let totalProduct = 0;
-      if (cart && cart.products) {
-        totalProduct = cart.products.length;
-      }
-      console.log(totalProduct, "totalProduct")
-  
-      res.render('user/myAccount', { user, msg1: { name }, isUser, cart, totalProduct, school })
+      res.render('user/myAccount', { user, msg1: { name }, walletBalance , isUser, cart, totalProduct, school })
   
     }
     else {
@@ -51,7 +95,7 @@ const myAccountPage = async (req, res) => {
 
 const myAddressesPage = async (req, res) => {
     const isUser = req.session.user;
-  
+
     if (req.session.user) {
       const name = req.session.user.name;
   
@@ -65,18 +109,56 @@ const myAddressesPage = async (req, res) => {
   
       const userId = req.session.user._id;
   
-      const cart = await Cart.findOne({ user: userId }).populate({
-        path: 'products.product',
-        model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status'
-      });
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
   
-      let totalProduct = 0;
-      if (cart && cart.products) {
-        totalProduct = cart.products.length;
-      }
+      const userIdObject = new ObjectId(userId);
+
+// Perform aggregation
+const cart = await Cart.aggregate([
+  {
+    $match: { user: userIdObject }
+  },
+  {
+    $unwind: "$products" // Deconstruct the products array
+  },
+  {
+    $lookup: {
+      from: "productDetails",
+      localField: "products.product",
+      foreignField: "_id",
+      as: "products.productDetails"
+    }
+  },
+  {
+    $addFields: {
+      "products.name": { $arrayElemAt: ["$products.productDetails.title", 0] },
+      "products.category": { $arrayElemAt: ["$products.productDetails.category", 0] },
+      "products.price": { $arrayElemAt: ["$products.productDetails.sales_cost", 0] },
+      "products.image": { $arrayElemAt: ["$products.productDetails.gallery", 0] }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id", // Group by cart ID
+      user: { $first: "$user" },
+      products: { $push: "$products" }, // Push products back into an array
+      appliedCoupon: { $first: "$appliedCoupon" }
+    }
+  }
+]);
+
+console.log(cart, "cart found");
+  
+      let totalProduct = 0;  // Initialize totalProducts count
+if (cart.length > 0 && cart[0].products) {  // Check if cart and products array exist
+  totalProduct = cart[0].products.length;  // Get the length of products array
+}
       console.log(totalProduct, "totalProduct")
-      res.render('user/myAddresses', { msg1: { name }, isUser, cart, totalProduct, user, addresses, school })
+      res.render('user/myAddresses', { msg1: { name }, walletBalance , isUser, cart, totalProduct, user, addresses, school })
   
     }
     else {
@@ -87,7 +169,7 @@ const myAddressesPage = async (req, res) => {
 
 const AddAddress = async (req, res) => {
     const isUser = req.session.user;
-  
+
     if (req.session.user) {
       const name = req.session.user.name;
       const user = await User.findById(req.session.user._id);
@@ -97,19 +179,57 @@ const AddAddress = async (req, res) => {
   
       const userId = req.session.user._id;
   
-      const cart = await Cart.findOne({ user: userId }).populate({
-        path: 'products.product',
-        model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status'
-      });
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
   
-      let totalProduct = 0;
-      if (cart && cart.products) {
-        totalProduct = cart.products.length;
-      }
+      const userIdObject = new ObjectId(userId);
+
+// Perform aggregation
+const cart = await Cart.aggregate([
+  {
+    $match: { user: userIdObject }
+  },
+  {
+    $unwind: "$products" // Deconstruct the products array
+  },
+  {
+    $lookup: {
+      from: "productDetails",
+      localField: "products.product",
+      foreignField: "_id",
+      as: "products.productDetails"
+    }
+  },
+  {
+    $addFields: {
+      "products.name": { $arrayElemAt: ["$products.productDetails.title", 0] },
+      "products.category": { $arrayElemAt: ["$products.productDetails.category", 0] },
+      "products.price": { $arrayElemAt: ["$products.productDetails.sales_cost", 0] },
+      "products.image": { $arrayElemAt: ["$products.productDetails.gallery", 0] }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id", // Group by cart ID
+      user: { $first: "$user" },
+      products: { $push: "$products" }, // Push products back into an array
+      appliedCoupon: { $first: "$appliedCoupon" }
+    }
+  }
+]);
+
+console.log(cart, "cart found");
+  
+      let totalProduct = 0;  // Initialize totalProducts count
+if (cart.length > 0 && cart[0].products) {  // Check if cart and products array exist
+  totalProduct = cart[0].products.length;  // Get the length of products array
+}
       console.log(totalProduct, "totalProduct")
   
-      res.render('user/myAddressAdd', { user, addresses, msg1: { name }, isUser, cart, totalProduct, school })
+      res.render('user/myAddressAdd', { user, addresses, msg1: { name }, walletBalance , isUser, cart, totalProduct, school })
   
     }
     else {
@@ -141,7 +261,7 @@ const addAddressPost = async (req, res) => {
 const renderEditForm = async (req, res) => {
     try {
       const isUser = req.session.user;
-  
+
       if (!req.session.user) {
         console.log('Unauthorized. Please log in.');
         return res.redirect('/login');
@@ -154,19 +274,57 @@ const renderEditForm = async (req, res) => {
   
       const userId = req.session.user._id;
   
-      const cart = await Cart.findOne({ user: userId }).populate({
-        path: 'products.product',
-        model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status'
-      });
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
   
-      let totalProduct = 0;
-      if (cart && cart.products) {
-        totalProduct = cart.products.length;
-      }
+      const userIdObject = new ObjectId(userId);
+
+// Perform aggregation
+const cart = await Cart.aggregate([
+  {
+    $match: { user: userIdObject }
+  },
+  {
+    $unwind: "$products" // Deconstruct the products array
+  },
+  {
+    $lookup: {
+      from: "productDetails",
+      localField: "products.product",
+      foreignField: "_id",
+      as: "products.productDetails"
+    }
+  },
+  {
+    $addFields: {
+      "products.name": { $arrayElemAt: ["$products.productDetails.title", 0] },
+      "products.category": { $arrayElemAt: ["$products.productDetails.category", 0] },
+      "products.price": { $arrayElemAt: ["$products.productDetails.sales_cost", 0] },
+      "products.image": { $arrayElemAt: ["$products.productDetails.gallery", 0] }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id", // Group by cart ID
+      user: { $first: "$user" },
+      products: { $push: "$products" }, // Push products back into an array
+      appliedCoupon: { $first: "$appliedCoupon" }
+    }
+  }
+]);
+
+console.log(cart, "cart found");
+  
+      let totalProduct = 0;  // Initialize totalProducts count
+if (cart.length > 0 && cart[0].products) {  // Check if cart and products array exist
+  totalProduct = cart[0].products.length;  // Get the length of products array
+}
       console.log(totalProduct, "totalProduct")
   
-      res.render('user/myaddressEdit', { user, msg1: { name }, isUser, cart, totalProduct, school, address });
+      res.render('user/myaddressEdit', { user, msg1: { name }, walletBalance , isUser, cart, totalProduct, school, address });
     } catch (error) {
       console.error(error);
       res.render('error');
@@ -195,8 +353,7 @@ const deleteAddress = async (req, res) => {
     try {
   
       const isUser = req.session.user;
-  
-  
+
       if (!req.session.user) {
         console.log('Unauthorized. Please log in.');
         return res.redirect('/login');
@@ -212,7 +369,7 @@ const deleteAddress = async (req, res) => {
 
 const myPersonalData = async (req, res) => {
     const isUser = req.session.user;
-  
+
     if (req.session.user) {
       const name = req.session.user.name;
   
@@ -221,18 +378,56 @@ const myPersonalData = async (req, res) => {
       const school = await School.find({ blocked: false });
       const userId = req.session.user._id;
   
-      const cart = await Cart.findOne({ user: userId }).populate({
-        path: 'products.product',
-        model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status'
-      });
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
   
-      let totalProduct = 0;
-      if (cart && cart.products) {
-        totalProduct = cart.products.length;
-      }
+      const userIdObject = new ObjectId(userId);
+
+// Perform aggregation
+const cart = await Cart.aggregate([
+  {
+    $match: { user: userIdObject }
+  },
+  {
+    $unwind: "$products" // Deconstruct the products array
+  },
+  {
+    $lookup: {
+      from: "productDetails",
+      localField: "products.product",
+      foreignField: "_id",
+      as: "products.productDetails"
+    }
+  },
+  {
+    $addFields: {
+      "products.name": { $arrayElemAt: ["$products.productDetails.title", 0] },
+      "products.category": { $arrayElemAt: ["$products.productDetails.category", 0] },
+      "products.price": { $arrayElemAt: ["$products.productDetails.sales_cost", 0] },
+      "products.image": { $arrayElemAt: ["$products.productDetails.gallery", 0] }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id", // Group by cart ID
+      user: { $first: "$user" },
+      products: { $push: "$products" }, // Push products back into an array
+      appliedCoupon: { $first: "$appliedCoupon" }
+    }
+  }
+]);
+
+console.log(cart, "cart found");
+  
+      let totalProduct = 0;  // Initialize totalProducts count
+if (cart.length > 0 && cart[0].products) {  // Check if cart and products array exist
+  totalProduct = cart[0].products.length;  // Get the length of products array
+}
       console.log(totalProduct, "totalProduct")
-      res.render('user/myPersonalData', { user, msg1: { name }, isUser, cart, totalProduct, school })
+      res.render('user/myPersonalData', { user, msg1: { name }, walletBalance , isUser, cart, totalProduct, school })
   
     }
     else {
@@ -249,6 +444,12 @@ const updateUserProfile = async (req, res) => {
       }
       const { email, name, phone, password } = req.body;
       const userId = req.session.user._id;
+  
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
   
       const existingUser = await User.findById(userId);
   
@@ -301,6 +502,12 @@ const updateUserPassword = async (req, res) => {
   
       const userId = req.session.user._id;
   
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
+  
       const existingUser = await User.findById(userId);
   
       existingUser.password = password;
@@ -316,27 +523,65 @@ const updateUserPassword = async (req, res) => {
   
 const myPayment = async (req, res) => {
     const isUser = req.session.user;
-  
+
     if (req.session.user) {
       const name = req.session.user.name;
   
       const school = await School.find({ blocked: false });
   
       const userId = req.session.user._id;
-      const user = await User.findById(req.session.user._id);
-      const cart = await Cart.findOne({ user: userId }).populate({
-        path: 'products.product',
-        model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status'
-      });
   
-      let totalProduct = 0;
-      if (cart && cart.products) {
-        totalProduct = cart.products.length;
-      }
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
+      const user = await User.findById(req.session.user._id);
+      const userIdObject = new ObjectId(userId);
+
+// Perform aggregation
+const cart = await Cart.aggregate([
+  {
+    $match: { user: userIdObject }
+  },
+  {
+    $unwind: "$products" // Deconstruct the products array
+  },
+  {
+    $lookup: {
+      from: "productDetails",
+      localField: "products.product",
+      foreignField: "_id",
+      as: "products.productDetails"
+    }
+  },
+  {
+    $addFields: {
+      "products.name": { $arrayElemAt: ["$products.productDetails.title", 0] },
+      "products.category": { $arrayElemAt: ["$products.productDetails.category", 0] },
+      "products.price": { $arrayElemAt: ["$products.productDetails.sales_cost", 0] },
+      "products.image": { $arrayElemAt: ["$products.productDetails.gallery", 0] }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id", // Group by cart ID
+      user: { $first: "$user" },
+      products: { $push: "$products" }, // Push products back into an array
+      appliedCoupon: { $first: "$appliedCoupon" }
+    }
+  }
+]);
+
+console.log(cart, "cart found");
+  
+      let totalProduct = 0;  // Initialize totalProducts count
+if (cart.length > 0 && cart[0].products) {  // Check if cart and products array exist
+  totalProduct = cart[0].products.length;  // Get the length of products array
+}
       console.log(totalProduct, "totalProduct")
   
-      res.render('user/myPayment', { msg1: { name }, isUser, user, cart, totalProduct, school })
+      res.render('user/myPayment', { msg1: { name }, walletBalance , isUser, user, cart, totalProduct, school })
   
     }
     else {
@@ -347,25 +592,63 @@ const myPayment = async (req, res) => {
 
 const myOrder = async (req, res) => {
     const isUser = req.session.user;
-  
+
     if (req.session.user) {
       const name = req.session.user.name;
   
       const school = await School.find({ blocked: false });
       const userId = req.session.user._id;
-      const user = await User.findById(req.session.user._id);
-      const cart = await Cart.findOne({ user: userId }).populate({
-        path: 'products.product',
-        model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status'
-      });
   
-      let totalProduct = 0;
-      if (cart && cart.products) {
-        totalProduct = cart.products.length;
-      }
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
+      const user = await User.findById(req.session.user._id);
+      const userIdObject = new ObjectId(userId);
+
+// Perform aggregation
+const cart = await Cart.aggregate([
+  {
+    $match: { user: userIdObject }
+  },
+  {
+    $unwind: "$products" // Deconstruct the products array
+  },
+  {
+    $lookup: {
+      from: "productDetails",
+      localField: "products.product",
+      foreignField: "_id",
+      as: "products.productDetails"
+    }
+  },
+  {
+    $addFields: {
+      "products.name": { $arrayElemAt: ["$products.productDetails.title", 0] },
+      "products.category": { $arrayElemAt: ["$products.productDetails.category", 0] },
+      "products.price": { $arrayElemAt: ["$products.productDetails.sales_cost", 0] },
+      "products.image": { $arrayElemAt: ["$products.productDetails.gallery", 0] }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id", // Group by cart ID
+      user: { $first: "$user" },
+      products: { $push: "$products" }, // Push products back into an array
+      appliedCoupon: { $first: "$appliedCoupon" }
+    }
+  }
+]);
+
+console.log(cart, "cart found");
+  
+      let totalProduct = 0;  // Initialize totalProducts count
+if (cart.length > 0 && cart[0].products) {  // Check if cart and products array exist
+  totalProduct = cart[0].products.length;  // Get the length of products array
+}
       console.log(totalProduct, "totalProduct")
-      res.render('user/myOrders', { msg1: { name }, isUser, user, cart, totalProduct, school })
+      res.render('user/myOrders', { msg1: { name }, walletBalance , isUser, user, cart, totalProduct, school })
   
     }
     else {
@@ -376,30 +659,59 @@ const myOrder = async (req, res) => {
 
 const myWishlist = async (req, res) => {
     const isUser = req.session.user;
-  
+
     if (req.session.user) {
       const name = req.session.user.name;
   
       const school = await School.find({ blocked: false });
       const userId = req.session.user._id;
+  
+       // Fetch user's wallet balance
+       const wallet = await Wallet.findOne({ user: userId });
+       if (wallet) {
+         walletBalance = wallet.balance;
+       }
       const user = await User.findById(req.session.user._id);
-      const cart = await Cart.findOne({ user: userId }).populate({
-        path: 'products.product',
-        model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status'
-      });
+      const cart = await Cart.aggregate([
+        {
+          $match: { user: userId }
+        },
+        {
+          $lookup: {
+            from: 'productDetails', // Assuming the name of the collection is 'productDetails'
+            localField: 'products.product',
+            foreignField: '_id',
+            as: 'products'
+          }
+        },
+        {
+          $project: {
+            products: {
+              $map: {
+                input: '$products',
+                as: 'product',
+                in: {
+                  title: '$$product.title',
+                  sales_cost: '$$product.sales_cost',
+                  gallery: '$$product.gallery',
+                  quantity: '$$product.quantity',
+                  stock_status: '$$product.stock_status'
+                }
+              }
+            }
+          }
+        }
+      ]);
   
       let totalProduct = 0;
       if (cart && cart.products) {
         totalProduct = cart.products.length;
       }
       console.log(totalProduct, "totalProduct")
-      res.render('user/myWishlist', { msg1: { name }, isUser, user, cart, totalProduct, school })
+      res.render('user/myWishlist', { msg1: { name }, walletBalance , isUser, user, cart, totalProduct, school })
   
     }
     else {
-  
-  
       res.redirect('/login')
     }
   }
