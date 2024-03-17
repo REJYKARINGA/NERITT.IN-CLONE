@@ -6,17 +6,26 @@ const miscellaneousController = require('../controller/user/miscellaneousControl
 const productController = require('../controller/user/productController');
 const schoolController = require('../controller/user/schoolController');
 const userProfileController = require('../controller/user/userProfileController');
-const exampleController = require('../controller/user/exampleController');
+const addressController = require('../controller/user/addressController');
+const exampleController = require('../controller/user/errorController');
 
 router.get('/divide', exampleController.divide);
 const walletController = require('../controller/user/walletController');
 const Cart = require('../model/cartSchema');
 const multer = require('multer'); 
 const path = require('path');
+ 
+
+
+
+const invoiceController = require('../controller/user/invoice')
+
+// Route to generate invoice
+router.get('/generate-invoice/:orderId', invoiceController.generateInvoice);
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/'); // Adjust the destination folder as needed
+        cb(null, 'public/uploads/'); 
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -65,16 +74,16 @@ router.get('/cart', productController.showCart);
 router.get('/add-to-cart/:productId', productController.addToCart);
 router.get('/update-cart-quantity/:productId', productController.updateCartItemQuantity);
 router.get('/checkout', productController.showCheckoutPage);
-router.get('/store_checkout', productController.showCheckoutPage); 
 router.post('/store_checkout', productController.storeCheckout);
+
+router.get('/store_checkout', productController.showCheckoutPage); 
 router.post('/remove-from-cart/:productId', productController.removeFromCart);
 router.get('/wishlist', productController.wishlist);
 router.get('/wallet', productController.getWallet);
-router.get('/wishlist/add/:id', productController.addToWishlist);
+router.get('/wishlist/add/:id', productController.addToWishlist); 
 router.get('/wishlist/remove/:productId', productController.removeFromWishlist);
  
 // Assuming you have imported the necessary models and middleware
-
 router.post('/applyCoupon', productController.applyCoupon)
 
 // Order Management  
@@ -84,7 +93,7 @@ router.post('/cancel-order/:id', productController.cancelOrder);
 router.post('/return-order/:id', productController.returnOrder);
 // // router.post('/return-order/:id', productController.downloadInvoice);
 // // // Example route setup using Express.js
-// router.get('/download-invoice/:orderId',productController.downloadTabularInvoice);
+// router.get('/download-invoice/:orderId',productController.downloadInvoice);
 
 
 // School Registration
@@ -97,12 +106,12 @@ router.get("/account", userProfileController.myAccountPage);
 router.get("/account/personal-data", userProfileController.myPersonalData);
 router.post("/profile/update", upload.fields([{ name: 'profileImage', maxCount: 1 }]), userProfileController.updateUserProfile);
 router.post("/password/update", userProfileController.updateUserPassword);
-router.get("/account/addresses", userProfileController.myAddressesPage);
-router.get("/account/AddAddress", userProfileController.AddAddress);
-router.post("/address/add", userProfileController.addAddressPost);
-router.get('/address/:id/edit', userProfileController.renderEditForm);
-router.post('/address/:id/edit', userProfileController.updateAddress);
-router.post('/address/:id/delete', userProfileController.deleteAddress);
+router.get("/account/addresses", addressController.myAddressesPage);
+router.get("/account/AddAddress", addressController.AddAddress);
+router.post("/address/add", addressController.addAddressPost);
+router.get('/address/:id/edit', addressController.editAddress);
+router.post('/address/:id/edit', addressController.updateAddress);
+router.post('/address/:id/delete', addressController.deleteAddress);
 router.get("/account/payments", userProfileController.myPayment);
 router.get("/account/orders", userProfileController.myOrder);
 router.get("/account/wishlist", userProfileController.myWishlist);
@@ -110,9 +119,10 @@ router.get("/account/award", userProfileController.myAccountPage); // Not Design
 
 
 
+const Order = require('../model/orderSchema');
+const Product = require('../model/productSchema');
 // Test Drive Management
 router.get("/test", miscellaneousController.testDrive);
-
 
 
 

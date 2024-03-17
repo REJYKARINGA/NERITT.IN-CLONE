@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,22 +7,32 @@
         <meta name="keywords" content="admin, admin panel, admin template, admin dashboard, responsive, bootstrap 4, ui kits, ecommerce, web app, crm, cms, html, sass support, scss">
         <meta name="author" content="Themesbox"> -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-        <meta name="csrf-token" content="m4pnVcNZKVaXC46bfUBONcH1vZtKvr3eVrnkXrmP">
+        <meta name="csrf-token" content="MsX7Vm3kGOWqZ4iLotBA8u82l9iVYQzlBuCKR3vB">
 
-        <title> All Orders
+        <title>  
+Dashboard
  </title>
- 
-                <!-- icon style sheet css -->
-
-<link rel="stylesheet" href="/public/css/themify-icons.css">
-
-
-        
         <!-- Fevicon -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/themify-icons@1.0.0/dist/css/themify-icons.css">
+    
         <link rel="shortcut icon" href="https://neritt.in/assets/user/images/assets/favicons/favicon-32x32.png">
         <!-- Start CSS -->   
-        <!--
-<link href="/assets/css/image-uploader.css" rel="stylesheet" type="text/css"> -->
+        <!-- Apex css -->
+<link href="https://neritt.in/assets/plugins/apexcharts/apexcharts.css" rel="stylesheet" type="text/css" />
+<!-- jvectormap css -->
+<link href="https://neritt.in/assets/plugins/jvectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet" type="text/css" />
+<!-- Slick css -->
+<link href="https://neritt.in/assets/plugins/slick/slick.css" rel="stylesheet" type="text/css" />
+<link href="https://neritt.in/assets/plugins/slick/slick-theme.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+                <!-- icon style sheet css -->
+                <link rel="stylesheet" href="/public/css/themify-icons.css">
+                <!-- <link rel="stylesheet" href="/public/fonts/themify-icons.css"> -->
+                
+
+
+
 
         <link href="https://neritt.in/assets/plugins/switchery/switchery.min.css" rel="stylesheet" type="text/css">
         <link href="/assets/plugins/animate/animate.css" rel="stylesheet" type="text/css">
@@ -43,6 +52,7 @@
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
         <link href="/assets/plugins/pnotify/css/pnotify.custom.min.css" rel="stylesheet" type="text/css">
     <style>
+
         .se-pre-con{
             position: fixed;
             top: 0;
@@ -58,6 +68,7 @@
         .spinner-grow {
             color: #ffffff !important;
         }
+        
     </style>
     <!-- <script>
         document.onreadystatechange = function() { 
@@ -79,16 +90,17 @@
     </script>
         <!-- End CSS -->
     </head>
-    <body class="vertical-layout">
-        <!-- <div class="se-pre-con">
+    <!-- <body class="vertical-layout">
+        <div class="se-pre-con">
             <div class="spinner-grow text-primary" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
-        </div> --><%-include('cursor.ejs')-%>
+        </div> -->
     <!-- <body class="horizontal-layout"> -->
-        <input type="hidden" name="_token" value="m4pnVcNZKVaXC46bfUBONcH1vZtKvr3eVrnkXrmP">
+        <input type="hidden" name="_token" value="MsX7Vm3kGOWqZ4iLotBA8u82l9iVYQzlBuCKR3vB">
         <input type="hidden" id="app-url" value="https://neritt.in">
 
+        <%-include('cursor.ejs')-%>
         <!-- Start Infobar Setting Sidebar -->
         <div id="infobar-settings-sidebar" class="infobar-settings-sidebar">
             <div class="infobar-settings-sidebar-head d-flex w-100 justify-content-between">
@@ -137,11 +149,11 @@
         <!-- class="container-fluid" -->
         <div id="containerbar">
             <!-- Start Rightbar -->
-            <div class="leftbar">
+            <div class="leftbar"  >
     <!-- Start Navigationbar -->
     <div class="navigationbar">
         <!-- Start Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar" >
             <!-- Start Logobar -->
             <div class="logobar">
                 <a href="/admin/dashboard" class="logo logo-large">
@@ -156,17 +168,19 @@
             </div>
             <!-- End Logobar -->
             <!-- Start Horizontal Nav -->
-            <div class="horizontal-nav active">
+           
+            <div class="horizontal-nav active" >
                 <ul class="vertical-menu in">
-                    <li class="">
+                    <li  style="background: #129393; ">
                         <a href="/admin/dashboard">
                             <i class="ti ti-dashboard"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     </li>
-                    <li id="sales_report">
-                        <a href="javascript:void(0)"><i class="ti ti-file"></i>
+                    <li id="sales_report" >
+                        <a href="javascript:void(0)">
+                            <i class="ti ti-file"></i>
                             <span>Vendor Sale Report</span></a>
                     </li>
                     <li class="">
@@ -176,13 +190,13 @@
                         </a>
                     </li>
                     <li class="">
-                        <a href="/admin/school-report">
+                        <a href="/school-report">
                             <i class="ti ti-download"></i>
                             <span>School Report</span>
                         </a>
                     </li>
                     <li class="">
-                        <a href="/admin/agent">
+                        <a href="/agent">
                             <i class="ti ti-user"></i>
                             <span>Agent Registration</span>
 
@@ -195,8 +209,15 @@
 
                         </a>
                     </li>
+                    <li  >
+                        <a href="/admin/coupons">
+                            <i class="ti ti-menu-alt"></i>
+                            <span>Coupon</span>
+
+                        </a>
+                    </li>
                     <li class="">
-                        <a href="/admin/user">
+                        <a href="/admin/users">
                             <i class="ti ti-user"></i>
                             <span>Users</span>
 
@@ -246,14 +267,14 @@
                         </a>
                     </li>
                     <li class="">
-                        <a href="/admin/brands">
+                        <a href="/brands">
                             <i class="ti ti-dropbox"></i>
                             <span>Brands</span>
 
                         </a>
                     </li>
-                    <li style="background: #129393; ">
-                        <a href="/admin/orders">
+                    <li class="">
+                        <a href=/admin/orders>
                             <i class="ti ti-write"></i>
                             <span>Orders</span>
 
@@ -266,9 +287,9 @@
                             <span>Settings</span></a>
                         <ul style="display:none;" class="SubMenu">
                             <li class=""><a
-                                    href="/admin/class">Class </a></li>
+                                    href="/class">Class </a></li>
                             <li class=""><a
-                                    href="/admin/city">City </a></li>
+                                    href="/city">City </a></li>
 
 
                         </ul>
@@ -290,8 +311,7 @@
         <div class="row align-items-center">
             <div class="col-md-12">
                 <div class="mobile-logobar">
-                    <!-- <a href="https://neritt.in" class="mobile-logo"><img src="https://neritt.in/assets/images/logo_bizi.png"  class="img-fluid" alt="logo"></a> -->
-                    Neritt
+                  Neritt
                 </div>
                 <div class="mobile-togglebar">
                     <ul class="list-inline mb-0">
@@ -303,78 +323,47 @@
                                  </a>
                              </div>
                         </li>
-                        <li class="list-inline-item">
-                            <div class="menubar">
-                                <a class="menu-hamburger navbar-toggle bg-transparent" href="javascript:void();" data-toggle="collapse" data-target="#navbar-menu" aria-expanded="true">
-                                    <img src="https://neritt.in/assets/images/svg-icon/collapse.svg " class="img-fluid menu-hamburger-collapse" alt="collapse">
-                                    <img src="https://neritt.in/assets/images/svg-icon/close.svg " class="img-fluid menu-hamburger-close" alt="close">
-                                </a>
-                             </div>
-                        </li>                                
+                                                  
                     </ul>
                 </div>
             </div>
         </div>
     </div>
     <!-- Start Topbar -->
-    <div class="topbar">
+    <div class="topbar" style="padding: 0px 30px;
+    position: fixed;
+    z-index: 1;
+    left: 212px">
         <!-- Start container-fluid -->
         <div class="container-fluid">
             <!-- Start row -->
             <div class="row align-items-center">
                 <!-- Start col -->
                 <div class="col-md-12 align-self-center">
-                    <!-- <div class="togglebar">
-                        <ul class="list-inline mb-0">
-                            <li class="list-inline-item">
-                                <div class="logobar">
-                                    <a href="https://neritt.in" class="logo logo-large"><img src="https://neritt.in/assets/images/logo_bizi.png" class ="img-fluid" alt="logo"></a>
-                                </div>
-                            </li>
-                           
-                        </ul>
-                    </div> -->
+                 
                     <div class="togglebar">
-                            <ul class="list-inline mb-0">
-                                <li class="list-inline-item">
-                                    <div class="menubar">
-                                        <a class="menu-hamburger" href="javascript:void(0);">
-                                           <img src="https://neritt.in/assets/images/svg-icon/collapse.svg" class="img-fluid menu-hamburger-collapse" alt="collapse" style="">
-                                           <img src="https://neritt.in/assets/images/svg-icon/close.svg" class="img-fluid menu-hamburger-close" alt="close" style="display: none;">
-                                         </a>
-                                     </div>
-                                </li>
-                                <!-- <li class="list-inline-item">
-                                    <div class="searchbar">
-                                        <form>
-                                            <div class="input-group">
-                                              <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
-                                              <div class="input-group-append">
-                                                <button class="btn" type="submit" id="button-addon2"><img src="assets/images/svg-icon/search.svg" class="img-fluid" alt="search"></button>
-                                              </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </li> -->
+                        
                             </ul>
                         </div>
                     <div class="infobar">
                         <ul class="list-inline mb-0">
                          
-                            <!-- <li class="list-inline-item">
+                            <li class="list-inline-item" style="padding:5px 6px!important; margin:5px 5px">
                                 <div class="settingbar">
-                                    <div class="toggle">
-                                        <span>🌙</span>
-                                        <input type="checkbox" id="toggle-switch" />
-                                        <label for="toggle-switch"><span class="screen-reader-text">Toggle Color Scheme</span></label>
-                                        <span>☀️</span>
+                                    <div class="breadcrumbbar" style="padding:5px 6px!important; margin:5px 5px">
+                                        <div class="row align-items-center">
+                                            
+                                        </div>
+                                        
+                                        
                                     </div>
+
                                 </div>
-                            </li> -->
+                            </li>
                             <li class="list-inline-item">
                                     <div class="profilebar">
                                         <div class="dropdown">
-                                          <a class="dropdown-toggle" href="#" role="button" id="profilelink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/public/images/admin icon.jpg" class="img-fluid" alt="profile"><span class="feather icon-chevron-down live-icon"></span></a>
+                                          <a class="dropdown-toggle" href="#" role="button" id="profilelink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/public/images/admin icon.jpg"></span></a>
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profilelink" style="">
                                                 <div class="dropdown-item">
                                                     <div class="profilename">
@@ -382,32 +371,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="userbox">
-                                                    <ul class="list-unstyled mb-0">                                    
-                                                          <li class="media dropdown-item">
-                                                                <a href="#" class="profile-icon" href="/logout"
-                                                                     onclick="event.preventDefault();
-                                                                         document.getElementById('logout-form').submit();">
-                                                                         <img src="https://neritt.in/assets/images/svg-icon/logout.svg " class="img-fluid" alt="logout">
-                                                                    Logout
-                                                                </a>
-                                                            <form id="logout-form" action="https://neritt.in/logout" method="POST" style="display: none;">
-                                                                <input type="hidden" name="_token" value="m4pnVcNZKVaXC46bfUBONcH1vZtKvr3eVrnkXrmP">                                                            </form>
-                                                        </li>
-                                                    </ul>
+                                                    <img src="https://neritt.in/assets/images/svg-icon/logout.svg " class="img-fluid" alt="logout"><a href="/admin/logout">Logout</a>
+                                                
                                                 </div>
                                             </div>
                                         </div>
                                     </div>                                   
                                 </li>
                            
-                            <!-- <li class="list-inline-item menubar-toggle">
-                                <div class="menubar">
-                                    <a class="menu-hamburger navbar-toggle bg-transparent" href="javascript:void();" data-toggle="collapse" data-target="#navbar-menu" aria-expanded="true">
-                                        <img src="https://neritt.in/assets/images/svg-icon/collapse.svg " class="img-fluid menu-hamburger-collapse" alt="collapse">
-                                        <img src="https://neritt.in/assets/images/svg-icon/close.svg " class="img-fluid menu-hamburger-close" alt="close">
-                                    </a>
-                                 </div>
-                            </li> -->
+                       
+                           
                         </ul>
                     </div>
                 </div>
@@ -419,145 +392,316 @@
     </div>
     <!-- End Topbar -->
     <!-- Start Breadcrumbbar -->                    
-    <div class="breadcrumbbar">
+     <div class="breadcrumbbar" style="border-color: red 4px solid;">
         <div class="row align-items-center">
             <div class="col-md-8 col-lg-8">
-                <h4 class="page-title">All Orders
+                <h4 class="page-title"> 
+Dashboard
 </h4>
                 <div class="breadcrumb-list">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/admin-dashboard">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">All Orders
+                        <li class="breadcrumb-item"><a href="/admin/dashboard">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"> 
+Dashboard
 </li>
                     </ol>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-4">
+            <!-- <div class="col-md-4 col-lg-4">
                 <div class="widgetbar">
-                     <!-- <a href = "https://neritt.in/add-products"><button class="btn btn-success upload-image"><i class="feather icon-plus mr-1"></i>Add Products</button></a> -->
- <!-- <button class="btn btn-primary-rgba design-image"><i class="feather icon-image mr-2"></i>Design Image</button> -->
-
+                         <select class="form-control"  id="period" name="period" >
+        <option value="0">Today</option>
+        <option value="1">Yesterday</option>
+        <option value="2">Last 7 days</option>
+        <option value="3">Last Month</option>
+        <option value="4" selected>All Time</option>
+    </select>
                    
                 </div>                        
-            </div>
+            </div> -->
+           
         </div>          
     </div>
     <!-- End Breadcrumbbar -->
-    <!-- Start Contentbar -->
-<div class="contentbar">
-    <!-- Start row -->
-    <div class="row">
-        <!-- Start col -->
-        <div class="col-lg-12">
-            <div class="card m-b-30">
-            <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col-6" style="display:inline-flex;">
-                            <a href="/admin/orders"><h5 class="card-title mx-2   ">Order Details</h5></a>
-                            <a href="/admin/failed-orders"><h5 class="card-title mx-2 ">Failed/Pending Orders</h5></a>
-                            <a href="/cancelled-orders"><h5 class="card-title mx-2   badge badge-pill badge-primary ">Cancelled Orders</h5></a>
-                        </div>
-                        <div class="col-6">
-                            <ul class="list-inline-group text-right mb-0 pl-0">
-                                 <li class="list-inline-item">
-                                      <div class="form-group mb-0 amount-spent-select">
-                                        <input type="text" id="search" class="form-control" placeholder="Search">
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body" id="order_view">
-    <div class="table-responsive">
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Order Number</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Product Name</th>
-                    <th>Image</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Order Details</th>
-                    <!-- <th>Return Action</th> -->
-                </tr>
-            </thead>
-            <tbody id="order_body">
-                <% orders.forEach((order, index) => { %>
-                    <% order.products.forEach((product,) => { %>
-                <tr>
-                    <td><%= index + 1 %></td>
-                    <td><%= order.orderId %></td>
-                    <td><%= order.billingDetails.studentName %></td>
-                    <td><%= order.billingDetails.email %></td>
-                    <td><%= product.name %> </td> 
-                    <td> 
-                        
-                            <img src="/<%= product.image %>" alt="<%= product.name %>" width="50">
-                        </td> 
-                    <td><%= order.createdAt.toDateString() %></td>
-                    <td>
-                        <div class="td-content">
-                            <span class="badge badge-info"><%= order.status %></span>
-                        </div>
-                    </td>
-                    <td>
-                        
-                        <a href="/admin/order-details/<%= order._id %>/<%= product.product.id %>">
-                            <button type="button" class="edit-button btn btn-sm btn-success" style="float: none; margin: 5px;">
-                                <span class="ti-eye"></span>
-                            </button>
-                        </a>
-                    </td>
-                    <!-- <td>
-                        <select class="form-control" id="status" name="status" value="<%= order.status %>">
-                            <option selected value="">Default</option>
-                            <option value="Returned">Return Accepted</option>
-                            <option value="Return Rejected">Return Rejected</option>
-                        </select>
-                    </td> -->
-                </tr>
-                <% }); %>
-                <% }); %>
-            </tbody>
-        </table>
+    <div class="breadcrumbbar" style="margin:15px 30px!important;">
+        <div class="row align-items-center">
+            <div class="col-md-8 col-lg-8" style="display:flex; align-items: center;">
+                <form action="/admin/dashboard" method="GET" style="display: flex; align-items: center;">
+                    <!-- <label for="start_date" style="margin-right: 10px;"></label> -->
+                    <input type="date" id="start_date" name="start_date" class="form-control mx-2" placeholder="Start Date:" required />
+                    
+                    <!-- <label for="end_date" style="margin-right: 10px;">End Date:</label> -->
+                    <input type="date" id="end_date" name="end_date" class="form-control mx-2" placeholder="End Date:" required />
+                    
+                    <!-- Hidden field to store the selected filter -->
+                    <input type="hidden" id="filter" name="filter" value="">
+                    
+                    <!-- Submit button -->
+                    <button type="submit" id="btnSubmit" class="btn btn-success mx-2" style="    background-color: #18d26b;
+                    border-color: #18d26b;">Filter</button>
+                    
+                    
+                    <!-- <label for="end_date" style="margin-right: 10px;">Check Last:</label> -->
+                    
+                    <!-- Year filter -->
+                    <button type="submit" id="btnYear" style="width:100px;height:35px; border-radius:  5% 0% 0% 5%;" class="btn btn-primary">Year</button>
+                    
+                    <!-- Month filter -->
+                    <button type="submit" id="btnMonth" style="width:100px;height:35px; border-radius: 0%; " class="btn btn-primary">Month</button>
+                    
+                    <!-- Weekly filter -->
+                    <button type="submit" id="btnWeek" style="width:100px;height:35px; border-radius: 0%;" class="btn btn-primary">Weekly</button>
+                    
+                    <!-- Day filter -->
+                    <!-- <button type="submit" id="btnDayLast" style="width:100px;height:35px; border-radius: 0%;" class="btn btn-primary">Yesterday</button> -->
+                    
+                    <!-- Day filter -->
+                    <button type="submit" id="btnDayToday" style="width:100px;height:35px; border-radius: 0% 5% 5% 0%;;" class="btn btn-primary">Today</button>
+                    
+                    
+                </form>
+                <script>
+                    // Year filter button click event
+                    document.getElementById('btnYear').addEventListener('click', function() {
+                        document.getElementById('filter').value = 'year';
+                    });
+                
+                    // Month filter button click event
+                    document.getElementById('btnMonth').addEventListener('click', function() {
+                        document.getElementById('filter').value = 'month';
+                    });
+                
+                     // Weekly filter button click event
+                     document.getElementById('btnWeek').addEventListener('click', function() {
+                        document.getElementById('filter').value = 'weekly';
+                    });
+                
+                    // Yesturday filter button click event 
+                    // document.getElementById('btnDayLast').addEventListener('click', function() {
+                    //     document.getElementById('filter').value = 'yesterday';
+                    // });
+                
+                    // Day filter button click event
+                    document.getElementById('btnDayToday').addEventListener('click', function() {
+                        document.getElementById('filter').value = 'today';
+                    });
+                </script>
+            </div>
+            <div class="col-md-4 col-lg-4" style="display:flex;">
+                <form action="/admin/dashboard">
+                <button  style="width:100px;height:35px;" class="btn btn-primary">Reset</button>
+                </form>
+            </div>
+        </div>
         
+        
+        
+        
+<!-- Start Contentbar -->    
+<div class="contentbar">  
+    
+
+    <div class="admin-stat">
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+      <a class="dashboard-stat red"  style="margin-bottom: 5px;" href="#">
+        <div class="visual">
+          <i ></i>
+        </div>
+        <div class="details">
+          <div class="number">
+            <span>₹<%= totalSales %></span>
+          </div>
+          <div class="desc">Total Revenue</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+      <a class="dashboard-stat blue" href="#">
+        <div class="visual">
+          <i ></i>
+        </div>
+        <div class="details">
+          <div class="number">
+            <span><%= totalOrdersCount %></span>
+          </div>
+          <div class="desc">Total Orders</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a class="dashboard-stat hoki" href="#">
+          <div class="visual">
+            <i ></i>
+          </div>
+          
+          <div class="details">
+            <div class="number">
+              <span>+ <%= sales  %>%</span>
+              
+            </div>
+            <div class="desc">Sales</div>
+          </div>
+        </a>
+      </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a class="dashboard-stat purple" href="#">
+          <div class="visual">
+            <i ></i>
+          </div>
+          <div class="details">
+            <div class="number">
+              <span><%= newOrdersCount  %></span>
+            </div>
+            <div class="desc">New Orders</div>
+          </div>
+        </a>
+      </div><div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a class="dashboard-stat " style="background-color: #129393;" href="/admin/orders">
+          <div class="visual">
+            <i ></i>
+          </div>
+          <div class="details">
+            <div class="number">
+              <span><%= offered  %></span>
+            </div>
+            <div class="desc">Total Offer </div>
+          </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a class="dashboard-stat " style="background-color:#117A65;" href="#">
+          <div class="visual">
+            <i ></i>
+          </div>
+          <div class="details">
+            <div class="number">
+              <span><%= discount  %></span>
+            </div>
+            <div class="desc">Total  Discounted</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a  class="dashboard-stat " style="background-color:darkslategray;" href="#">
+          <div class="visual">
+            <i ></i>
+          </div>
+          
+          <div class="details">
+            <div class="number">
+              <span><%= usersCount  %></span>
+              
+            </div>
+            <div class="desc">Total Users</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <a  class="dashboard-stat " style="background-color:firebrick;" href="/admin/users">
+          <div class="visual">
+            <i ></i>
+          </div>
+          
+          <div class="details">
+            <div class="number">
+              <span>1</span>
+              
+            </div>
+            <div class="desc">Help Desk</div>
+          </div>
+        </a>
+      </div>
+  </div>
+   </div>
+   <div class="">
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class=" card Categories-card">
+            <h4>Categories </h4>
+            
+            <canvas id="CategoriesReport"></canvas>
+            </div>
+           
+            </div>
+           
+                <div class="col-md-3">
+                <div class=" card Categories-card">
+                <h4>New Orders </h4>
+                <canvas id="NewOrders"></canvas>
+        
+            </div>
+             
+     
+     </div>
+
+     <div class="col-md-6">
+        <div class="card blackBg">
+            <div class="line-chart">
+                <h4>Total Revenue </h4>
+                <div class="aspect-ratio">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
     
-    <div class="d-flex justify-content-right">
-        <nav>
-        <ul class="pagination">
-            
-                            <li class="page-item disabled" aria-disabled="true" aria-label="&laquo; Previous">
-                    <span class="page-link" aria-hidden="true">&lsaquo;</span>
-                </li>
-            
-            
-                            
-                
-                
-                                                                                        <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
-                                                                                              
-            
-                            <li class="page-item">
-                    <a class="page-link" href="/cancelled-orders?page=2" rel="next" aria-label="Next &raquo;">&rsaquo;</a>
-                </li>
-                    </ul>
-    </nav>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Data for the chart (sample data)
+        const revenuedata = [<%= revenuedata%>];
+        console.log(<%= revenuedata%>,'revenuedata founded')
+      
+        const revenueLabelString = unescape(<%- JSON.stringify(revenueLabelss) %>);
+        const revenueLabel = JSON.parse(revenueLabelString);
+    console.log(revenueLabel, 'revenueLabel founded');
+    // <%= revenueLabelss%>
+        // ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; 
+      // Get the canvas element
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+    
+        // Create the chart
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: revenueLabel,
+                datasets: [{
+                    label: 'Total Revenue',
+                    data: revenuedata,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Background color for the line
+                    borderColor: 'rgba(75, 192, 192, 1)', // Border color for the line
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+    
 
-    </div>
-</div>
-</div>            </div>
-        </div>
-        <!-- End col -->
 
-    </div>
-    <!-- End row -->
-</div>
 
+
+
+   </div>
+   </div>
+   
+   </div>
+    <!-- End row -->   
+
+    <!-- Start row -->
+
+          
+</div>  
 <!-- End Contentbar -->
     <!-- Start Footerbar -->
     <!-- <div class="footerbar">
@@ -574,7 +718,7 @@
                 <div class="modal-dialog  " role="document">
                     <div class="modal-content ">
                         <form class="" method="POST">
-                            <input type="hidden" name="_token" value="m4pnVcNZKVaXC46bfUBONcH1vZtKvr3eVrnkXrmP">                        <div class="modal-header">
+                            <input type="hidden" name="_token" value="MsX7Vm3kGOWqZ4iLotBA8u82l9iVYQzlBuCKR3vB">                        <div class="modal-header">
                             <h5 class="modal-title" id="create-modal-label">Select Vendor</h5>
                             <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -630,7 +774,239 @@
 
         <script src="https://neritt.in/assets/js/app.js"></script>
 
-        <script src="https://neritt.in/assets/admin/order/js/app.js" defer></script>
+        <!-- Apex js -->
+<script src="https://neritt.in/assets/plugins/apexcharts/apexcharts.min.js"></script>
+<script src="https://neritt.in/assets/plugins/apexcharts/irregular-data-series.js"></script>
+<!-- Vector Maps js -->
+<script src="https://neritt.in/assets/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
+<script src="https://neritt.in/assets/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- Slick js -->
+<script src="https://neritt.in/assets/plugins/slick/slick.min.js"></script>
+<!-- Dashboard js -->
+<script src="https://neritt.in/assets/js/admin/dashboard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+<!-- MDB -->
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.1/mdb.min.js"
+></script>
+
+
+
+<script>
+   // ============================================
+// As of Chart.js v2.5.0
+// http://www.chartjs.org/docs
+// ============================================
+let revenuedata = [10,20,30,50]
+let revenueLabel= ['g','h','j','s']
+
+var chart = document.getElementById("chart").getContext("2d"),
+	gradient = chart.createLinearGradient(0, 0, 0, 450);
+
+gradient.addColorStop(0, "rgba(255, 0,0, 0.5)");
+gradient.addColorStop(0.5, "rgba(255, 0, 0, 0.25)");
+gradient.addColorStop(1, "rgba(255, 0, 0, 0)");
+
+var data = {
+	labels: revenueLabel,
+	datasets: [
+		{
+			backgroundColor: gradient,
+			pointBackgroundColor: "white",
+			borderWidth: 1,
+			borderColor: "#911215",
+			data: revenuedata
+		}
+	]
+};
+
+var options = {
+	responsive: true,
+	maintainAspectRatio: true,
+	animation: {
+		easing: "easeInOutQuad",
+		duration: 520
+	},
+	scales: {
+		xAxes: [
+			{
+				gridLines: {
+					color: "rgba(200, 200, 200, 0.05)",
+					lineWidth: 1
+				}
+			}
+		],
+		yAxes: [
+			{
+				gridLines: {
+					color: "rgba(200, 200, 200, 0.08)",
+					lineWidth: 1
+				}
+			}
+		]
+	},
+	elements: {
+		line: {
+			tension: 0.4
+		}
+	},
+	legend: {
+		display: false
+	},
+	point: {
+		backgroundColor: "white"
+	},
+	tooltips: {
+		titleFontFamily: "Open Sans",
+		backgroundColor: "rgba(0,0,0,0.3)",
+		titleFontColor: "red",
+		caretSize: 5,
+		cornerRadius: 2,
+		xPadding: 10,
+		yPadding: 10
+	}
+};
+
+var chartInstance = new Chart(chart, {
+	type: "line",
+	data: data,
+	options: options
+});
+
+</script>
+<script>
+    var chart = document.getElementById("CategoriesReport").getContext("2d");
+
+    // var labelDatas = ['NOTEBOOK', 'BAG', 'BELT'];
+    const labelDatasString = unescape(<%- JSON.stringify(labelDatas) %>);
+    const labelDatas = JSON.parse(labelDatasString);
+    var dataSet = [<%=dataSet%>];
+console.log(labelDatas,'labelDatas')
+    var data = {
+        labels: labelDatas,
+        datasets: [{
+            label: 'Sales Report',
+            data: dataSet,
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(128, 255, 0)',
+                'rgb(0, 255, 0)',
+                'rgb(0, 255, 128)',
+                'rgb(0, 255, 255)',
+                'rgb(0, 128, 255)',
+                'rgb(0, 0, 255)',
+                'rgb(128, 0, 255)',
+                'rgb(255, 0, 255)',
+                'rgb(255, 0, 128)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+
+    var options = {
+        responsive: true,
+        maintainAspectRatio: true,
+        animation: {
+            easing: "easeInOutQuad",
+            duration: 520
+        },
+        elements: {},
+        legend: {
+            display: true
+        },
+        point: {
+            backgroundColor: "white"
+        }
+    };
+
+    var chartInstance = new Chart(chart, {
+        type: "doughnut",
+        data: data,
+        options: options
+    });
+</script>
+
+ 
+ <script>
+ 
+ var chart = document.getElementById("NewOrders").getContext("2d")
+ 
+//  let label_data = ["February"]
+
+ const label_dataString = unescape(<%- JSON.stringify(label_data) %>);
+    const label_data = <%- JSON.stringify(label_data) %>;
+
+
+ let data_sets  = [<%=data_sets%>]
+ 
+ var data = {
+     labels: label_data,
+     datasets: [{
+     label: 'My First Dataset',
+     data: data_sets,
+     backgroundColor: [
+       'rgb(255, 99, 132)',
+       'rgb(255, 128, 0)',
+       'rgb(255, 255, 0)',
+       'rgb(128, 255, 0)',
+       'rgb(0, 255, 0)',
+       'rgb(0, 255, 128)',
+       'rgb(0, 255, 255)',
+       'rgb(0, 128, 255)',
+       'rgb(0, 0, 255)',
+       'rgb(128, 0, 255)',
+       'rgb(255, 0, 255)',
+       'rgb(255, 0, 128)'
+     ],
+     hoverOffset: 4
+   }]
+ };
+ 
+ var options = {
+     responsive: true,
+     maintainAspectRatio: true,
+     animation: {
+         easing: "easeInOutQuad",
+         duration: 520
+     },
+ 
+     elements: {
+         
+     },
+     legend: {
+         display: false
+     },
+     point: {
+         backgroundColor: "white"
+     },
+     tooltips: {
+         titleFontFamily: "Open Sans",
+         backgroundColor: "rgba(0,0,0,0.3)",
+         titleFontColor: "red",
+         caretSize: 5,
+         cornerRadius: 2,
+         xPadding: 10,
+         yPadding: 10
+     }
+ };
+ 
+ var chartInstance = new Chart(chart, {
+     type: "doughnut",
+     data: data,
+     options: options
+ });
+ 
+ </script>
+ 
+
+
+
+
 
         <!-- Core JS -->
 

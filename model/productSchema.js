@@ -121,4 +121,3 @@ const productSchema = new mongoose.Schema({
 const productschema = mongoose.model('productDetails', productSchema);
 
 module.exports = productschema;
-

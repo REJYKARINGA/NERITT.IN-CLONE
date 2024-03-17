@@ -7,32 +7,22 @@ const categorySchema = require('../../model/categorySchema');
 
 
 
-// Product Management
-const displayProducts = async (req, res) => {
+const displayProducts = async (req, res, next) => {
   try {
     if (req.session.admin) {
-      // Extract query parameters for sorting and pagination
       const { sortBy, sortOrder, page } = req.query;
-      const pageSize = 10; // Number of products per page
+      const pageSize = 10;
       const currentPage = parseInt(page) || 1;
       const skip = (currentPage - 1) * pageSize;
 
-     
-      // Fetch products from the database with sorting and pagination applied
       const products = await productSchema.find()
         .populate('school')
         .populate('category')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(pageSize);
-
-      // Get the total count of products for pagination
       const totalProducts = await productSchema.countDocuments();
-
-      // Calculate the total number of pages
       const totalPages = Math.ceil(totalProducts / pageSize);
-
-      // Fetch categories and schools for filtering options
       const categories = await categorySchema.find();
       const schools = await schoolSchema.find();
 
@@ -49,34 +39,31 @@ const displayProducts = async (req, res) => {
       res.redirect('/admin');
     }
   } catch (error) {
-    console.error('Error fetching products:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return next(error);
   }
 };
 
-const displayCreateProduct = async (req, res) => {
-  console.log('display create Product page');
+const displayCreateProduct = async (req, res, next) => {
+try {
+  
   if (req.session.admin) {
     const getCategory = await categorySchema.find();
     const getSchool = await schoolSchema.find({ blocked: false });
-    
-    console.log(getCategory)
-
     res.render('admin/productAdd', { category: getCategory, school: getSchool });
   }
   else {
-   
-    console.log('admin login need to do ');
+
     res.redirect('/admin')
   }
+} catch (error) {
+  return next(error)
+}
 }
 
-const createProduct = async (req, res) => {
+const createProduct = async (req, res, next) => {
   try {
-   
-    if (!req.session.admin) {
 
-      console.log('Unauthorized. Please log in.')
+    if (!req.session.admin) {
       return res.redirect('/admin')
     }
 
@@ -102,13 +89,13 @@ const createProduct = async (req, res) => {
       color,
       size } = req.body;
     let titles = title.toUpperCase()
-   
+
     const parsePercentage = (percentage) => {
       const numericValue = parseFloat(percentage);
       return isNaN(numericValue) ? 0 : numericValue;
     };
 
-   
+
     const parsedCgst = parsePercentage(cgst);
     const parsedSgst = parsePercentage(sgst);
     const gallery = req.files['gallery[]'].map(file => file.path);
@@ -143,12 +130,11 @@ const createProduct = async (req, res) => {
 
     res.redirect('/admin/products');
   } catch (error) {
-    console.error('Error creating product:', error);
-    res.send(error.message);
+    return next(error);
   }
 };
 
-const editProduct = async (req, res) => {
+const editProduct = async (req, res, next) => {
   try {
     if (!req.session.admin) {
       res.redirect("/admin")
@@ -166,19 +152,17 @@ const editProduct = async (req, res) => {
 
     res.render('admin/productEdit', { product, category, school });
   } catch (error) {
-    console.error('Error fetching Product for edit:', error);
-    res.status(500).send('Internal Server Error ');
+    return next(error);
   }
 };
 
-const updateProduct = async (req, res) => {
+const updateProduct = async (req, res, next) => {
   try {
     if (!req.session.admin) {
-      console.log('Unauthorized. Please log in.');
       return res.redirect('/admin');
     }
 
-    const productId = req.params.id; 
+    const productId = req.params.id;
 
     const product_Id = await productSchema.findById(productId);
 
@@ -205,7 +189,7 @@ const updateProduct = async (req, res) => {
       color,
       size,
     } = req.body;
-    console.log(req.body)
+
     const parsePercentage = (percentage) => {
       const numericValue = parseFloat(percentage);
       return isNaN(numericValue) ? 0 : numericValue;
@@ -213,22 +197,17 @@ const updateProduct = async (req, res) => {
 
     const parsedCgst = parsePercentage(cgst);
     const parsedSgst = parsePercentage(sgst);
-    console.log("Before showing gallery and image")
-   
+
     const existingProduct = await productSchema.findById(product_Id);
 
     if (!existingProduct) {
-      console.log('Product not found.');
       return res.redirect('/admin/products');
     }
 
-    console.log("existingProduct found", existingProduct.image)
-
     const imagePath = req.files['image'] ? req.files['image'][0].path : existingProduct.image;
-    console.log(imagePath, "imagePath finding")
 
     if (imagePath !== existingProduct.image) {
-      fs.unlinkSync(existingProduct.image); 
+      fs.unlinkSync(existingProduct.image);
     }
 
     existingProduct.title = title.toUpperCase();;
@@ -258,14 +237,11 @@ const updateProduct = async (req, res) => {
 
     res.redirect('/admin/products');
   } catch (error) {
-    console.log(error.message)
-    console.error('Error editing product:', error.message);
-    res.send(error.message);
+    return next(error);
   }
 };
 
-const deleteProduct = async (req, res) => {
-  console.log("hello i am deleteProduct");
+const deleteProduct = async (req, res, next) => {
   try {
     const productId = req.params.id;
 
@@ -273,11 +249,9 @@ const deleteProduct = async (req, res) => {
 
 
     await categorySchema.findByIdAndDelete(product_Id);
-    console.log("deleteProduct ID done");
     res.redirect('/admin/products');
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send('Internal Server Error');
+    return next(error);
   }
 }
 

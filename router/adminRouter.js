@@ -11,6 +11,7 @@ const schoolController = require('../controller/admin/schoolController');
 const productController = require('../controller/admin/productController');
 const orderController = require('../controller/admin/orderController');
 const couponController = require('../controller/admin/couponController');
+const salesController = require('../controller/admin/salesController');
   
 
  
@@ -48,10 +49,14 @@ router.get('/logout', authController.logout);
 // Dashboard and User Management routes
 router.get('/dashboard', userController.dashboard);
 router.get('/admin-dashboard', userController.dashboard);
-router.get('/salesReport', userController.salesReportDate);
-router.post('/salesReport', userController.salesReportDate);
-router.get('/sales-export', userController.salesExport);
-router.get('/generate-pdf-sales-report', userController.salesReportPdf);
+router.get('/salesReport', salesController.salesReportDate);
+router.get('/sales-Report', salesController.salesReportDate);
+router.post('/salesReport', salesController.sales_ReportDate );
+
+
+// router.get('/sales-Report', salesController.salesReportDate);
+router.get('/sales-export', salesController.salesExport);
+router.get('/generate-pdf-sales-report', salesController.salesReportPdf);
  
 router.get('/users', userController.users);
 router.get('/users/:id/block', userController.toggleBlockStatus);
@@ -62,7 +67,7 @@ router.post('/categories/store', upload.fields([{ name: 'logo_image', maxCount: 
 router.get('/edit/:id', categoryController.editCategory);
 router.post('/edit/:id', upload.fields([{ name: 'logo_image', maxCount: 1 }]), categoryController.updateCategory);
 
-// Order Routes
+// Order Routes 
 router.get('/orders', orderController.displayOrders);
 router.get('/order-details/:orderId/:productId', orderController.getOrderDetailsById);
 router.post('/updateOrderStatus/:orderId', orderController.updateOrderStatus);

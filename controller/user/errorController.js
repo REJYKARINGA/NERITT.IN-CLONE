@@ -8,7 +8,7 @@ function divide(req, res, next) {
         return next(error);
     }
 
-    if (dividend % divisor !== 0) { // Intentional error
+    if (dividend % divisor !== 0) {
         const error = new Error('Result is not an integer');
         error.statusCode = 500;
         return next(error);

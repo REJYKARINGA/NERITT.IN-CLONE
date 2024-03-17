@@ -5,146 +5,163 @@ const fs = require('fs')
 const Coupon = require('../../model/couponSchema');
 
 
-const getAllCoupons = async (req, res) => {
+
+const getAllCoupons = async (req, res, next) => {
     try {
         if (!req.session.admin) {
-            console.log('Unauthorized. Please log in.');
             return res.redirect('/admin');
         }
 
-        // Fetch all coupons from the database
-        const coupons = await Coupon.find();
+        const pageSize = 10;
 
-        res.render('admin/couponManagement', { coupons }); // Pass coupons to the EJS template
+        const currentPage = parseInt(req.query.page) || 1;
+
+        const offset = (currentPage - 1) * pageSize;
+
+        const coupons = await Coupon.find()
+            .skip(offset)
+            .limit(pageSize)
+            .sort({ createdAt: -1 });
+
+        const totalCoupons = await Coupon.countDocuments();
+
+        const totalPages = Math.ceil(totalCoupons / pageSize);
+
+        res.render('admin/couponManagement', {
+            coupons,
+            currentPage,
+            totalPages
+        });
     } catch (error) {
-        console.error('Error fetching coupons:', error);
-        res.status(500).send('Internal server error');
+
+        return next(error);
     }
 };
 
-const storeCoupon = async (req, res) => {
+
+const storeCoupon = async (req, res, next) => {
     try {
 
         if (!req.session.admin) {
-            console.log('Unauthorized. Please log in.');
             return res.redirect('/admin');
         }
 
-        // Extract coupon data from request body
-        // const { code, description, discountType, discountValue, minimumAmount, startDate, endDate, maxUses, isActive } = req.body;
-console.log(req.body,"req.body")
-const { code, description, discountType, discountValue, minimumAmount, startDate, endDate, maxUses, isActive } = req.body;
+        const { code, description, discountType, discountValue, minimumAmount, startDate, endDate, maxUses, isActive } = req.body;
 
-// Create a new Coupon instance
-const newCoupon = new Coupon({
-    code,
-    description,
-    discountType,
-    discountValue,
-    minimumAmount,
-    startDate,
-    endDate,
-    maxUses,
-    isActive
-});
+        let processedDiscountValue = discountValue;
+        if (discountType === 'percentage') {
+            if (discountValue < 0) {
+                processedDiscountValue = 10;
+            } else if (discountValue > 100) {
+                processedDiscountValue = Math.min(100, parseFloat(parseFloat(discountValue).toFixed(2)));
+            }
+        } else if (discountType === 'fixedAmount') {
+            if (discountValue < 10) {
+                processedDiscountValue = 10;
+            } else if (discountValue > 1000) {
+                processedDiscountValue = 1000;
+            }
+        }
 
-// Save the new coupon to the database
-const savedCoupon = await newCoupon.save();
-console.log('Coupon saved successfully!');
+
+        const newCoupon = new Coupon({
+            code,
+            description,
+            discountType,
+            discountValue: processedDiscountValue,
+            minimumAmount,
+            startDate,
+            endDate,
+            maxUses,
+            isActive
+        });
+
+        const savedCoupon = await newCoupon.save();
         res.redirect('/admin/coupons');
     } catch (error) {
-        console.error('Error creating coupon:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        return next(error);
     }
 };
 
 
-const deleteCoupon = async (req, res) => {
+const deleteCoupon = async (req, res, next) => {
     try {
         if (!req.session.admin) {
-            console.log('Unauthorized. Please log in.');
             return res.redirect('/admin');
         }
-        // Check if the request contains the coupon ID
         const { id } = req.params;
         if (!id) {
             return res.status(400).json({ error: 'Coupon ID is missing' });
         }
 
-        // Find the coupon by ID and delete it from the database
         const deletedCoupon = await Coupon.findByIdAndDelete(id);
         if (!deletedCoupon) {
             return res.status(404).json({ error: 'Coupon not found' });
         }
 
-        // Respond with a success message
         res.json({ message: 'Coupon deleted successfully' });
     } catch (error) {
-        console.error('Error deleting coupon:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        return next(error);
     }
 };
 
-const editCoupon = async (req, res) => {
+const editCoupon = async (req, res, next) => {
     try {
 
         if (!req.session.admin) {
-            console.log('Unauthorized. Please log in.');
+
             return res.redirect('/admin');
         }
 
-        // Retrieve the coupon ID from the request parameters
         const { id } = req.params;
-
-        // Find the coupon in the database by its ID
         const coupon = await Coupon.findById(id);
 
         if (!coupon) {
-            // If the coupon is not found, return a 404 Not Found error
             return res.status(404).send('Coupon not found');
         }
-
-        // Render the edit coupon form template with the retrieved coupon data
         res.render('admin/couponEdit', { coupon });
     } catch (error) {
-        // If an error occurs, log the error and send a 500 Internal Server Error response
-        console.error('Error fetching coupon for editing:', error);
-        res.status(500).send('Internal server error');
+        return next(error);
     }
 };
 
-const updateCoupon = async (req, res) => {
+const updateCoupon = async (req, res, next) => {
     try {
         if (!req.session.admin) {
-            console.log('Unauthorized. Please log in.');
             return res.redirect('/admin');
         }
-
-        // Extract coupon data from the request body
         const { code, discountType, discountValue, minimumAmount, startDate, endDate, maxUses, isActive } = req.body;
 
-        // Find the coupon by ID
         const id = req.params.id;
         const coupon = await Coupon.findById(id);
 
-        // Update the coupon with the new data
+        let processedDiscountValue = discountValue;
+        if (discountType === 'percentage') {
+            if (discountValue < 0) {
+                processedDiscountValue = 10;
+            } else if (discountValue > 100) {
+                processedDiscountValue = Math.min(100, parseFloat(parseFloat(discountValue).toFixed(2)));
+            }
+        } else if (discountType === 'fixedAmount') {
+            if (discountValue < 10) {
+                processedDiscountValue = 10;
+            } else if (discountValue > 1000) {
+                processedDiscountValue = 1000;
+            }
+        }
         coupon.code = code;
         coupon.discountType = discountType;
-        coupon.discountValue = discountValue;
+        coupon.discountValue = processedDiscountValue;
         coupon.minimumAmount = minimumAmount;
         coupon.startDate = startDate;
         coupon.endDate = endDate;
         coupon.maxUses = maxUses;
         coupon.isActive = isActive;
 
-        // Save the updated coupon
-        const updatedCoupon = await coupon.save();
-
-        // Redirect to a success page or return a success response
+        await coupon.save();
         res.redirect('/admin/coupons');
     } catch (error) {
-        console.error('Error updating coupon:', error);
-        res.status(500).send('Internal server error');
+        return next(error);
     }
 };
 
@@ -155,6 +172,5 @@ module.exports = {
     editCoupon,
     updateCoupon,
     deleteCoupon
-    
-  }
- 
+
+}

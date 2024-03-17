@@ -4,7 +4,7 @@ const fs = require('fs')
 
 const categorySchema = require('../../model/categorySchema');
 
-const sizeOf = require('image-size'); 
+const sizeOf = require('image-size');
 const isSquare = (width, height) => {
   return width === height;
 };
@@ -15,24 +15,28 @@ const isLessThan1MP = (width, height) => {
 };
 
 
-// Category Management
-const categories = async (req, res) => {
-  if (req.session.admin) {
-    const admin = await categorySchema.find();
-    res.render('admin/categories', {
-      admin: admin,
-      success: req.flash('success'),
-      error: req.flash('error')
-    }); // Pass the admin data to the EJS template
 
-  } else {
-    res.redirect('/admin');
+const categories = async (req, res, next) => {
+  try {
+    if (req.session.admin) {
+      const admin = await categorySchema.find();
+      res.render('admin/categories', {
+        admin: admin,
+        success: req.flash('success'),
+        error: req.flash('error')
+      });
+
+    } else {
+      res.redirect('/admin');
+    }
+  } catch (error) {
+    return next(error);
   }
 }
 
-const createCategory = async (req, res) => {
+const createCategory = async (req, res, next) => {
   try {
-    
+
     if (!req.session.admin) {
       req.flash('success', 'Unauthorized. Please log in.');
       return res.redirect('/admin');
@@ -47,20 +51,19 @@ const createCategory = async (req, res) => {
       return res.redirect('/admin/categories');
     }
 
-   
+
     const logo_imagePath = req.files['logo_image'] ? req.files['logo_image'][0].path : null;
 
-  
+
     const logo_dimensions = logo_imagePath ? sizeOf(logo_imagePath) : null;
 
-    
+
     if (
       (logo_dimensions && (!isSquare(logo_dimensions.width, logo_dimensions.height) || !isLessThan1MP(logo_dimensions.width, logo_dimensions.height)))
     ) {
-     
-      console.log('Invalid image dimensions');
+
       if (logo_imagePath) {
-        fs.unlinkSync(logo_imagePath); 
+        fs.unlinkSync(logo_imagePath);
       }
       req.flash('success', 'Invalid image dimensions. Please upload images that meet the criteria.');
       return res.redirect('/admin/categories');
@@ -73,43 +76,42 @@ const createCategory = async (req, res) => {
       logo_image: logo_imagePath
     });
 
-   
+
     await newCategory.save();
     req.flash('success', 'Category created successfully.');
     res.redirect('/admin/categories');
   } catch (error) {
-    console.error('Error creating category:', error);
-    req.flash('error', 'Internal Server Error');
-    console.log('Error flash message set:', req.flash('error'));
-    res.status(500).send('Internal Server Error');
+
+    return next(error);
+
   }
 };
 
-const editCategory = async (req, res) => {
+const editCategory = async (req, res, next) => {
   try {
-   
+
     const categoryId = req.params.id;
     const category = await categorySchema.findById(categoryId);
 
-   
+
     res.render('admin/editCategory', { success: req.flash('success'), error: req.flash('error'), category });
   } catch (error) {
-    console.error('Error rendering edit category page:', error);
-    res.status(500).send('Internal Server Error');
+
+    return next(error);
   }
 }
 
-const updateCategory = async (req, res) => {
-  let categoryId; 
+const updateCategory = async (req, res, next) => {
+  let categoryId;
   try {
-   
+
     if (!req.session.admin) {
       return res.redirect("/admin");
     }
 
-    categoryId = req.params.id; 
+    categoryId = req.params.id;
 
-   
+
     const existingCategory = await categorySchema.findById(categoryId);
 
     if (!existingCategory) {
@@ -118,45 +120,43 @@ const updateCategory = async (req, res) => {
 
     const { category_name, description, in_home } = req.body;
 
-   
+
     const isCategoryExist = await categorySchema.findOne({
       category_name: category_name.toUpperCase(),
       _id: { $ne: categoryId }
     });
 
     if (isCategoryExist) {
-     
+
       req.flash('error', 'Category name already exists');
-      return res.redirect(`/admin/edit/${categoryId}`); 
+      return res.redirect(`/admin/edit/${categoryId}`);
     }
 
-   const logo_imagePath = req.files['logo_image'] ? req.files['logo_image'][0].path : existingCategory.logo_image;
+    const logo_imagePath = req.files['logo_image'] ? req.files['logo_image'][0].path : existingCategory.logo_image;
 
     const logo_dimensions = logo_imagePath ? sizeOf(logo_imagePath) : null;
 
     if (
       (logo_dimensions && (!isSquare(logo_dimensions.width, logo_dimensions.height) || !isLessThan1MP(logo_dimensions.width, logo_dimensions.height)))
     ) {
-      console.log('Invalid image dimensions');
       if (logo_imagePath !== existingCategory.logo_image) {
-        fs.unlinkSync(logo_imagePath); // Delete the invalid image
+        fs.unlinkSync(logo_imagePath);
       }
       return res.send('Invalid image dimensions. Please upload images that meet the criteria.');
     }
 
-   existingCategory.category_name = category_name.toUpperCase(); // Convert to uppercase as per previous logic
+    existingCategory.category_name = category_name.toUpperCase();
     existingCategory.description = description;
     existingCategory.in_home = in_home === '1';
     existingCategory.logo_image = logo_imagePath;
 
-   await existingCategory.save();
+    await existinbgCategory.save();
 
-  req.flash('success', 'Category updated successfully');
+    req.flash('success', 'Category updated successfully');
     res.redirect('/admin/categories');
   } catch (error) {
-    console.error('Error updating category:', error);
-   req.flash('error', 'Error updating category: ' + error.message);
-    res.redirect(`/admin/edit/${categoryId}`);
+
+    return next(error);
   }
 };
 
@@ -166,5 +166,5 @@ module.exports = {
   createCategory,
   editCategory,
   updateCategory,
-  
+
 }

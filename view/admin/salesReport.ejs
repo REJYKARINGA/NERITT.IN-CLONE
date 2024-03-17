@@ -428,9 +428,7 @@
                    
                 </div>    
                  
-                <!-- <form action="/admin/salesReport">
-                    <button  style="width:100px;height:40px;" class="btn btn-primary">Reset</button>
-                    </form>                    -->
+                
             </div>
             <script>
                 // JavaScript code to handle filtering based on the selected dates
@@ -472,30 +470,74 @@
         <div class="row align-items-center">
             <div class="col-md-8 col-lg-8" style="display:flex; align-items: center;">
                 <form action="/admin/salesReport" method="GET" style="display: flex; align-items: center;">
+                    <input type="hidden" id="filters" name="filter" value="">
                     
-                    <!-- Hidden field to store the selected filter -->
-                    <input type="hidden" id="filter" name="filter" value="">
-                    
-                  
-                    <!-- Year filter -->
-                    <button type="submit" id="btnYear" class="btn btn-primary mx-2">Last Year</button>
-                    
-                    <!-- Month filter -->
-                    <button type="submit" id="btnMonth" class="btn btn-primary mx-2">Last Month</button>
-                    
-                    
-                    <!-- Weekly filter -->
-                    <button type="submit" id="btnWeek" class="btn btn-primary mx-2">Weekly</button>
-                    
-                    <!-- Yesterday filter -->
-                    <!-- <button type="submit" id="btnDayLast" class="btn btn-primary mx-2">Yesterday</button> -->
-                    
-                    <!-- Day filter -->
-                    <button type="submit" id="btnDayToday" class="btn btn-primary mx-2">Today</button>
-                    
-                    
+                    <button type="button" id="btnYear" style="width:100px;height:35px; border-radius: 5% 0% 0% 5%;" class="btn btn-primary">Year</button>
+                    <button type="button" id="btnMonth" style="width:100px;height:35px; border-radius: 0%;" class="btn btn-primary">Month</button>
+                    <button type="button" id="btnWeek" style="width:100px;height:35px; border-radius: 0%;" class="btn btn-primary">Weekly</button>
+                    <button type="button" id="btnDayToday" style="width:100px;height:35px; border-radius: 0% 5% 5% 0%;" class="btn btn-primary">Today</button>
                 </form>
+                
                 <script>
+                    // Year filter button click event
+                    document.getElementById('btnYear').addEventListener('click', function() {
+                        document.getElementById('filters').value = 'year';
+                        submitForm();
+                    });
+                
+                    // Month filter button click event
+                    document.getElementById('btnMonth').addEventListener('click', function() {
+                        document.getElementById('filters').value = 'month';
+                        submitForm();
+                    });
+                
+                    // Weekly filter button click event
+                    document.getElementById('btnWeek').addEventListener('click', function() {
+                        document.getElementById('filters').value = 'weekly';
+                        submitForm();
+                    });
+                
+                    // Day filter button click event
+                    document.getElementById('btnDayToday').addEventListener('click', function() {
+                        document.getElementById('filters').value = 'today';
+                        submitForm();
+                    });
+                
+                    // Function to submit the form
+                    function submitForm() {
+                        document.querySelector('form').submit();
+                    }
+                </script>
+                
+                
+
+                <!-- <script>
+                    // Year filter button click event
+                    document.getElementById('btnYear').addEventListener('click', function() {
+                        document.getElementById('filters').value = 'year';
+                    });
+                
+                    // Month filter button click event
+                    document.getElementById('btnMonth').addEventListener('click', function() {
+                        document.getElementById('filters').value = 'month';
+                    });
+                
+                     // Weekly filter button click event
+                     document.getElementById('btnWeek').addEventListener('click', function() {
+                        document.getElementById('filters').value = 'weekly';
+                    });
+                
+                    // Yesturday filter button click event 
+                    // document.getElementById('btnDayLast').addEventListener('click', function() {
+                    //     document.getElementById('filter').value = 'yesterday';
+                    // });
+                
+                    // Day filter button click event
+                    document.getElementById('btnDayToday').addEventListener('click', function() {
+                        document.getElementById('filters').value = 'today';
+                    });
+                </script> -->
+                <!-- <script>
                     // Year filter button click event
                     document.getElementById('btnYear').addEventListener('click', function(event) {
                         event.preventDefault(); // Prevent default form submission behavior
@@ -516,14 +558,14 @@
                         document.getElementById('filter').value = 'weekly';
                         document.getElementById('btnSubmit').click(); // Manually trigger form submission
                     });
-                
+                 
                     // Day filter button click event
                     document.getElementById('btnDayToday').addEventListener('click', function(event) {
                         event.preventDefault(); // Prevent default form submission behavior
                         document.getElementById('filter').value = 'today';
                         document.getElementById('btnSubmit').click(); // Manually trigger form submission
                     });
-                </script>
+                </script> -->
                 
             </div>
             <div class="col-md-4 col-lg-4" style="display:flex;">
@@ -533,13 +575,18 @@
                             type="button" class="btn btn-success">Excel</button></a>
                 </div>
                 <div style="margin-left: 10px;">
-                    <a
-                        href="/admin/generate-pdf-sales-report"><button
-                            type="button" class="btn btn-success">PDF</button></a>
+                    <a id="filters" name="filter" href="/admin/generate-pdf-sales-report?filter=today">Generate PDF Sales Report for Year</a>
+
+<script>
+    function setFilter(value) {
+        var filterLink = document.getElementById('filters');
+        filterLink.href = "/admin/generate-pdf-sales-report?filter=" + value;
+    }
+</script>
+
                 </div>
-                <!-- <form action="/admin/salesReport">
-                <button  style="width:100px;height:40px;" class="btn btn-primary">Reset</button>
-                </form> -->
+            
+                
             </div>
         </div>
         
@@ -585,7 +632,7 @@
                                         <th>Product Name</th>
                                         <!-- <th>Amount</th>
                                         <th>Delivery Charge</th> -->
-                                        <th>Coupon<br>Discounted</th> 
+                                        <th>Coupon<br>Discounted</th>
                                         <th>Offer<br>Discounted</th>
                                         <th>Total</th>
                                         <th>Status</th>
@@ -645,46 +692,46 @@
                             </table>
                         </div>
                     </div>
-
-
-                </div>
-                <div class="d-flex justify-content-right">
-                    <nav>
-                        <ul class="pagination">
-                            <% if (currentPage === 1) { %>
-                                <li class="page-item disabled" aria-disabled="true" aria-label="&laquo; Previous">
-                                    <span class="page-link" aria-hidden="true">&lsaquo;</span>
-                                </li>
-                            <% } else { %>
-                                <li class="page-item">
-                                    <a class="page-link" href="/admin/salesReport?page=<%= currentPage - 1 %>" aria-label="Previous">&lsaquo;</a>
-                                </li>
-                            <% } %>
-                            
-                            <% for (let i = 1; i <= totalPages; i++) { %>
-                                <% if (i === currentPage) { %>
-                                    <li class="page-item active" aria-current="page">
-                                        <span class="page-link"><%= i %></span>
+                    <div class="d-flex justify-content-right">
+                        <nav>
+                            <ul class="pagination">
+                                <% if (currentPage === 1) { %>
+                                    <li class="page-item disabled" aria-disabled="true" aria-label="&laquo; Previous">
+                                        <span class="page-link" aria-hidden="true">&lsaquo;</span>
                                     </li>
                                 <% } else { %>
                                     <li class="page-item">
-                                        <a class="page-link" href="/admin/salesReport?page=<%= i %>"><%= i %></a>
+                                        <a class="page-link" href="/admin/salesReport?page=<%= currentPage - 1 %>" aria-label="Previous">&lsaquo;</a>
                                     </li>
                                 <% } %>
-                            <% } %>
-                
-                            <% if (currentPage === totalPages || totalPages === 0) { %>
-                                <li class="page-item disabled" aria-disabled="true" aria-label="Next &raquo;">
-                                    <span class="page-link" aria-hidden="true">&rsaquo;</span>
-                                </li>
-                            <% } else { %>
-                                <li class="page-item">
-                                    <a class="page-link" href="/admin/salesReport?page=<%= currentPage + 1 %>" aria-label="Next">&rsaquo;</a>
-                                </li>
-                            <% } %>
-                        </ul>
-                    </nav>
+                                
+                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                    <% if (i === currentPage) { %>
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link"><%= i %></span>
+                                        </li>
+                                    <% } else { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="/admin/salesReport?page=<%= i %>"><%= i %></a>
+                                        </li>
+                                    <% } %>
+                                <% } %>
+                    
+                                <% if (currentPage === totalPages || totalPages === 0) { %>
+                                    <li class="page-item disabled" aria-disabled="true" aria-label="Next &raquo;">
+                                        <span class="page-link" aria-hidden="true">&rsaquo;</span>
+                                    </li>
+                                <% } else { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="/admin/salesReport?page=<%= currentPage + 1 %>" aria-label="Next">&rsaquo;</a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </nav>
+                    </div>
+
                 </div>
+                
                 
             </div>
         </div>
@@ -697,7 +744,8 @@
     <div class="modal-dialog  " role="document">
         <div class="modal-content ">
              <form action="/admin/salesReport"  id="report_form" class="" method="POST">
-                <input type="hidden" name="_token" value="6jlCUJPv4SbRfw2zZsAiMnbKqZCrnJbdoeTSD97q">             <div class="modal-header">
+                <input type="hidden" name="_token" value="6jlCUJPv4SbRfw2zZsAiMnbKqZCrnJbdoeTSD97q">             
+                <div class="modal-header">
                 <h5 class="modal-title" id="create-modal-label">Select Date</h5>
                 <button type="button" class="close closeModal" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

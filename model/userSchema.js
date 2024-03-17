@@ -41,4 +41,4 @@ const schema = new mongoose.Schema({
 
 const schemacollection = new mongoose.model('userDetails',schema)
 
-module.exports =schemacollection
+module.exports =schemacollection;

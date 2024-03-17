@@ -525,11 +525,15 @@ Order Details
                         <div class="form-group">
                             <label for="status">Order Status:</label>
                             <select class="form-control" id="status" name="status" value="<%= order.status %>">
-                                <option selected value="pending">Order Placed</option>
+                                <option selected value="<%=order.status%>"><%=order.status%></option>
+                                <option  value="pending">Order Placed</option>
                                 <option value="Accepted">Order Accepted</option>
                                 <option value="shipped">Order Shipped</option>
                                 <option value="completed">Order Delivered</option>
-                                <option value="cancelledByAdmin">Order Canceled by Admin</option>
+                                <option   value="cancelledByAdmin">Order Canceled by Admin</option>
+                                <option value="Return requested">Return Requested</option>
+                                <option value="Returned">Return Accepted</option>
+                                <option value="Return Rejected">Return Rejected</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Update Status</button>

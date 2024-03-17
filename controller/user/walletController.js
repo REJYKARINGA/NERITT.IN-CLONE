@@ -3,8 +3,8 @@ const fs = require('fs')
 const walletCollection = require('../../model/walletSchema')
 const Swal = require('sweetalert2');
 const { body, validationResult } = require('express-validator');
-const nodemailer = require('nodemailer'); 
-const sizeOf = require('image-size'); 
+const nodemailer = require('nodemailer');
+const sizeOf = require('image-size');
 const orderId = require('../../public/js/orderId')
 
 const isSquare = (width, height) => {
@@ -12,14 +12,11 @@ const isSquare = (width, height) => {
 };
 
 const isLessThan1MP = (width, height) => {
-  const megapixels = (width * height) / 1000000;  
+  const megapixels = (width * height) / 1000000;
   return megapixels < 1;
 };
 
 
-
-
-// Get user's wallet
 const getWallet = async (req, res) => {
   try {
     const wallet = await walletCollection.findOne({ userid: req.user.id });
@@ -28,11 +25,10 @@ const getWallet = async (req, res) => {
     }
     res.json(wallet);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return next(error)
   }
 };
 
-// Update user's wallet balance
 const updateBalance = async (req, res) => {
   try {
     const { amount, process } = req.body;
@@ -45,11 +41,10 @@ const updateBalance = async (req, res) => {
     await wallet.save();
     res.json(wallet);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return next(error)
   }
 };
 
 module.exports = {
-    getWallet,
-    // updateBalance
+  getWallet,
 }

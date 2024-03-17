@@ -2,7 +2,7 @@ require('express')
 const fs = require('fs')
 const schoolSchema = require('../../model/schoolSchema');
 
-const sizeOf = require('image-size'); 
+const sizeOf = require('image-size');
 const isSquare = (width, height) => {
   return width === height;
 };
@@ -13,11 +13,11 @@ const isLessThan1MP = (width, height) => {
 };
 
 
-// School Management
-const displaySchools = async (req, res) => {
+
+const displaySchools = async (req, res, next) => {
   try {
     if (req.session.admin) {
-      const pageSize =10; // Number of products per page
+      const pageSize = 10;
       const currentPage = parseInt(req.query.page) || 1;
       const skip = (currentPage - 1) * pageSize;
 
@@ -25,7 +25,7 @@ const displaySchools = async (req, res) => {
       const totalPages = Math.ceil(totalProducts / pageSize);
 
       const schools = await schoolSchema.find()
-        .sort({ createdAt: -1 }) // Sort by creation date
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(pageSize);
 
@@ -38,29 +38,29 @@ const displaySchools = async (req, res) => {
       res.redirect('/admin');
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return next(error);
   }
 };
 
 
-const displayCreateSchool = (req, res) => {
-  console.log('create School');
-  if (req.session.admin) {
-    res.render('admin/schoolCreate')
-  }
-  else {
-    
-    console.log('entered to School Details Page ');
-    res.render('admin/schoolDetails')
+const displayCreateSchool = (req, res, next) => {
+  try {
+    if (req.session.admin) {
+      res.render('admin/schoolCreate')
+    }
+    else {
+
+      res.render('admin/schoolDetails')
+    }
+  } catch (error) {
+    return next(error)
   }
 }
 
-const createSchool = async (req, res) => {
+const createSchool = async (req, res, next) => {
   try {
-   
+
     if (!req.session.admin) {
-      console.log('Unauthorized. Please log in.')
       return res.redirect('/admin')
     }
 
@@ -82,14 +82,14 @@ const createSchool = async (req, res) => {
 
     if (
       (logo_dimensions && (!isSquare(logo_dimensions.width, logo_dimensions.height) || !isLessThan1MP(logo_dimensions.width, logo_dimensions.height)))) {
-      console.log('Invalid image dimensions');
+
       if (school_logoPath) {
-        fs.unlinkSync(school_logoPath); 
+        fs.unlinkSync(school_logoPath);
       }
       return res.status(400).send('Invalid image dimensions. Please upload images that meet the criteria.');
     }
 
-   const newSchool = new schoolSchema({
+    const newSchool = new schoolSchema({
       school_name,
       email,
       school_address,
@@ -104,23 +104,21 @@ const createSchool = async (req, res) => {
       school_logo: school_logoPath,
     });
 
-   await newSchool.save();
+    await newSchool.save();
 
     res.redirect('/admin/schools');
   } catch (error) {
-    console.error('Error creating Schools:', error.message);
-    res.status(500).send('Internal Server Error');
+    return next(error);
   }
 };
 
-const editSchool = async (req, res) => {
+const editSchool = async (req, res, next) => {
   try {
-   if (!req.session.admin) {
+    if (!req.session.admin) {
       res.redirect("/admin")
     }
 
     const schoolId = req.params.id;
-    console.log(schoolId)
     const school = await schoolSchema.findById(schoolId);
 
     if (!school) {
@@ -129,12 +127,11 @@ const editSchool = async (req, res) => {
 
     res.render('admin/schoolEdit', { school });
   } catch (error) {
-    console.error('Error fetching school for edit:', error);
-    res.status(500).send('Internal Server Error');
+    return next(error);
   }
 };
 
-const updateSchool = async (req, res) => {
+const updateSchool = async (req, res, next) => {
   try {
     if (!req.session.admin) {
       res.redirect("/admin")
@@ -167,9 +164,8 @@ const updateSchool = async (req, res) => {
     if (
       (logo_dimensions && (!isSquare(logo_dimensions.width, logo_dimensions.height) || !isLessThan1MP(logo_dimensions.width, logo_dimensions.height)))
     ) {
-      console.log('Invalid image dimensions');
       if (school_logoPath !== existingSchool.school_logo) {
-        fs.unlinkSync(school_logoPath); 
+        fs.unlinkSync(school_logoPath);
       }
       return res.status(400).send('Invalid image dimensions. Please upload images that meet the criteria.');
     }
@@ -192,12 +188,11 @@ const updateSchool = async (req, res) => {
 
     res.redirect('/admin/schools');
   } catch (error) {
-    console.error('Error updating school Details:', error);
-    res.status(500).send('Internal Server Error for Updating');
+    return next(error);
   }
 };
 
-const schoolBlockStatus = async (req, res) => {
+const schoolBlockStatus = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const user = await schoolSchema.findById(userId);
@@ -206,14 +201,13 @@ const schoolBlockStatus = async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    user.blocked = !user.blocked; 
+    user.blocked = !user.blocked;
 
     await user.save();
 
-    res.redirect('/admin/schools'); 
+    res.redirect('/admin/schools');
   } catch (error) {
-    console.error(error); 
-    res.status(500).send('Error toggling user status: ' + error.message);
+    return next(error);
   }
 };
 

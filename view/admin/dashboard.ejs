@@ -425,46 +425,66 @@ Dashboard
     <!-- End Breadcrumbbar -->
     <div class="breadcrumbbar" style="margin:15px 30px!important;">
         <div class="row align-items-center">
-            <div class="col-md-8 col-lg-8" style="display:flex; align-items: center;">
+            <div class="col-md-8 col-lg-12" style="display:flex; align-items: center;">
                 <form action="/admin/dashboard" method="GET" style="display: flex; align-items: center;">
-                    <!-- <label for="start_date" style="margin-right: 10px;"></label> -->
-                    <input type="date" id="start_date" name="start_date" class="form-control mx-2" placeholder="Start Date:" required />
-                    
-                    <!-- <label for="end_date" style="margin-right: 10px;">End Date:</label> -->
-                    <input type="date" id="end_date" name="end_date" class="form-control mx-2" placeholder="End Date:" required />
-                    
                     <!-- Hidden field to store the selected filter -->
                     <input type="hidden" id="filter" name="filter" value="">
+                     
+                    <!-- Start date input -->
+                    <input type="date" id="start_date" name="start_date" class="form-control mx-2" placeholder="Start Date:" />
+                    
+                    <!-- End date input -->
+                    <input type="date" id="end_date" name="end_date" class="form-control mx-2" placeholder="End Date:" />
                     
                     <!-- Submit button -->
-                    <button type="submit" id="btnSubmit" class="btn btn-success mx-2" style="    background-color: #18d26b;
-                    border-color: #18d26b;">Filter</button>
-                    
-                    
-                    <!-- <label for="end_date" style="margin-right: 10px;">Check Last:</label> -->
+                    <button type="submit" id="btnSubmit" class="btn btn-success mx-2" style="background-color: #18d26b; border-color: #18d26b;">Filter</button>
                     
                     <!-- Year filter -->
                     <button type="submit" id="btnYear" style="width:100px;height:35px; border-radius:  5% 0% 0% 5%;" class="btn btn-primary">Year</button>
                     
                     <!-- Month filter -->
                     <button type="submit" id="btnMonth" style="width:100px;height:35px; border-radius: 0%; " class="btn btn-primary">Month</button>
-                    
+                     
                     <!-- Weekly filter -->
                     <button type="submit" id="btnWeek" style="width:100px;height:35px; border-radius: 0%;" class="btn btn-primary">Weekly</button>
-                    
-                    <!-- Day filter -->
-                    <!-- <button type="submit" id="btnDayLast" style="width:100px;height:35px; border-radius: 0%;" class="btn btn-primary">Yesterday</button> -->
-                    
+                     
                     <!-- Day filter -->
                     <button type="submit" id="btnDayToday" style="width:100px;height:35px; border-radius: 0% 5% 5% 0%;;" class="btn btn-primary">Today</button>
-                    
-                    
+                 
                 </form>
+                <form action="/admin/dashboard">
+                    <button  style="margin-left:10px;width: 100px; height: 35px;width:100px;height:35px;" class="btn btn-primary">Reset</button>
+                    </form>
+                
+                <script>
+                    // Year filter button click event
+                    document.getElementById('btnYear').addEventListener('click', function() {
+                        document.getElementById('filter').value = 'year';
+                    });
+                
+                    // Month filter button click event
+                    document.getElementById('btnMonth').addEventListener('click', function() {
+                        document.getElementById('filter').value = 'month';
+                    });
+                
+                     // Weekly filter button click event
+                     document.getElementById('btnWeek').addEventListener('click', function() {
+                        document.getElementById('filter').value = 'weekly';
+                    });
+                
+                    // Yesturday filter button click event 
+                    // document.getElementById('btnDayLast').addEventListener('click', function() {
+                    //     document.getElementById('filter').value = 'yesterday';
+                    // });
+                
+                    // Day filter button click event
+                    document.getElementById('btnDayToday').addEventListener('click', function() {
+                        document.getElementById('filter').value = 'today';
+                    });
+                </script>
             </div>
             <div class="col-md-4 col-lg-4" style="display:flex;">
-                <form action="/admin/dashboard">
-                <button  style="width:100px;height:35px;" class="btn btn-primary">Reset</button>
-                </form>
+                
             </div>
         </div>
         
@@ -532,13 +552,13 @@ Dashboard
           </div>
         </a>
       </div><div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-        <a class="dashboard-stat " style="background-color: #129393;" href="#">
+        <a class="dashboard-stat " style="background-color: #129393;" href="/admin/orders">
           <div class="visual">
             <i ></i>
           </div>
           <div class="details">
             <div class="number">
-              <span><%= newOrdersCount  %></span>
+              <span><%= offered  %></span>
             </div>
             <div class="desc">Total Offer </div>
           </div>
@@ -551,7 +571,7 @@ Dashboard
           </div>
           <div class="details">
             <div class="number">
-              <span><%= newOrdersCount  %></span>
+              <span><%= discount  %></span>
             </div>
             <div class="desc">Total  Discounted</div>
           </div>
@@ -573,7 +593,7 @@ Dashboard
         </a>
       </div>
       <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-        <a  class="dashboard-stat " style="background-color:firebrick;" href="#">
+        <a  class="dashboard-stat " style="background-color:firebrick;" href="/admin/users">
           <div class="visual">
             <i ></i>
           </div>
@@ -589,7 +609,7 @@ Dashboard
       </div>
   </div>
    </div>
-   <div class="Graphs">
+   <div class="">
     <div class="row">
 
         <div class="col-md-3">
@@ -598,29 +618,69 @@ Dashboard
             
             <canvas id="CategoriesReport"></canvas>
             </div>
-     
-     
-     </div>
-     
-     <div class="col-md-3">
-            <div class=" card Categories-card">
-            <h4>New Orders </h4>
-            <canvas id="NewOrders"></canvas>
-     
+           
             </div>
+           
+                <div class="col-md-3">
+                <div class=" card Categories-card">
+                <h4>New Orders </h4>
+                <canvas id="NewOrders"></canvas>
+        
+            </div>
+             
      
      </div>
 
-<div class="col-md-6">
-   <div class=" card blackBg">
-       <div class="line-chart">
-       <h4>Total Revenue</h4>
-        <div class="aspect-ratio">
-           <canvas id="chart"></canvas>
-           </div>
-         </div>
-   </div>
-</div>
+     <div class="col-md-6">
+        <div class="card blackBg">
+            <div class="line-chart">
+                <h4>Total Revenue </h4>
+                <div class="aspect-ratio">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Data for the chart (sample data)
+        const revenuedata = [<%= revenuedata%>];
+        console.log(<%= revenuedata%>,'revenuedata founded')
+      
+        const revenueLabelString = unescape(<%- JSON.stringify(revenueLabelss) %>);
+        const revenueLabel = JSON.parse(revenueLabelString);
+    console.log(revenueLabel, 'revenueLabel founded');
+    // <%= revenueLabelss%>
+        // ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; 
+      // Get the canvas element
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+    
+        // Create the chart
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: revenueLabel,
+                datasets: [{
+                    label: 'Total Revenue',
+                    data: revenuedata,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Background color for the line
+                    borderColor: 'rgba(75, 192, 192, 1)', // Border color for the line
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+    
 
 
 
@@ -628,6 +688,7 @@ Dashboard
 
    </div>
    </div>
+   
    </div>
     <!-- End row -->   
 
@@ -719,46 +780,22 @@ Dashboard
 <!-- Dashboard js -->
 <script src="https://neritt.in/assets/js/admin/dashboard.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
 <!-- MDB -->
 <script
   type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.1/mdb.min.js"
 ></script>
 
-<script>
-    // Year filter button click event
-    document.getElementById('btnYear').addEventListener('click', function() {
-        document.getElementById('filter').value = 'year';
-    });
 
-    // Month filter button click event
-    document.getElementById('btnMonth').addEventListener('click', function() {
-        document.getElementById('filter').value = 'month';
-    });
-
-     // Weekly filter button click event
-     document.getElementById('btnWeek').addEventListener('click', function() {
-        document.getElementById('filter').value = 'weekly';
-    });
-
-    // Yesturday filter button click event 
-    // document.getElementById('btnDayLast').addEventListener('click', function() {
-    //     document.getElementById('filter').value = 'yesterday';
-    // });
-
-    // Day filter button click event
-    document.getElementById('btnDayToday').addEventListener('click', function() {
-        document.getElementById('filter').value = 'today';
-    });
-</script>
 
 <script>
    // ============================================
 // As of Chart.js v2.5.0
 // http://www.chartjs.org/docs
 // ============================================
-let revenuedata = []
-let revenueLabel= []
+let revenuedata = [10,20,30,50]
+let revenueLabel= ['g','h','j','s']
 
 var chart = document.getElementById("chart").getContext("2d"),
 	gradient = chart.createLinearGradient(0, 0, 0, 450);
@@ -834,137 +871,136 @@ var chartInstance = new Chart(chart, {
 });
 
 </script>
-
 <script>
-   // ============================================
-// As of Chart.js v2.5.0
-// http://www.chartjs.org/docs
-// ============================================
+    var chart = document.getElementById("CategoriesReport").getContext("2d");
 
-flatpickr("input[type=date]");
-
-var chart = document.getElementById("CategoriesReport").getContext("2d")
-
-// let label_datas = <%= JSON.stringify(labelDatas) %>;
-// let data_set  = <%= JSON.stringify(dataSet) %>; 
-
-var data = {
-    labels: <%= JSON.stringify(labelDatas) %>,
+    // var labelDatas = ['NOTEBOOK', 'BAG', 'BELT'];
+    const labelDatasString = unescape(<%- JSON.stringify(labelDatas) %>);
+    const labelDatas = JSON.parse(labelDatasString);
+    var dataSet = [<%=dataSet%>];
+console.log(labelDatas,'labelDatas')
+    var data = {
+        labels: labelDatas,
         datasets: [{
             label: 'Sales Report',
-            data: <%= JSON.stringify(dataSet) %>,
+            data: dataSet,
             backgroundColor: [
-      'rgb(255, 99, 132)',
-      'rgb(54, 162, 235)',
-      'rgb(255, 205, 86)',
-      'rgb(128, 255, 0)',
-      'rgb(0, 255, 0)',
-      'rgb(0, 255, 128)',
-      'rgb(0, 255, 255)',
-      'rgb(0, 128, 255)',
-      'rgb(0, 0, 255)',
-      'rgb(128, 0, 255)',
-      'rgb(255, 0, 255)',
-      'rgb(255, 0, 128)'
-    ],
-    hoverOffset: 4
-  }]
-};
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(128, 255, 0)',
+                'rgb(0, 255, 0)',
+                'rgb(0, 255, 128)',
+                'rgb(0, 255, 255)',
+                'rgb(0, 128, 255)',
+                'rgb(0, 0, 255)',
+                'rgb(128, 0, 255)',
+                'rgb(255, 0, 255)',
+                'rgb(255, 0, 128)'
+            ],
+            hoverOffset: 4
+        }]
+    };
 
-var options = {
-	responsive: true,
-	maintainAspectRatio: true,
-	animation: {
-		easing: "easeInOutQuad",
-		duration: 520
-	},
+    var options = {
+        responsive: true,
+        maintainAspectRatio: true,
+        animation: {
+            easing: "easeInOutQuad",
+            duration: 520
+        },
+        elements: {},
+        legend: {
+            display: true
+        },
+        point: {
+            backgroundColor: "white"
+        }
+    };
 
-	elements: {
-		
-	},
-	legend: {
-		display: true
-	},
-	point: {
-		backgroundColor: "white"
-	}
-
-};
-
-var chartInstance = new Chart(chart, {
-	type: "doughnut",
-	data: data,
-	options: options
-});
-
+    var chartInstance = new Chart(chart, {
+        type: "doughnut",
+        data: data,
+        options: options
+    });
 </script>
 
+ 
+ <script>
+ 
+ var chart = document.getElementById("NewOrders").getContext("2d")
+ 
+//  let label_data = ["February"]
 
-<script>
+ const label_dataString = unescape(<%- JSON.stringify(label_data) %>);
+    const label_data = <%- JSON.stringify(label_data) %>;
 
-var chart = document.getElementById("NewOrders").getContext("2d")
+    // const revenueLabelString = unescape(<%- JSON.stringify(revenueLabelss) %>);
+    //     const revenueLabel = JSON.parse(revenueLabelString);
 
-let label_data = []
-let data_sets  = []
+ let data_sets  = [<%=data_sets%>]
+ 
+ var data = {
+     labels: label_data,
+     datasets: [{
+     label: 'My First Dataset',
+     data: data_sets,
+     backgroundColor: [
+       'rgb(255, 99, 132)',
+       'rgb(255, 128, 0)',
+       'rgb(255, 255, 0)',
+       'rgb(128, 255, 0)',
+       'rgb(0, 255, 0)',
+       'rgb(0, 255, 128)',
+       'rgb(0, 255, 255)',
+       'rgb(0, 128, 255)',
+       'rgb(0, 0, 255)',
+       'rgb(128, 0, 255)',
+       'rgb(255, 0, 255)',
+       'rgb(255, 0, 128)'
+     ],
+     hoverOffset: 4
+   }]
+ };
+ 
+ var options = {
+     responsive: true,
+     maintainAspectRatio: true,
+     animation: {
+         easing: "easeInOutQuad",
+         duration: 520
+     },
+ 
+     elements: {
+         
+     },
+     legend: {
+         display: false
+     },
+     point: {
+         backgroundColor: "white"
+     },
+     tooltips: {
+         titleFontFamily: "Open Sans",
+         backgroundColor: "rgba(0,0,0,0.3)",
+         titleFontColor: "red",
+         caretSize: 5,
+         cornerRadius: 2,
+         xPadding: 10,
+         yPadding: 10
+     }
+ };
+ 
+ var chartInstance = new Chart(chart, {
+     type: "doughnut",
+     data: data,
+     options: options
+ });
+ 
+ </script>
+ 
 
-var data = {
-	labels: label_data,
-    datasets: [{
-    label: 'My First Dataset',
-    data: data_sets,
-    backgroundColor: [
-      'rgb(255, 99, 132)',
-      'rgb(255, 128, 0)',
-      'rgb(255, 255, 0)',
-      'rgb(128, 255, 0)',
-      'rgb(0, 255, 0)',
-      'rgb(0, 255, 128)',
-      'rgb(0, 255, 255)',
-      'rgb(0, 128, 255)',
-      'rgb(0, 0, 255)',
-      'rgb(128, 0, 255)',
-      'rgb(255, 0, 255)',
-      'rgb(255, 0, 128)'
-    ],
-    hoverOffset: 4
-  }]
-};
 
-var options = {
-	responsive: true,
-	maintainAspectRatio: true,
-	animation: {
-		easing: "easeInOutQuad",
-		duration: 520
-	},
-
-	elements: {
-		
-	},
-	legend: {
-		display: false
-	},
-	point: {
-		backgroundColor: "white"
-	},
-	tooltips: {
-		titleFontFamily: "Open Sans",
-		backgroundColor: "rgba(0,0,0,0.3)",
-		titleFontColor: "red",
-		caretSize: 5,
-		cornerRadius: 2,
-		xPadding: 10,
-		yPadding: 10
-	}
-};
-
-var chartInstance = new Chart(chart, {
-	type: "doughnut",
-	data: data,
-	options: options
-});
-
-</script>
 
 
 

@@ -316,7 +316,7 @@
                                             <input type="hidden" name="order_id" id="order_id" value="<%=ordId%>">
                                             <input type="hidden" name="csrf_token" id="csrf_token"
                                                 value="kFzTS1UngvgFQ0LSU9mEwC6HTt9zEKPiQ1Rd3R6y">
-                                            <input type="hidden" name="rzp" id="rzp" value="rzp_test_ATZkateK1H3fCP">
+                                            <input type="hidden" name="rzp" id="rzp" value="rzp_live_OYiVkGEsZxL9Q8">
                                             <input type="hidden" id="total_price"  name="finalAmount"
                                                 value="<%=finalAmount - 1%>" />
                                                 <input type="hidden" id="total_discounted"  name="discount"
@@ -560,51 +560,41 @@
 
                                                     </div>
                                                     <div class="zpayment">
-                                                        <h5>PAYMENT</h5>
-                                                        <p>All transactions are secure and encrypted.</p>
-                                                        <div class="payment-select">
-                                                            <label>
-                                                                <input type="radio" checked="checked" value="1"
-                                                                    name="cash">
-                                                                <span></span>
-                                                                CASH ON DELIVERY
-                                                            </label>
+    <h5>PAYMENT</h5>
+    <p>All transactions are secure and encrypted.</p>
+    <div class="payment-select">
+        <label>
+            <input type="radio" checked="checked" value="1" name="cash">
+            <span></span>
+            CASH ON DELIVERY
+        </label>
+        <label>
+            <input type="radio" value="2" name="cash" id="online_payment">
+            <span></span>
+            ONLINE PAYMENT
+        </label>
+        <label>
+            <input type="radio" value="3" name="cash" id="wallet_payment">
+            <span></span>
+            WALLET BALANCE: ₹ <%=walletBalance%>
+        </label>
+    </div>
+    <div class="privacy-policy-text">
+        <p>
+            Your personal data will be used to process your order,
+            support your experience throughout this website, and
+            for other purposes described in our privacy policy.
+        </p>
+    </div>
+    <div class="form-check term-condition-checked">
+        <label class="form-check-label" for="i-agree-to-the-website">
+            <input class="form-check-input" type="checkbox" value="" id="i-agree-to-the-website" checked>
+            I have read and agree to the website <a href="https://neritt.in/cart-terms">terms and conditions*</a>
+        </label>
+    </div>
+    <a href="#" id="place_order" class="btn btn-primary">PLACE ORDER</a>
+</div>
 
-
-                                                            <label>
-                                                                <input type="radio" value="2" name="cash"
-                                                                    id="online_payment">
-                                                                <span></span>
-                                                                ONLINE PAYMENT
-                                                            </label>
-
-                                                            <label>
-                                                                <input type="radio" value="3" name="cash"
-                                                                    id="online_payment">
-                                                                <span></span>
-                                                                WALLET BALANCE : ₹ <%=walletBalance%>
-                                                            </label>
-                                                        </div>
-                                                        <div class="privacy-policy-text">
-                                                            <p>
-                                                                Your personal data will be used to process your order,
-                                                                support your experience<br>throughout this website, and
-                                                                for other purposes described in our privacy policy.
-                                                            </p>
-                                                        </div>
-                                                        <div class="form-check term-condition-checked">
-                                                            <label class="form-check-label"
-                                                                for="i-agree-to-the-website">
-                                                                <input class="form-check-input" type="checkbox" value=""
-                                                                    id="i-agree-to-the-website" checked>
-                                                                I have read and agree to the website <a
-                                                                    href="https://neritt.in/cart-terms">terms and
-                                                                    conditions*</a>
-                                                            </label>
-                                                        </div>
-                                                        <a href="" id="place_order" class="btn btn-primary  ">PLACE
-                                                            ORDER</a>
-                                                    </div>
                         </div>
                     </div>
 
@@ -664,8 +654,7 @@
                 
 
                 <!-- JavaScript code to handle form submission -->
-                <script>
-                    // Function to handle online payment
+                <!-- <script>
                     // Function to handle online payment
                     function initiateRazorpayPayment(finalAmount) {
                         // Create a Razorpay payment object
@@ -673,150 +662,134 @@
                             key: 'rzp_test_ATZkateK1H3fCP', // Replace with your Razorpay API key
                             amount: finalAmount, // Amount in paise (e.g., 1000 paise = ₹10)
                             currency: 'INR',
-                            name: 'Your Company Name',
-                            description: 'Purchase Description',
+                            name: 'Neritt.in',
+                            description: 'Purchase Product',
                             handler: function (response) {
-                                // Handle payment success
-                                // Submit the form programmatically
-                                document.getElementById('checkout_details').submit();
+                                if (response.error) {
+                                    // Handle payment failure
+                                    fetch('/store_checkout', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ status: 'Failed' }) // Include the status parameter
+                                    })
+                                    .then(response => {
+                                        // Handle response if needed
+                                        window.location.href = '/store_checkout?status=Failed'; // Redirect to the checkout page
+                                    })
+                                    .catch(error => {
+                                        // Handle error if needed
+                                        console.error('Error:', error);
+                                    });
+                                } else {
+                                    // Handle payment success
+                                    // Submit the form programmatically
+                                    document.getElementById('checkout_details').submit();
+                                }
                             }
                         };
-
-                        var rzp1 = new Razorpay(options);
-
-        rzp1.open();
-
-        rzp1.on('payment.failed', function (response) {
-            // Extracting necessary data
-            var errorDetails = {
-                code: response.error.code,
-                description: response.error.description,
-                source: response.error.source,
-                step: response.error.step,
-                reason: response.error.reason,
-                order_id: response.error.metadata.order_id,
-                payment_id: response.error.metadata.payment_id
-            };
-
-            // Send data to backend
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/store_checkout");
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Request was successful
-                    console.log("Payment failure details sent successfully.");
-                }
-            };
-            xhr.send(JSON.stringify(errorDetails));
-        });
-    }
-
-    document.getElementById('place_order').addEventListener('click', function (event) {
+                
+                        // Create a new Razorpay object
+                        var rzp = new Razorpay(options);
+                
+                        // Open the Razorpay payment dialog
+                        rzp.open();
+                    } 
+                
+                    // Event listener for the "Place Order" button
+                    document.getElementById('place_order').addEventListener('click', function (event) {
                         // Prevent default button behavior
                         event.preventDefault();
-
+                
                         // Perform form validation
                         var valid = true;
-
-                        // Validate Father's Name
-                        var fatherName = document.getElementById('displayed_father_name').value.trim();
-                        if (!fatherName) {
-                            document.getElementById('fatherNameError').style.display = 'block';
-                            valid = false;
-                        } else {
-                            document.getElementById('fatherNameError').style.display = 'none';
-                        }
-
-                        // Validate Student's Name
-                        var studentName = document.getElementById('displayed_student_name').value.trim();
-                        if (!studentName) {
-                            document.getElementById('studentNameError').style.display = 'block';
-                            valid = false;
-                        } else {
-                            document.getElementById('studentNameError').style.display = 'none';
-                        }
-
-                        // Validate Email
-                        var email = document.getElementById('displayed_email').value.trim();
-                        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailPattern.test(email)) {
-                            document.getElementById('emailError').style.display = 'block';
-                            valid = false;
-                        } else {
-                            document.getElementById('emailError').style.display = 'none';
-                        }
-
-                        // Validate Phone
-                        var phone = document.getElementById('displayed_phone').value.trim();
-                        var phonePattern = /^\d{10}$/;
-                        if (!phonePattern.test(phone)) {
-                            document.getElementById('phoneError').style.display = 'block';
-                            valid = false;
-                        } else {
-                            document.getElementById('phoneError').style.display = 'none';
-                        }
-
-                        // Validate District
-                        var district = document.getElementById('displayed_district').value;
-                        if (!district) {
-                            document.getElementById('districtError').style.display = 'block';
-                            valid = false;
-                        } else {
-                            document.getElementById('districtError').style.display = 'none';
-                        }
-
-                        // Validate Address
-                        var address = document.getElementById('displayed_address').value.trim();
-                        if (!address) {
-                            document.getElementById('addressError').style.display = 'block';
-                            valid = false;
-                        } else {
-                            document.getElementById('addressError').style.display = 'none';
-                        }
-
-                        // Validate Pincode
-                        var pincode = document.getElementById('displayed_pincode').value.trim();
-                        var pincodePattern = /^\d{6}$/;
-                        if (!pincodePattern.test(pincode)) {
-                            document.getElementById('pincodeError').style.display = 'block';
-                            valid = false;
-                        } else {
-                            document.getElementById('pincodeError').style.display = 'none';
-                        }
-
-                        // Validate Home or Office
-                        var homeOrOffice = document.getElementById('displayed_home_or_office').value;
-                        if (!homeOrOffice) {
-                            document.getElementById('homeOrOfficeError').style.display = 'block';
-                            valid = false;
-                        } else {
-                            document.getElementById('homeOrOfficeError').style.display = 'none';
-                        }
-
+                
+                        // Validate form fields here...
+                
                         // If form is valid
                         if (valid) {
                             // Check if online payment is selected
                             var onlinePaymentSelected = document.getElementById('online_payment').checked;
-
+                
                             // If online payment is selected, initiate Razorpay payment
                             if (onlinePaymentSelected) {
                                 // Calculate total amount based on product's final amount
                                 var finalAmount = (<%= finalAmount - 1 %>) * 100;
-                    // Initiate Razorpay payment
-                    initiateRazorpayPayment(finalAmount);
-        } else {
-                        // If cash on delivery or other payment method is selected, proceed with normal order placement
-                        document.getElementById('checkout_details').submit();
-                    }
-    }
+                                // Initiate Razorpay payment
+                                initiateRazorpayPayment(finalAmount);
+                            } else {
+                                // If cash on delivery or other payment method is selected, proceed with normal order placement
+                                document.getElementById('checkout_details').submit();
+                            }
+                        }
+                    });
+                </script> -->
+                <!-- <script>
+                   $(document).ready(function(){
+    $('#place_order').click(function(e){
+        e.preventDefault();
+
+        // Perform form validation
+        var valid = true;
+        // You can add your form validation logic here
+        
+        // If form is valid
+        if (valid) {
+            // Check if online payment is selected
+            var onlinePaymentSelected = $('#online_payment').is(':checked');
+            
+            // If online payment is selected, initiate Razorpay payment
+            if (onlinePaymentSelected) {
+                // Calculate total amount based on product's final amount
+                var finalAmount = "<%= walletBalance %>"; // Replace this with your calculation logic
+                
+                // Initiate Razorpay payment
+                initiateRazorpayPayment(finalAmount);
+            } else {
+                // If cash on delivery or other payment method is selected, proceed with normal order placement
+                $('#checkout_details').submit();
+            }
+        }
+    });
 });
-                </script>
+// Function to handle online payment
+function initiateRazorpayPayment(finalAmount) {
+    // Create a Razorpay payment object
+    var options = {
+        key: 'rzp_test_ATZkateK1H3fCP', // Replace with your Razorpay API key
+        amount: finalAmount * 100, // Amount in paise (e.g., 1000 paise = ₹10)
+        currency: 'INR',
+        name: 'Neritt.in',
+        description: 'Purchase Product',
+        handler: function (response) {
+            if (response.error && response.error.code === 'payment_failed') {
+                // Handle payment failure
+                alert("Payment Failed: Your payment didn't go through as it was declined by the bank.");
+            } else {
+                // Handle payment success
+                alert("Payment Succeeded");
+                $('#checkout_details').submit();
+            }
+        }
+    };
+
+    // Create a new Razorpay object
+    var rzp = new Razorpay(options);
+
+    // Open the Razorpay payment dialog
+    rzp.open();
+}
+
+
+
+
+                </script> -->
 
             </div>
             </div>
         </section>
-
+ 
         <div class="goto-top-button" id="back-to-top">
             <a href="#">
                 <div class="goto-top"><span class="sr-only">goto top</span>
@@ -1109,40 +1082,6 @@
             const ordId = orderNumber()
             console.log(ordId);
         </script>
-         <script>
-            // Function to parse query parameters from URL
-            function getQueryParam(name) {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(name);
-            }
-    
-            // Check if exceedsLimit query parameter is true
-            const exceedsLimit = getQueryParam('exceedsLimit');
-            const lessThanLimit = getQueryParam('lessThanLimit');
-            
-            // Display SweetAlert if exceedsLimit is true
-            if (exceedsLimit === 'true') {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'COD Not Available',
-                    text: 'Order above Rs 1000 should not be allowed for COD.',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            }
-    
-            // Display SweetAlert if lessThanLimit is true
-            if (lessThanLimit === 'true') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'COD Not Available',
-                    text: 'COD is not available for orders less than Rs 1000.',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            }
-        </script>
-
 
         <script>
             async function populateAddresses() {
@@ -1193,6 +1132,39 @@
                     icon: 'info',
                     title: 'Insufficient Wallet',
                     text: 'Insufficient balance in wallet.',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        </script>
+         <script>
+            // Function to parse query parameters from URL
+            function getQueryParam(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
+            }
+    
+            // Check if exceedsLimit query parameter is true
+            const exceedsLimit = getQueryParam('exceedsLimit');
+            const lessThanLimit = getQueryParam('lessThanLimit');
+            
+            // Display SweetAlert if exceedsLimit is true
+            if (exceedsLimit === 'true') {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'COD Not Available',
+                    text: 'Order above Rs 1000 should not be allowed for COD.',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+    
+            // Display SweetAlert if lessThanLimit is true
+            if (lessThanLimit === 'true') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'COD Not Available',
+                    text: 'COD is not available for orders less than Rs 1000.',
                     showConfirmButton: false,
                     timer: 2000
                 });

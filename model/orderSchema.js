@@ -18,6 +18,7 @@ const orderSchema = new mongoose.Schema({
       },
       name: String,
       price: Number,
+      category:String,
       image: String, // Add image field for each product in the cart
       quantity: {
         type: Number,
@@ -34,22 +35,17 @@ const orderSchema = new mongoose.Schema({
         defult: 0,
          required: true
     },
-    OfferedAmount: {
+    offeredAmount: {
         type: Number,
-        defult: 0,
-         required: true
-    },
-    category: {
-        type: String,
-         required: true
+        defult: 5
     },
     address: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address'
     },
-    status: {
+    status: { 
         type: String,
-        enum: ['pending', 'Accepted', 'shipped', 'completed', "Returned", 'cancelled', 'cancelledByAdmin', 'failed' ],
+        enum: ['pending', 'Accepted', 'shipped', 'completed', "Returned", "Return requested", 'Return Rejected', 'cancelled', 'cancelledByAdmin', 'Failed' ],
         default: 'pending'
     },
     billingDetails: {
@@ -59,7 +55,7 @@ const orderSchema = new mongoose.Schema({
         },
         studentName: {
             type: String,
-             // required: true
+             // required: true 
         },
         email: {
             type: String,
@@ -104,4 +100,4 @@ const orderSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+module.exports = mongoose.model('Orders', orderSchema);
