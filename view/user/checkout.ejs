@@ -543,11 +543,15 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="coupon_code">Coupon Code</label>
-                                                        <input type="text" class="form-control" id="coupon_code"
-                                                            name="coupon_code" placeholder="Enter Coupon Code">
+                                                        <input type="text" class="form-control" id="coupon_code" name="coupon_code" placeholder="Enter Coupon Code">
                                                     </div>
-                                                    <button id="apply_coupon_btn" class="btn btn-primary">Apply
-                                                        Coupon</button>
+                                                    <button id="apply_coupon_btn" style="background-color: #129393;color: white;" class="btn">Apply Coupon</button>
+                                                    
+                                                    <!-- Display applied coupon code and Remove Coupon button -->
+                                                    <div id="coupon_display" style="display: none;">
+                                                        <p>Applied Coupon: <span id="applied_coupon_code"></span></p>
+                                                        <button id="remove_coupon_btn" class="btn btn-danger">Remove Coupon</button>
+                                                    </div>
                                                     <div class="ztotal d-flex justify-content-between">
                                                         <div class="total-left">
                                                             <p>Total</p>
@@ -634,12 +638,19 @@
                                     // Update hidden input field value
                                     const totalPriceInput = document.getElementById('total_price');
                                     totalPriceInput.value = data.updatedTotalAmount;
-                                    
+                
                                     // Update hidden input field value
                                     const totalDiscountInput = document.getElementById('total_discounted');
                                     totalDiscountInput.value = data.discount;
+                
+                                    // Display applied coupon code
+                                    document.getElementById('applied_coupon_code').textContent = couponCode;
+                                    document.getElementById('coupon_display').style.display = 'block';
+                
+                                    // Show Remove Coupon button
+                                    document.getElementById('remove_coupon_btn').style.display = 'block';
                                 } else {
-                                    if (data.alreadyUsed ) {
+                                    if (data.alreadyUsed) {
                                         // Display SweetAlert indicating that the user has already used the coupon
                                         Swal.fire({
                                             icon: 'info',
@@ -659,7 +670,51 @@
                             console.error('Error applying coupon:', error);
                         }
                     });
+                
+                    document.getElementById('remove_coupon_btn').addEventListener('click', async () => {
+                        // Reset coupon code input field
+                        document.getElementById('coupon_code').value = '';
+                
+                        // Hide applied coupon display
+                        document.getElementById('coupon_display').style.display = 'none';
+                
+                        // Hide Remove Coupon button
+                        document.getElementById('remove_coupon_btn').style.display = 'none';
+                
+                        // Reset total amount and hidden input field value
+                        const totalAmountDisplay = document.getElementById('total_amount_display');
+                        totalAmountDisplay.innerHTML = `<span>&#8377;</span> ${originalTotalAmount}`; // Replace originalTotalAmount with the original total amount
+                        const totalPriceInput = document.getElementById('total_price');
+                        totalPriceInput.value = originalTotalAmount; // Replace originalTotalAmount with the original total amount
+                
+                        // Send request to remove the coupon from the user
+                        try {
+                            const response = await fetch('/removeCoupon', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ couponCode: document.getElementById('applied_coupon_code').textContent })
+                            });
+                
+                            if (response.ok) {
+                                const data = await response.json();
+                                if (data.success) {
+                                    // Coupon removed successfully
+                                    // Additional actions if needed
+                                } else {
+                                    console.error('Failed to remove coupon:', data.message);
+                                }
+                            } else {
+                                console.error('Failed to remove coupon');
+                            }
+                        } catch (error) {
+                            console.error('Error removing coupon:', error);
+                        }
+                    });
                 </script>
+                
+                
                 
                 
 
@@ -1213,6 +1268,27 @@
                     icon: 'info',
                     title: 'Already used',
                     text: 'User has already used this coupon',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        </script>
+
+        <script>
+            // Function to parse query parameters from URL
+            function getQueryParam(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
+            }
+
+            // Check if outOfStock query parameter is true
+            const invalid = getQueryParam('invalidCoupon');
+            if (invalidCoupon === 'true') {
+                // Display SweetAlert indicating that the product is successfully added to the cart
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Invalid Coupon',
+                    text: 'Entered Wrong Coupon ID. Please Recheck Your Coupon',
                     showConfirmButton: false,
                     timer: 2000
                 });

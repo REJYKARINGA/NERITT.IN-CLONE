@@ -85,6 +85,7 @@ router.get('/wishlist/remove/:productId', productController.removeFromWishlist);
  
 // Assuming you have imported the necessary models and middleware
 router.post('/applyCoupon', productController.applyCoupon)
+router.post('/removeCoupon', productController.removeCoupon);
 
 // Order Management  
 router.get('/orders', productController.getAllOrders);

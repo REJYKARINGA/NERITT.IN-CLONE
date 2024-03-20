@@ -447,7 +447,7 @@ const applyCoupon = async (req, res, next) => {
     const coupon = await Coupon.findOne({ code: couponCode });
 
     if (!coupon) {
-      return res.status(400).json({ success: false, message: 'Invalid coupon code' });
+      return res.status(400).json({ success: false, invalidCoupon: true, message: 'Invalid coupon code' });
     }
 
     if (coupon.usedByUsers.includes(userId)) {
@@ -513,6 +513,36 @@ const applyCoupon = async (req, res, next) => {
     return next(error);
   }
 };
+
+const removeCoupon = async (req, res, next) => {
+  try {
+    if (!req.session.user) {
+      return res.redirect('/login');
+    }
+
+    const { couponCode } = req.body;
+console.log(couponCode,'couponCode found')
+    const coupon = await Coupon.findOne({ code: couponCode });
+    if (!coupon) {
+      return res.status(404).json({ success: false, message: 'Coupon not found' });
+    }
+
+    const userId = req.session.user._id;
+    if (coupon.usedByUsers.includes(userId)) {
+      coupon.usedByUsers.pull(userId); // Remove the user from the coupon's usedByUsers array
+      coupon.usedCount -= 1; // Decrease the usedCount
+      await coupon.save();
+
+      return res.status(200).json({ success: true, message: 'Coupon removed successfully' });
+    } else {
+      return res.status(400).json({ success: false, message: 'User has not used this coupon' });
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+
 
 const showCheckoutPage = async (req, res, next) => {
   try {
@@ -605,7 +635,7 @@ const showCheckoutPage = async (req, res, next) => {
 };
 
 
-
+ 
 
 const storeCheckout = async (req, res, next) => {
   try {
@@ -776,6 +806,64 @@ const buyProduct = async (req, res, next) => {
   }
 }
 
+// const getAllOrders = async (req, res, next) => {
+//   try {
+//     const isUser = req.session.user;
+//     let totalProduct = 0;
+//     let walletBalance = 0;
+
+//     if (!req.session.user) {
+//       res.redirect('/login');
+//       return;
+//     }
+
+//     const userId = req.session.user._id;
+
+//     const wallet = await Wallet.findOne({ user: userId });
+//     if (wallet) {
+//       walletBalance = wallet.balance;
+//     }
+
+//     const name = req.session.user.name;
+//     const user = await User.findById(req.session.user._id);
+
+//     const pageSize = 5;
+//     const currentPage = parseInt(req.query.page) || 1;
+//     const skip = (currentPage - 1) * pageSize;
+
+//     const ordersPromise = Order.find({ user: userId })
+//       .populate('user')
+//       .populate('products.product')
+//       .populate('address')
+//       .sort({ createdAt: -1 })
+//       .skip(skip)
+//       .limit(pageSize)
+//       .lean();
+
+//     const [orders, count] = await Promise.all([
+//       ordersPromise,
+//       Order.countDocuments({ user: userId })
+//     ]);
+
+//     const school = await School.find({ blocked: false });
+
+//     res.render('user/myOrders1', {
+//       user: userId,
+//       orders,
+//       msg1: { name },
+//       user,
+//       school,
+//       isUser,
+//       currentPage,
+//       totalPages: Math.ceil(count / pageSize),
+//       totalProduct,
+//       walletBalance
+//     });
+//   } catch (error) {
+//     return next(error);
+//   }
+// };
+
 const getAllOrders = async (req, res, next) => {
   try {
     const isUser = req.session.user;
@@ -817,6 +905,18 @@ const getAllOrders = async (req, res, next) => {
 
     const school = await School.find({ blocked: false });
 
+    // Calculate return eligibility for each order
+    const today = new Date();
+    for (const order of orders) {
+      const deliveryDate = order.createdAt; // Assuming createdAt field is the delivery date
+
+      // Calculate the difference in days between today and the delivery date
+      const daysDifference = Math.floor((today - deliveryDate) / (1000 * 60 * 60 * 24));
+
+      // Set returnEligible based on the criteria (2 weeks = 14 days)
+      order.returnEligible = order.status === 'completed' && daysDifference <= 14;
+    }
+
     res.render('user/myOrders1', {
       user: userId,
       orders,
@@ -833,7 +933,6 @@ const getAllOrders = async (req, res, next) => {
     return next(error);
   }
 };
-
 
 const cancelOrder = async (req, res, next) => {
   try {
@@ -1338,6 +1437,7 @@ module.exports = {
   showCheckoutPage,
   storeCheckout,
   applyCoupon,
+  removeCoupon,
   addToWishlist,
   buyProduct,
   getAllOrders,

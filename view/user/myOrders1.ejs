@@ -154,15 +154,17 @@
                       </td>
                     
                       <td>
-                        <% if (order.status === 'completed') { %>
+                        <% if (order.returnEligible) { %>
                           <form action="/return-order/<%= order._id %>" method="POST">
                             <button type="submit" class="btn btn-warning">Return Order</button>
                           </form>
-                        <% } else if (order.status !== 'cancelled' && order.status !== 'cancelledByAdmin' && order.status !== 'Return requested' && order.status !== 'Returned' && order.status !== 'Return Rejected') { %>
-                          <form action="/cancel-order/<%= order._id %>" method="POST">
-                            <button type="submit" class="btn btn-danger">Cancel Order</button>
-                          </form><br>
-                        <% } %>
+                          <% } else if (order.status == 'pending' || order.status == 'Accepted' ||  order.status == 'shipped') { %>
+                            <form action="/cancel-order/<%= order._id %>" method="POST">
+                              <button type="submit" class="btn btn-danger">Cancel Order</button>
+                            </form><br>
+                            <% } else  { %>
+                             <p>Return Expired</p>
+                            <% } %>
                         
                       </td>
                     </tr>
