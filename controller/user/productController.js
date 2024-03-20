@@ -19,13 +19,13 @@ const sizeOf = require('image-size');
 const orderId = require('../../public/js/orderId')
 const Razorpay = require('razorpay');
 const dotenv = require("dotenv");
-dotenv.config({ path: './view/config.env' })
+dotenv.config({ path: './.env' })
 const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
 const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
 const isSquare = (width, height) => {
   return width === height;
 };
-
+ 
 const isLessThan1MP = (width, height) => {
   const megapixels = (width * height) / 1000000;
   return megapixels < 1;
@@ -33,8 +33,8 @@ const isLessThan1MP = (width, height) => {
 
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET
+  key_id: razorpayKeyId,
+  key_secret: razorpayKeySecret
 });
 
 

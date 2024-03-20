@@ -1,6 +1,6 @@
 require('express')
 const dotenv = require("dotenv");
-dotenv.config({ path: './view/config.env' })
+dotenv.config({ path: './.env' })
 const name = process.env.ADMIN_USERNAME;
 const password = process.env.ADMIN_PASSWORD;
 
@@ -43,7 +43,7 @@ const loginValidate = (req, res, next) => {
 const logout = (req, res, next) => {
   try {
 
-    delete req.sedssion.admin;
+    delete req.session.admin;
 
     res.redirect('/admin');
   } catch (error) {
