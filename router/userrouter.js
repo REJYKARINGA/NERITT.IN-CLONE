@@ -1,5 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+var app = express();
+const router = express.Router()
+const multer = require('multer'); 
+const path  = require('path')
+
 const { body, validationResult } = require('express-validator');
 const authController = require('../controller/user/authController');
 const miscellaneousController = require('../controller/user/miscellaneousController');
@@ -8,13 +12,12 @@ const schoolController = require('../controller/user/schoolController');
 const userProfileController = require('../controller/user/userProfileController');
 const addressController = require('../controller/user/addressController');
 const exampleController = require('../controller/user/errorController');
-
+const Order = require('../model/orderSchema');
+const Product = require('../model/productSchema');
 router.get('/divide', exampleController.divide);
 const walletController = require('../controller/user/walletController');
 const Cart = require('../model/cartSchema');
-const multer = require('multer'); 
-const path = require('path');
- 
+
 
 
 
@@ -92,10 +95,6 @@ router.get('/orders', productController.getAllOrders);
 router.post('/orders/:orderId', productController.deleteOrderById);
 router.post('/cancel-order/:id', productController.cancelOrder);
 router.post('/return-order/:id', productController.returnOrder);
-// // router.post('/return-order/:id', productController.downloadInvoice);
-// // // Example route setup using Express.js
-// router.get('/download-invoice/:orderId',productController.downloadInvoice);
-
 
 // School Registration
 router.get('/school-registration', schoolController.schoolRegister);
@@ -118,10 +117,6 @@ router.get("/account/orders", userProfileController.myOrder);
 router.get("/account/wishlist", userProfileController.myWishlist);
 router.get("/account/award", userProfileController.myAccountPage); // Not Designed yet
 
-
-
-const Order = require('../model/orderSchema');
-const Product = require('../model/productSchema');
 // Test Drive Management
 router.get("/test", miscellaneousController.testDrive);
 
