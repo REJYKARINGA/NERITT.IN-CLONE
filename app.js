@@ -8,7 +8,7 @@ const User = require('./model/userSchema');
 const Category = require('./model/categorySchema');
 const Product = require('./model/productSchema');
 const adminRouter = require('./router/adminRouter');
-const userRouter = require('./router/userRouter.js');
+const userRouter = require('./router/userRssssssouter.js');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 const nocache = require('nocache');
 const morgan = require('morgan');
@@ -39,8 +39,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Parse JSON bodies (as sent by API clients)
 app.use(bodyParser.json());
-// Routes
-// app.use('/', require('./controller/user/paymentController'));
 
 // Routes
 app.use('/admin', adminRouter);
@@ -48,12 +46,6 @@ app.use('/', userRouter);
 
 // Error handling middleware
 app.use(errorMiddleware);
-
-// // Middleware
-// app.get('*', function (req, res, next) { 
-//     res.locals.cart = req.session.cart;
-//     next(); 
-// });
 
 // Route handlers
 app.get('/delete-category/:id', async (req, res) => {
