@@ -15,6 +15,8 @@ const morgan = require('morgan');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const dotenv = require("dotenv");
+const phantom = require('phantomjs-prebuilt');
+
 // PORT process.env.PORT
 require('./db/mongoose');
 const dbUser = process.env.DB_USER;
