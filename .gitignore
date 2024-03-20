@@ -2,4 +2,4 @@
 /vendor/                   
 
 # Ignore environment-specific files
-config.env
+.env
