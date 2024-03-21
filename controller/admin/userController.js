@@ -11,6 +11,7 @@ const Order = require('../../model/orderSchema')
 const Products = require('../../model/productSchema')
 const Users = require('../../model/userSchema')
 const salesPdfService = require('../../services/salesReportPdf')
+const phantom = require('phantomjs-prebuilt');
 
 const dashboard = async (req, res, next) => {
   try {
