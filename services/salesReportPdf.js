@@ -3,6 +3,7 @@ const moment=require('moment')
 const path = require('path');
 const fs = require('fs');
 
+const phantom = require('phantomjs-prebuilt');
 
 function dailySalesPDF(dataCallback, endCallback, isOrder) {
   const doc = new PDFDocument();

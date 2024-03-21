@@ -2,6 +2,8 @@ const fs = require('fs');
 const pdf = require('pdf-creator-node');
 const path = require('path');
 
+const phantom = require('phantomjs-prebuilt');
+
 const Order = require('../../model/orderSchema');
 
 const easyinvoice = require('easyinvoice');
