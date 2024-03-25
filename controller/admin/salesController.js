@@ -270,41 +270,10 @@ const salesExport = async (req, res, next) => {
   }
 };
 
-const salesReportPdf = async (req, res, filter, next) => {
+const salesReportPdf = async (req, res, next) => {
   try {
-    let filterQuery = {};
-
-    const filters = req.query
-    const currentDate = new Date();
-    let startDate, endDate;
-    switch (filter) {
-      case 'year':
-        startDate = new Date(currentDate.getFullYear() - 1, 0, 1);
-        endDate = currentDate;
-        break;
-      case 'month':
-        startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-        endDate = currentDate;
-        break;
-      case 'weekly':
-        startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 7);
-        endDate = currentDate;
-        break;
-      case 'today':
-        startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-        endDate = currentDate;
-        break;
-      default:
-        break;
-    }
-    if (startDate && endDate) {
-      filterQuery.createdAt = {
-        $gte: startDate,
-        $lte: endDate
-      };
-    }
-
-    const data = await Order.find(filterQuery).populate('products.product');
+    // Remove filter logic
+    const data = await Order.find().populate('products.product');
 
     const stream = res.writeHead(200, {
       'Content-Type': 'application/pdf',
@@ -328,6 +297,7 @@ const salesReportPdf = async (req, res, filter, next) => {
     return next(error);
   }
 }
+
 
 
 

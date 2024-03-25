@@ -33,7 +33,7 @@ const testDrive = async (req, res, next) => {
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       model: 'productDetails',
-      select: 'title sales_cost gallery quantity stock_status'
+      select: 'title cgst sgs sales_cost gallery quantity stock_status'
     });
 
     let totalProduct = 0;

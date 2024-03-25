@@ -64,7 +64,7 @@ router.post('/generate-otp', authController.generateOtp);
 router.post('/verify-otp', authController.forgotVerifyOtp);
 router.get('/reset-password', authController.forgotVerifyOtp);
 router.post('/resend-otp', authController.resendOtp);
-  
+   
      
 // Product Display and Management
 router.get('/', productController.neritt);
@@ -95,6 +95,7 @@ router.get('/orders', productController.getAllOrders);
 router.post('/orders/:orderId', productController.deleteOrderById);
 router.post('/cancel-order/:id', productController.cancelOrder);
 router.post('/return-order/:id', productController.returnOrder);
+router.get('/retry-order/:id', productController.retryOrder);
 
 // School Registration
 router.get('/school-registration', schoolController.schoolRegister);

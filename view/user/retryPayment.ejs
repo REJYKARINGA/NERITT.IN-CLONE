@@ -293,6 +293,7 @@
                             <div class="container mt-10">
                                 <div class="row">
                                     <div class="col-md-12 offset-md-0">
+                                        
                                        <form method="post" id="checkout_details" action="/store_checkout">
                                             <input type="hidden" name="_token"
                                                 value="kFzTS1UngvgFQ0LSU9mEwC6HTt9zEKPiQ1Rd3R6y">
@@ -313,14 +314,14 @@
                                                 </div>
                                             </div>
                                             <input type="hidden" name="payment_type" id="payment_type" value="1">
-                                            <input type="hidden" name="order_id" id="order_id" value="<%=ordId%>">
+                                            <input type="hidden" name="order_id" id="order_id" value="<%= order.ordId%>">
                                             <input type="hidden" name="csrf_token" id="csrf_token"
                                                 value="kFzTS1UngvgFQ0LSU9mEwC6HTt9zEKPiQ1Rd3R6y">
                                             <input type="hidden" name="rzp" id="rzp" value="rzp_test_ATZkateK1H3fCP">
                                             <input type="hidden" id="total_price"  name="finalAmount"
                                                 value="<%=finalAmount - 1%>" />
                                                 <input type="hidden" id="total_discounted"  name="discount"
-                                                value="<%=discount %>" />
+                                                value="<%= discount %>" />
                                                 <% cart.products.forEach(function(product) { %>
                                                     <!-- Loop through each product in the cart -->
                                                     <input type="hidden" id="total_price" name="category" value="<%= product.category %>" />
@@ -332,7 +333,7 @@
                                                 <div class="row">
 
                                                     <div class="col-md-6">
-                                                        <label for="existing_address">Seledfdsfdfct an existing
+                                                        <label for="existing_address">Select an existing
                                                             address:</label>
                                                         <select name="existing_address" id="existing_address"
                                                             class="form-control text-field">
@@ -352,7 +353,7 @@
                                                     <div class="col-md-6">
                                                         <label for="displayed_father_name">Father's Name:</label>
                                                         <input type="text" id="displayed_father_name" name="fatherName"
-                                                            class="form-control text-field">
+                                                            class="form-control text-field" value="<%= order.billingDetails.fatherName%>">
                                                         <span id="fatherNameError" class="error"
                                                             style="display: none; font-weight:bold; color: #129393;">Please
                                                             enter Father's Name</span><br>
@@ -361,7 +362,7 @@
                                                     <div class="col-md-6">
                                                         <label for="displayed_student_name">Student's Name:</label>
                                                         <input type="text" id="displayed_student_name"
-                                                            name="studentName" class="form-control text-field">
+                                                            name="studentName" class="form-control text-field" value="<%= order.billingDetails.studentName%>">
                                                         <span id="studentNameError" class="error"
                                                             style="display: none; font-weight:bold; color: #129393;">Please
                                                             enter Student's Name</span><br>
@@ -370,7 +371,7 @@
                                                     <div class="col-md-6">
                                                         <label for="displayed_email">Email:</label>
                                                         <input type="text" id="displayed_email" name="email"
-                                                            class="form-control text-field">
+                                                            class="form-control text-field" value="<%= order.billingDetails.email%>">
                                                         <span class="invalid-feedback" role="alert" id="email_err"
                                                             style="font-weight:bold;display:none;     color: #129393">
                                                             Please Enter Email
@@ -384,7 +385,7 @@
                                                     <div class="col-md-6">
                                                         <label for="displayed_phone">Phone:</label>
                                                         <input type="text" id="displayed_phone" name="phone"
-                                                            class="form-control text-field">
+                                                            class="form-control text-field" value="<%= order.billingDetails.phone %>">
                                                         <span id="phoneError" class="error"
                                                             style="display: none; font-weight:bold; color: #129393;">Please
                                                             enter a valid Phone number</span><br>
@@ -414,7 +415,7 @@
                                                     <div class="col-md-6">
                                                         <label for="displayed_address">Address:</label>
                                                         <input type="text" id="displayed_address" name="address"
-                                                            class="form-control text-field">
+                                                            class="form-control text-field" value="<%= order.billingDetails.address%>">
                                                         <span id="addressError" class="error"
                                                             style="display: none; font-weight:bold; color: #129393;">Please
                                                             enter Address</span><br>
@@ -423,13 +424,13 @@
                                                     <div class="col-md-6">
                                                         <label for="displayed_landmark">Landmark:</label>
                                                         <input type="text" id="displayed_landmark" name="landmark"
-                                                            class="form-control text-field">
+                                                            class="form-control text-field" value="<%= order.billingDetails.landmark%>">
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <label for="displayed_pincode">Pincode:</label>
                                                         <input type="text" id="displayed_pincode" name="pincode"
-                                                            class="form-control text-field">
+                                                            class="form-control text-field" value="<%= order.billingDetails.pincode%>">
                                                         <span id="pincodeError" class="error"
                                                             style="display: none; font-weight:bold; color: #129393;">Please
                                                             enter Pincode</span><br>
@@ -438,7 +439,7 @@
                                                     <div class="col-md-6">
                                                         <label for="displayed_home_or_office">Home/Office:</label>
                                                         <input type="text" id="displayed_home_or_office"
-                                                            name="homeOrOffice" class="form-control text-field">
+                                                            name="homeOrOffice" class="form-control text-field" value="<%= order.billingDetails.homeOrOffice%>">
                                                         <span id="homeOrOfficeError" class="error"
                                                             style="display: none; font-weight:bold; color: #129393;">Please
                                                             select Home or Office</span><br>
@@ -463,9 +464,9 @@
                     <div class="col-lg-5 zorder">
                         <div class="order-feild">
                             <p>YOUR ORDER</p>
-                            <% if (typeof cart !=="undefined" && cart !==null ) { %>
-                                <% if (cart && cart.products) { %>
-                                    <% cart.products.forEach(product=> { %>
+                            <% if (typeof order !=="undefined" && order !==null ) { %>
+                                <% if (order && order.products) { %>
+                                    <% order.products.forEach(product=> { %>
                                         <div class="order-products">
                                             <div class="zproduct d-flex">
 
@@ -485,11 +486,11 @@
                                                                 <%= product.quantity %>
                                                             </p>
                                                         </div>
-                                                        <div class="zprice">
+                                                        <!-- <div class="zprice">
                                                             <p>
                                                                 <%= product.price * product.quantity %>
                                                             </p>
-                                                        </div>
+                                                        </div> -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -499,7 +500,7 @@
                                                 <% } %>
 
 
-                                                    <div class="sub-total ">
+                                                    <!-- <div class="sub-total ">
                                                         <div class=" d-flex justify-content-between align-items-center">
                                                             <div class="sub-left">
                                                                 <p>Sub total </p>
@@ -530,16 +531,16 @@
                                                                 </p>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <div class="sub-left">
+                                                        <!-- <div class="sub-left">
                                                             <p>Shipping charge</p>
                                                         </div>
                                                         <div class="sub-right">
                                                             <p>
                                                                 <%=totaldeliveryCost%>
                                                             </p>
-                                                        </div>
+                                                        </div> -->
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="coupon_code">Coupon Code</label>
@@ -558,7 +559,7 @@
                                                         </div>
                                                         <div class="total-right">
                                                             <p id="total_amount_display"><span>&#8377;</span>
-                                                                <%=finalAmount - 1%>
+                                                                <%= order.totalAmount %>
                                                             </p>
                                                         </div>
 

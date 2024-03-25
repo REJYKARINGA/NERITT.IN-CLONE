@@ -17,6 +17,7 @@ const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
 const sizeOf = require('image-size');
 const orderId = require('../../public/js/orderId')
+const walletBalance = require('../../utils/walletBalance')
 const Razorpay = require('razorpay');
 const dotenv = require("dotenv");
 dotenv.config({ path: './.env' })
@@ -59,8 +60,8 @@ const neritt = async (req, res, next) => {
 
       const cart = await Cart.findOne({ user: userId }).populate({
         path: 'products.product',
-        model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status category'
+        model: 'productDetails', 
+        select: 'title cgst sgst sales_cost gallery quantity stock_status category'
       });
 
       let totalProduct = 0;
@@ -214,7 +215,7 @@ const displayProducts = async (req, res, next) => {
       const cart = await Cart.findOne({ user: userId }).populate({
         path: 'products.product',
         model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status category'
+        select: 'title cgst sgst sales_cost gallery quantity stock_status category'
       });
 
       let totalProduct = 0;
@@ -304,7 +305,7 @@ const showProduct = async (req, res, next) => {
       const cart = await Cart.findOne({ user: userId }).populate({
         path: 'products.product',
         model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status category'
+        select: 'title cgst sgst sales_cost gallery quantity stock_status category'
       });
 
       let totalProduct = 0;
@@ -424,25 +425,6 @@ const applyCoupon = async (req, res, next) => {
     }
     const userId = req.session.user._id;
 
-    const wallet = await Wallet.findOne({ user: userId });
-    if (wallet) {
-      walletBalance = wallet.balance;
-    }
-
-
-    const addresses = await Address.find({ userId: req.session.user._id });
-
-
-    const cart = await Cart.findOne({ user: userId }).populate({
-      path: 'products.product',
-      model: 'productDetails',
-      select: 'title sales_cost quantity category'
-    });
-
-    if (!cart || (cart.products && cart.products.length === 0)) {
-      return res.redirect('/cart');
-    }
-
     const { couponCode } = req.body;
     const coupon = await Coupon.findOne({ code: couponCode });
 
@@ -469,21 +451,7 @@ const applyCoupon = async (req, res, next) => {
     let totaldeliveryCost = 0;
     let finalAmount = 0;
 
-    if (cart && cart.products) {
-      for (const product of cart.products) {
-
-        const products = await Product.find({ _id: product.product.id, blocked: false })
-        const cgstValue = products[0].cgst;
-        const sgstValue = products[0].sgst;
-        const deliveryCharge = products[0].delivery_charge;
-
-        totalAmount += product.price * product.quantity;
-        totalCGST += (cgstValue / 100) * product.price * product.quantity;
-        totalSGST += (sgstValue / 100) * product.price * product.quantity;
-        totaldeliveryCost += deliveryCharge * product.quantity;
-        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost
-      }
-    }
+   
 
     let discount = 0;
     if (coupon.discountType === 'percentage') {
@@ -502,11 +470,7 @@ const applyCoupon = async (req, res, next) => {
     const name = req.session.user.name;
     const school = await School.find({ blocked: false });
     let totalProduct = 0;
-    if (cart && cart.products) {
-      totalProduct = cart.products.length;
-    }
-
-    discountedTotal = discountedTotal - 1;
+    
     res.status(200).json({ success: true, updatedTotalAmount: discountedTotal, discount });
 
   } catch (error) {
@@ -560,13 +524,13 @@ const showCheckoutPage = async (req, res, next) => {
     if (wallet) {
       walletBalance = wallet.balance;
     }
-
+    
     const addresses = await Address.find({ userId: req.session.user._id });
 
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       model: 'productDetails',
-      select: 'title sales_cost quantity category'
+      select: 'title cgst sgst sales_cost quantity category'
     });
 
     if (!cart || (cart.products && cart.products.length === 0)) {
@@ -658,7 +622,7 @@ const storeCheckout = async (req, res, next) => {
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       model: 'productDetails',
-      select: 'title sales_cost quantity category'
+      select: 'title cgst sgst sales_cost quantity category'
     });
 
     let totalProduct = 0;
@@ -790,7 +754,7 @@ const buyProduct = async (req, res, next) => {
       const cart = await Cart.findOne({ user: userId }).populate({
         path: 'products.product',
         model: 'productDetails',
-        select: 'title sales_cost gallery quantity stock_status category'
+        select: 'title cgst sgst sales_cost gallery quantity stock_status category'
       });
 
       let totalProduct = 0;
@@ -881,7 +845,7 @@ const getAllOrders = async (req, res, next) => {
     if (wallet) {
       walletBalance = wallet.balance;
     }
-
+ 
     const name = req.session.user.name;
     const user = await User.findById(req.session.user._id);
 
@@ -1035,6 +999,87 @@ const returnOrder = async (req, res, next) => {
 };
 
 
+const retryOrder = async (req, res, next) => {
+  try {
+    const isUser = req.session.user;
+
+    let walletBalance = 0;
+    const ordId = orderId();
+
+    if (!req.session.user) {
+      return res.redirect('/login');
+    }
+
+    const order = await Order.findById(req.params.id).populate('products.product');
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const userId = req.session.user._id;
+
+    const wallet = await Wallet.findOne({ user: userId });
+    if (wallet) {
+      walletBalance = wallet.balance;
+    }
+
+    const addresses = await Address.find({ userId: req.session.user._id });
+
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: 'products.product',
+      model: 'productDetails',
+      select: 'title cgst sgst sales_cost quantity category'
+    });
+
+    console.log(cart, 'cart founded')
+    
+
+    let totalAmount = 0;
+    let totalCGST = 0;
+    let totalSGST = 0;
+    let totaldeliveryCost = 0;
+    let finalAmount = 0;
+
+    const name = req.session.user.name;
+    const school = await School.find({ blocked: false });
+    let totalProduct = 0;
+    if (cart && cart.products) {
+      totalProduct = cart.products.length;
+    }
+    let discount = 0
+
+
+
+    const coupons = await Coupon.find({
+      isActive: true,
+      maxUses: { $gt: 0, $ne: null },
+      usedByUsers: { $ne: userId }
+    });
+
+    
+    console.log(order,'founded id')
+    res.render('user/retryPayment', {
+      order,
+      cart,
+      addresses,
+      totalAmount,
+      totalCGST,
+      totalSGST,
+      totaldeliveryCost,
+      msg1: { name },
+      walletBalance,
+      school,
+      isUser,
+      totalProduct,
+      finalAmount,
+      ordId,
+      discount,
+      coupons
+    });
+  } catch (error) {
+    console.log(error.message)
+    return next(error);
+  }
+};
 
 
 const deleteOrderById = async (req, res, next) => {
@@ -1062,7 +1107,7 @@ const wishlist = async (req, res, next) => {
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       model: 'productDetails',
-      select: 'title sales_cost gallery quantity stock_status category'
+      select: 'title cgst sgst sales_cost gallery quantity stock_status category'
     });
 
     const category = await Category.find({});
@@ -1135,7 +1180,7 @@ const showCart = async (req, res, next) => {
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       model: 'productDetails',
-      select: 'title sales_cost gallery quantity stock_status createdAt category'
+      select: 'title cgst sgst sales_cost gallery quantity stock_status createdAt category'
     });
 
 
@@ -1274,7 +1319,7 @@ const addToCart = async (req, res, next) => {
     let cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
       model: 'productDetails',
-      select: 'title sales_cost gallery category'
+      select: 'title cgst sgst sales_cost gallery category'
     });
 
     if (!cart) {
@@ -1443,6 +1488,7 @@ module.exports = {
   getAllOrders,
   cancelOrder,
   returnOrder,
+  retryOrder,
   deleteOrderById,
   wishlist,
   addToWishlist,

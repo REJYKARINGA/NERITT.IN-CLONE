@@ -48,8 +48,14 @@
     <h1>Oops!</h1>
     <p>Something went wrong...</p>
     <p>Please try again later.</p>
-    <p>You can <a href="/">return to the previous page</a>.</p>
+    <p>You can <a href="#" onclick="goBack()" >return to the previous page</a>.</p>
+    
   </div>
 </body>
-
+<script>
+  // JavaScript function to go back in history
+  function goBack() {
+    window.history.back();
+  }
+</script>
 </html>

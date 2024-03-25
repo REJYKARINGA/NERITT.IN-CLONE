@@ -1,15 +1,17 @@
-nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4];
+nums =[5,0,1,2,3,4,4,3]
 
- function removeDuplicates(num) {
-    let i = 0;
-    for (let j = 1; j < num.length; j++) {
-        if (num[i] !== num[i-1]) {
-            i++;
-            num[i] = num[j];
+
+var findDuplicates = function(nums) {
+    let i = 0 ;
+    for(i ; i<nums.length; i++){
+        for(let j = i+1; j<nums.length; j++){
+            if(nums[i]==nums[j]){
+                nums[i] = nums[i]
+                return nums
+            }
         }
-    }
-    return num
-}
+    }return nums
+};
 
-removeDuplicates(nums);
-console.log("hello leetcode")
+findDuplicates(nums)
+console.log(findDuplicates(nums))

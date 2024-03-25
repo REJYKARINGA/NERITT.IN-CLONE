@@ -162,7 +162,11 @@
                             <form action="/cancel-order/<%= order._id %>" method="POST">
                               <button type="submit" class="btn btn-danger">Cancel Order</button>
                             </form><br>
-                            <% } else  { %>
+                            <% } else  if(order.status == 'Failed') { %>
+                              <form action="/retry-order/<%= order._id %>" >
+                                <button type="submit" class="btn btn-warning">Retry Order</button>
+                              </form><br>
+                            <% } else { %>
                              <p>Return Expired</p>
                             <% } %>
                         

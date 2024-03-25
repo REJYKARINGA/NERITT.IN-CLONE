@@ -48,6 +48,9 @@ app.use('/', userRouter);
 
 // Error handling middleware
 app.use(errorMiddleware);
+app.use((req, res, next) => {
+    res.status(404).render('error');
+  });
 
 // Route handlers
 app.get('/delete-category/:id', async (req, res) => {
