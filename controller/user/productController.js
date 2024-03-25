@@ -17,7 +17,6 @@ const { body, validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
 const sizeOf = require('image-size');
 const orderId = require('../../public/js/orderId')
-const walletBalance = require('../../utils/walletBalance')
 const Razorpay = require('razorpay');
 const dotenv = require("dotenv");
 dotenv.config({ path: './.env' })

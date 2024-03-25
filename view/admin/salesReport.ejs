@@ -575,14 +575,10 @@
                             type="button" class="btn btn-success">Excel</button></a>
                 </div>
                 <div style="margin-left: 10px;">
-                    <a id="filters" name="filter" href="/admin/generate-pdf-sales-report?filter=today">Generate PDF Sales Report for Year</a>
+                    <a
+                    href="/admin/generate-pdf-sales-report?filter=today"><button
+                            type="button" class="btn btn-success">PDF</button></a>
 
-<script>
-    function setFilter(value) {
-        var filterLink = document.getElementById('filters');
-        filterLink.href = "/admin/generate-pdf-sales-report?filter=" + value;
-    }
-</script>
 
                 </div>
             

@@ -1,17 +1,14 @@
-nums =[5,0,1,2,3,4,4,3]
+nums = [0,1,0,3,0,12]
 
-
-var findDuplicates = function(nums) {
-    let i = 0 ;
-    for(i ; i<nums.length; i++){
-        for(let j = i+1; j<nums.length; j++){
-            if(nums[i]==nums[j]){
-                nums[i] = nums[i]
-                return nums
-            }
+var removeDuplicates = function(nums) {
+    for(let i = 0; i<nums.length; i++){
+        for(let j = i + 1; j<nums.length; j++){
+            if(nums[i]!==nums[j]){
+                numss = nums.push(nums[i])
+                console.log()
         }
-    }return nums
+        }
+    }
 };
 
-findDuplicates(nums)
-console.log(findDuplicates(nums))
+removeDuplicates(nums)
