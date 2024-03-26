@@ -240,11 +240,14 @@
             </button>
         </div>
         <div class="modal-body">
-            <select class="form-control" id="school_list">
+            <select name="search" id="seach_field"  class="form-control" id="school_list">
                 <option value="">Select School</option>
-                                <option value="3">AL FAROOQUE SCHOOL, PADAPPARAMB</option>
-                                <option value="2">AL FALAH A.M.M ENGLISH SCHOOL Kakkidippuram</option>
-                                <option value="1">BHARATIYA VIDYA BHAWAN&#039;S VIKAS VIDYALAYA - PONNANI</option>
+                <% school.forEach((schoo_l,index)=>{ %>
+                                                                         
+                                            
+                    <option class="school"  data-id="<%=schoo_l.id%>"><a href="/shop?sch=<%=schoo_l.id%>"><div class="search-logo"><img src="/<%=schoo_l.school_logo%>"></div> <span> <%=schoo_l.school_name %><i> </i></span></a></option>
+                   <% }); %> 
+                                
                             </select>
             <span id="school_err" style="color:red;display:none;">please select school</span>
         </div>

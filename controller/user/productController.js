@@ -412,70 +412,142 @@ const removeFromWishlist = async (req, res, next) => {
   }
 };
 
-const applyCoupon = async (req, res, next) => {
+
+
+
+
+
+
+const applyCoupon =  async (req, res) => {
   try {
     const isUser = req.session.user;
 
     let walletBalance = 0;
     const ordId = orderId();
+    console.log(ordId);
 
+   
     if (!req.session.user) {
       return res.redirect('/login');
     }
     const userId = req.session.user._id;
 
-    const { couponCode } = req.body;
-    const coupon = await Coupon.findOne({ code: couponCode });
+      // Fetch user's wallet balance
+      const wallet = await Wallet.findOne({ user: userId });
+      if (wallet) {
+        walletBalance = wallet.balance;
+      }
 
-    if (!coupon) {
-      return res.status(400).json({ success: false, invalidCoupon: true, message: 'Invalid coupon code' });
-    }
-
-    if (coupon.usedByUsers.includes(userId)) {
-      return res.status(200).json({ success: false, alreadyUsed: true, message: 'You have already used this coupon' });
-    }
-    coupon.usedByUsers.push(userId);
-
-    if (coupon.usedCount >= coupon.maxUses) {
-      return res.status(400).json({ success: false, message: 'Coupon has reached maximum usage limit' });
-    }
-    const currentDate = new Date();
-    if (currentDate.getTime() < coupon.startDate.getTime() || currentDate.getTime() > coupon.endDate.getTime()) {
-      return res.status(400).json({ success: false, message: 'Coupon is expired' });
-    }
-
-    let totalAmount = 0;
-    let totalCGST = 0;
-    let totalSGST = 0;
-    let totaldeliveryCost = 0;
-    let finalAmount = 0;
+    
+    const addresses = await Address.find({ userId: req.session.user._id });
 
    
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: 'products.product',
+      model: 'productDetails',
+      select: 'title sales_cost quantity category'
+    });
 
-    let discount = 0;
-    if (coupon.discountType === 'percentage') {
-      discount = (coupon.discountValue / 100) * totalAmount;
-    } else if (coupon.discountType === 'fixedAmount') {
-      discount = coupon.discountValue;
-    }
-    let discountedTotal = finalAmount - discount;
+      if (!cart || (cart.products && cart.products.length === 0)) {
+        return res.redirect('/cart');
+      } 
 
-    if (discountedTotal < coupon.minimumAmount) {
-      discountedTotal = coupon.minimumAmount;
-    }
-    coupon.usedCount += 1;
+      const { couponCode } = req.body;
+        console.log(couponCode,'couponCode is this')
 
-    await coupon.save();
+       // Validate the coupon
+const coupon = await Coupon.findOne({ code: couponCode });
+
+console.log(coupon,'coupon is this ')
+if (!coupon) {
+  return res.status(400).json({ success: false, message: 'Invalid coupon code' });
+}
+
+
+
+// Check if the user has already used this coupon
+if (coupon.usedByUsers.includes(userId)) {
+  console.log("User has already used this coupon");
+  return res.status(200).json({ success: false, alreadyUsed: true, message: 'You have already used this coupon' });
+}
+
+
+// Update usedByUsers array with the current user
+coupon.usedByUsers.push(userId);
+
+// Check if coupon has exceeded maximum uses
+if (coupon.usedCount >= coupon.maxUses) {
+console.log("Coupon has reached maximum usage limit")
+  return res.status(400).json({ success: false, message: 'Coupon has reached maximum usage limit' });
+}
+
+// Check if coupon is expired
+const currentDate = new Date();
+if (currentDate.getTime() < coupon.startDate.getTime() || currentDate.getTime() > coupon.endDate.getTime()) {
+console.log(currentDate.getTime(), 'Coupon is expired')
+return res.status(400).json({ success: false, message: 'Coupon is expired' });
+}
+
+let totalAmount = 0;
+let totalCGST = 0;
+let totalSGST = 0;
+let totaldeliveryCost = 0;
+let finalAmount = 0;
+
+if (cart && cart.products) {
+for (const product of cart.products) {
+ 
+  const products = await Product.find({ _id: product.product.id, blocked: false })
+  const cgstValue = products[0].cgst;
+  const sgstValue = products[0].sgst;
+  const deliveryCharge = products[0].delivery_charge;
+
+  totalAmount += product.price * product.quantity;
+  totalCGST += (cgstValue / 100) * product.price * product.quantity; 
+  totalSGST += (sgstValue / 100) * product.price * product.quantity; 
+  totaldeliveryCost += deliveryCharge * product.quantity; 
+  finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost-1
+  console.log(totaldeliveryCost, 'totalCGST')
+}
+}
+
+// Calculate discount based on the coupon type
+let discount = 0;
+if (coupon.discountType === 'percentage') {
+  discount = (coupon.discountValue / 100) * finalAmount; 
+} else if (coupon.discountType === 'fixedAmount') {
+  discount = coupon.discountValue;
+}
+
+// Update finalAmount with the discount applied by the coupon
+let discountedTotal = finalAmount - discount;
+
+// // Check if discounted total is less than minimum amount
+// if (discountedTotal < coupon.minimumAmount) {
+//   discountedTotal = coupon.minimumAmount;
+// }
+console.log(discount, discountedTotal, finalAmount,'discountedTotal minimum amount')
+// Update usedCount of the coupon
+coupon.usedCount += 1;
+
+await coupon.save(); 
+     console.log(discountedTotal,'this is my first discountedTotal')
     const name = req.session.user.name;
     const school = await School.find({ blocked: false });
     let totalProduct = 0;
+    if (cart && cart.products) {
+      totalProduct = cart.products.length;
+    }
     
-    res.status(200).json({ success: true, updatedTotalAmount: discountedTotal, discount });
-
+    discountedTotal = discountedTotal -1;
+    res.status(200).json({ success: true, couponApplied: true, updatedTotalAmount: discountedTotal, discount});
+ 
   } catch (error) {
-    return next(error);
+    console.error('Error showing checkout page:', error);
+    res.redirect('/'); 
   }
 };
+
 
 const removeCoupon = async (req, res, next) => {
   try {
@@ -553,11 +625,11 @@ const showCheckoutPage = async (req, res, next) => {
         totalCGST += (cgstValue / 100) * product.price * product.quantity;
         totalSGST += (sgstValue / 100) * product.price * product.quantity;
         totaldeliveryCost += deliveryCharge * product.quantity;
-        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost;
+        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost -1 ;
 
         const categories = products[0].category.map(cat => cat.category_name);
         product.category = categories;
-      }
+      } 
     }
     const name = req.session.user.name;
     const school = await School.find({ blocked: false });
@@ -1023,14 +1095,7 @@ const retryOrder = async (req, res, next) => {
 
     const addresses = await Address.find({ userId: req.session.user._id });
 
-    const cart = await Cart.findOne({ user: userId }).populate({
-      path: 'products.product',
-      model: 'productDetails',
-      select: 'title cgst sgst sales_cost quantity category'
-    });
 
-    console.log(cart, 'cart founded')
-    
 
     let totalAmount = 0;
     let totalCGST = 0;
@@ -1041,9 +1106,9 @@ const retryOrder = async (req, res, next) => {
     const name = req.session.user.name;
     const school = await School.find({ blocked: false });
     let totalProduct = 0;
-    if (cart && cart.products) {
-      totalProduct = cart.products.length;
-    }
+    // if (cart && cart.products) {
+    //   totalProduct = cart.products.length;
+    // }
     let discount = 0
 
 
@@ -1058,7 +1123,7 @@ const retryOrder = async (req, res, next) => {
     console.log(order,'founded id')
     res.render('user/retryPayment', {
       order,
-      cart,
+      // cart,
       addresses,
       totalAmount,
       totalCGST,
@@ -1148,14 +1213,6 @@ const wishlist = async (req, res, next) => {
     return next(error);
   }
 };
-
-
-
-
-
-
-
-
 
 const showCart = async (req, res, next) => {
   try {
@@ -1473,6 +1530,88 @@ const getWallet = async (req, res, next) => {
 };
 
 
+
+const storeCheckoutRetry = async (req, res, next) => {
+  try {
+    const isUser = req.session.user;
+    const orderId = req.params.id;
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    if (order.status !== 'Failed') {
+      return res.status(400).json({ message: 'Order cannot be retried as it is not in a failed state' });
+    }
+
+    const userId = req.session.user._id;
+
+    const wallet = await Wallet.findOne({ user: userId });
+    if (!wallet || wallet.balance < order.totalAmount) {
+      return res.redirect('/checkout?outOfStock=true');
+    }
+console.log(order.orderId,' check this ', orderId)
+    // Create a new order based on the failed order's details
+    const newOrder = new Order({
+      // user: order.user,
+      products: order.products,
+      totalAmount: order.totalAmount,
+      discountedAmount: order.discountedAmount,
+      offeredAmount: order.offeredAmount,
+      category: order.category,
+      address: order.address,
+      billingDetails: order.billingDetails,
+      payment_type: 'Wallet', // Assuming retry uses wallet payment type
+      orderId: order.orderId,
+      deliveryType: order.deliveryType,
+      status: 'pending' // Set the status of the new order to pending
+    });
+
+    await newOrder.save();
+
+    // Deduct the total amount from the wallet balance
+    wallet.balance -= order.totalAmount;
+    await wallet.save();
+
+    // Update the status of the failed order to indicate retry attempt
+    // order.status = 'Accepted';
+    // await order.save();
+
+    const isPaymentSuccessful = true;
+
+    if (isPaymentSuccessful) {
+      order.status = 'Accepted';
+    } else {
+      order.status = 'Failed';
+    }
+
+    await order.save();
+
+    ordId = order.orderId
+    const name = req.session.user.name;
+    walletBalance = 0
+    totalProduct = 0
+
+    // return res.status(200).json({ message: 'Order retried successfully', newOrder });
+    res.render('user/myOrderSuccess', {
+      user: req.session.user,
+      ordId,
+      msg1: { name },
+      walletBalance,
+      isUser,
+      // cart,
+      totalProduct,
+      // school,
+      userId,
+      lessThanLimit: false,
+      isPaymentSuccessful
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   neritt,
   category,
@@ -1497,5 +1636,5 @@ module.exports = {
   updateCartItemQuantity,
   removeFromCart,
   getWallet,
-  storeCheckout
+  storeCheckoutRetry
 }  

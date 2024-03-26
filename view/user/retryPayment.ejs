@@ -294,7 +294,7 @@
                                 <div class="row">
                                     <div class="col-md-12 offset-md-0">
                                         
-                                       <form method="post" id="checkout_details" action="/store_checkout">
+                                       <form method="post" id="checkout_details" action="/retryCheckout/<%= order.id%>">
                                             <input type="hidden" name="_token"
                                                 value="kFzTS1UngvgFQ0LSU9mEwC6HTt9zEKPiQ1Rd3R6y">
                                             <h2>CHECKOUT</h2>
@@ -322,11 +322,7 @@
                                                 value="<%=finalAmount - 1%>" />
                                                 <input type="hidden" id="total_discounted"  name="discount"
                                                 value="<%= discount %>" />
-                                                <% cart.products.forEach(function(product) { %>
-                                                    <!-- Loop through each product in the cart -->
-                                                    <input type="hidden" id="total_price" name="category" value="<%= product.category %>" />
-                                                    <!-- Assuming you want to include the category of each product as a hidden input -->
-                                                  <% }); %>
+                                               
                                                 
                                             <div class="billing-details">
                                                 <p>BILLING DETAILS</p>
@@ -756,7 +752,7 @@
 
             // Send data to backend
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/store_checkout");
+            xhr.open("POST", "/retryCheckout");
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {

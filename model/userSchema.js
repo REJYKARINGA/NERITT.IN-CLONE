@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+const { Schema } = mongoose;
+
 const schema = new mongoose.Schema({
     name:{
         type:String,
@@ -36,7 +38,11 @@ const schema = new mongoose.Schema({
             type: Date,
             default: null
         }
-    }
+    },
+    usedCoupon: [{ 
+        type: Schema.Types.ObjectId, 
+        ref: 'Coupon' 
+      }],
 },  { timestamps: true })
 
 const schemacollection = new mongoose.model('userDetails',schema)

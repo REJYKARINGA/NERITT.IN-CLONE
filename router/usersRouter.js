@@ -79,6 +79,7 @@ router.get('/update-cart-quantity/:productId', productController.updateCartItemQ
 router.get('/checkout', productController.showCheckoutPage);
 router.post('/store_checkout', productController.storeCheckout);
 
+
 router.get('/store_checkout', productController.showCheckoutPage); 
 router.post('/remove-from-cart/:productId', productController.removeFromCart);
 router.get('/wishlist', productController.wishlist);
@@ -96,6 +97,7 @@ router.post('/orders/:orderId', productController.deleteOrderById);
 router.post('/cancel-order/:id', productController.cancelOrder);
 router.post('/return-order/:id', productController.returnOrder);
 router.get('/retry-order/:id', productController.retryOrder);
+router.post('/retryCheckout/:id', productController.storeCheckoutRetry);
 
 // School Registration
 router.get('/school-registration', schoolController.schoolRegister);

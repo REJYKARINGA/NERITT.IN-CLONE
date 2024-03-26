@@ -318,9 +318,9 @@
                                                 value="kFzTS1UngvgFQ0LSU9mEwC6HTt9zEKPiQ1Rd3R6y">
                                             <input type="hidden" name="rzp" id="rzp" value="rzp_test_ATZkateK1H3fCP">
                                             <input type="hidden" id="total_price"  name="finalAmount"
-                                                value="<%=finalAmount - 1%>" />
+                                                value="<%= finalAmount %>" />
                                                 <input type="hidden" id="total_discounted"  name="discount"
-                                                value="<%=discount %>" />
+                                                value="<%= discount %>" />
                                                 <% cart.products.forEach(function(product) { %>
                                                     <!-- Loop through each product in the cart -->
                                                     <input type="hidden" id="total_price" name="category" value="<%= product.category %>" />
@@ -549,16 +549,55 @@
                                                     
                                                     <!-- Display applied coupon code and Remove Coupon button -->
                                                     <div id="coupon_display" style="display: none;">
-                                                        <p>Applied Coupon: <span id="applied_coupon_code"></span></p>
-                                                        <button id="remove_coupon_btn" class="btn btn-danger">Remove Coupon</button>
+                                                        <p>Applied Coupon Code: <span id="applied_coupon_code"></span></p>
+                                                        <button id="remove_coupon_btn" style="background-color: #ff0000; color: white; display: none;" class="btn">Remove Coupon</button>
                                                     </div>
+                                                    <script>
+                                                        document.getElementById('remove_coupon_btn').addEventListener('click', async () => {
+                                                            try {
+                                                                const response = await fetch('/removeCoupon', {
+                                                                    method: 'POST',
+                                                                    headers: {
+                                                                        'Content-Type': 'application/json'
+                                                                    },
+                                                                    body: JSON.stringify({ couponCode: document.getElementById('applied_coupon_code').textContent })
+                                                                });
+                                                        
+                                                                if (response.ok) {
+                                                                    const data = await response.json();
+                                                                    if (data.success) {
+                                                                        // Coupon removed successfully
+                                                                        // Additional actions if needed
+                                                        
+                                                                        // Reset coupon code input field
+                                                                        document.getElementById('coupon_code').value = '';
+                                                        
+                                                                        // Hide applied coupon display
+                                                                        document.getElementById('coupon_display').style.display = 'none';
+                                                        
+                                                                        // Hide Remove Coupon button
+                                                                        document.getElementById('remove_coupon_btn').style.display = 'none';
+                                                        
+                                                                        // Update total amount on the checkout page if needed
+                                                                    } else {
+                                                                        console.error('Failed to remove coupon:', data.message);
+                                                                    }
+                                                                } else {
+                                                                    console.error('Failed to remove coupon');
+                                                                }
+                                                            } catch (error) {
+                                                                console.error('Error removing coupon:', error);
+                                                            }
+                                                        });
+                                                        
+                                                        </script>
                                                     <div class="ztotal d-flex justify-content-between">
                                                         <div class="total-left">
                                                             <p>Total</p>
                                                         </div>
                                                         <div class="total-right">
                                                             <p id="total_amount_display"><span>&#8377;</span>
-                                                                <%=finalAmount - 1%>
+                                                                <%= finalAmount %>
                                                             </p>
                                                         </div>
 
@@ -649,12 +688,20 @@
                 
                                     // Show Remove Coupon button
                                     document.getElementById('remove_coupon_btn').style.display = 'block';
-                                } else {
-                                    if (data.alreadyUsed) {
+                                  // Display SweetAlert indicating coupon applied
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Coupon Applied',
+                    text: 'Coupon applied successfully!',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            } else {
+                if (data.alreadyUsed) {
                                         // Display SweetAlert indicating that the user has already used the coupon
                                         Swal.fire({
                                             icon: 'info',
-                                            title: 'Already used',
+                                            title: 'Already used Not working',
                                             text: 'User has already used this coupon',
                                             showConfirmButton: false,
                                             timer: 2000
@@ -694,7 +741,7 @@
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify({ couponCode: document.getElementById('applied_coupon_code').textContent })
+                                body: JSON.stringify({ couponCode: document.getElementById('remove_coupon_btn').textContent })
                             });
                 
                             if (response.ok) {
@@ -728,7 +775,7 @@
                             key: 'rzp_test_ATZkateK1H3fCP', // Replace with your Razorpay API key
                             amount: finalAmount, // Amount in paise (e.g., 1000 paise = ₹10)
                             currency: 'INR',
-                            name: 'Your Company Name',
+                            name: 'Neritt.shop',
                             description: 'Purchase Description',
                             handler: function (response) {
                                 // Handle payment success
@@ -857,7 +904,7 @@
                             // If online payment is selected, initiate Razorpay payment
                             if (onlinePaymentSelected) {
                                 // Calculate total amount based on product's final amount
-                                var finalAmount = (<%= finalAmount - 1 %>) * 100;
+                                var finalAmount = (<%= finalAmount %>) * 100;
                     // Initiate Razorpay payment
                     initiateRazorpayPayment(finalAmount);
         } else {
@@ -1253,7 +1300,7 @@
                 });
             }
         </script>
-        <script>
+        <!-- <script>
             // Function to parse query parameters from URL
             function getQueryParam(name) {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -1261,18 +1308,18 @@
             }
 
             // Check if outOfStock query parameter is true
-            const alreadyUsed = getQueryParam('alreadyUsed');
-            if (alreadyUsed === 'true') {
+            const couponApplied = getQueryParam('couponApplied');
+            if (couponApplied === 'true') {
                 // Display SweetAlert indicating that the product is successfully added to the cart
                 Swal.fire({
                     icon: 'info',
-                    title: 'Already used',
+                    title: 'Already used1',
                     text: 'User has already used this coupon',
                     showConfirmButton: false,
                     timer: 2000
                 });
             }
-        </script>
+        </script> -->
 
         <script>
             // Function to parse query parameters from URL
