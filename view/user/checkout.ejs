@@ -769,57 +769,59 @@
                 <script>
                     // Function to handle online payment
                     // Function to handle online payment
-                    function initiateRazorpayPayment(finalAmount) {
-                        // Create a Razorpay payment object
-                        var options = {
-                            key: 'rzp_test_ATZkateK1H3fCP', // Replace with your Razorpay API key
-                            amount: finalAmount, // Amount in paise (e.g., 1000 paise = ₹10)
-                            currency: 'INR',
-                            name: 'Neritt.shop',
-                            description: 'Purchase Description',
-                            handler: function (response) {
-                                // Handle payment success
-                                // Submit the form programmatically
-                                document.getElementById('checkout_details').submit();
-                            }
-                        };
+                    // Function to handle online payment
+function initiateRazorpayPayment(finalAmount) {
+    // Create a Razorpay payment object
+    var options = {
+        key: 'rzp_test_ATZkateK1H3fCP', // Replace with your Razorpay API key
+        amount: finalAmount, // Amount in paise (e.g., 1000 paise = ₹10)
+        currency: 'INR',
+        name: 'Neritt.shop',
+        description: 'Purchase Description',
+        handler: function (response) {
+            // Handle payment success
+            // Submit the form programmatically
+            document.getElementById('checkout_details').submit();
+        }
+    };
 
-                        var rzp1 = new Razorpay(options);
+    var rzp1 = new Razorpay(options);
 
-        rzp1.open();
+    rzp1.open();
 
-        rzp1.on('payment.failed', function (response) {
-            // Extracting necessary data
-            var errorDetails = {
-                code: response.error.code,
-                description: response.error.description,
-                source: response.error.source,
-                step: response.error.step,
-                reason: response.error.reason,
-                order_id: response.error.metadata.order_id,
-                payment_id: response.error.metadata.payment_id
-            };
+    rzp1.on('payment.failed', function (response) {
+        // Extracting necessary data
+        var errorDetails = {
+            code: response.error.code,
+            description: response.error.description,
+            source: response.error.source,
+            step: response.error.step,
+            reason: response.error.reason,
+            order_id: response.error.metadata.order_id,
+            payment_id: response.error.metadata.payment_id
+        };
 
-            // Send data to backend
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/store_checkout");
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Request was successful
-                    console.log("Payment failure details sent successfully.");
-                }
-            };
-            xhr.send(JSON.stringify(errorDetails));
-        });
-    }
+        // Send data to backend
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/store_checkout");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Request was successful
+                console.log("Payment failure details sent successfully.");
+            }
+        };
+        xhr.send(JSON.stringify(errorDetails));
+    });
+}
 
-    document.getElementById('place_order').addEventListener('click', function (event) {
-                        // Prevent default button behavior
-                        event.preventDefault();
 
-                        // Perform form validation
-                        var valid = true;
+document.getElementById('place_order').addEventListener('click', function (event) {
+    // Prevent default button behavior
+    event.preventDefault();
+
+    // Perform form validation
+    var valid = true;
 
                         // Validate Father's Name
                         var fatherName = document.getElementById('displayed_father_name').value.trim();
@@ -898,19 +900,19 @@
 
                         // If form is valid
                         if (valid) {
-                            // Check if online payment is selected
-                            var onlinePaymentSelected = document.getElementById('online_payment').checked;
+        // Check if online payment is selected
+        var onlinePaymentSelected = document.getElementById('online_payment').checked;
 
-                            // If online payment is selected, initiate Razorpay payment
-                            if (onlinePaymentSelected) {
-                                // Calculate total amount based on product's final amount
-                                var finalAmount = (<%= finalAmount %>) * 100;
-                    // Initiate Razorpay payment
-                    initiateRazorpayPayment(finalAmount);
+        // If online payment is selected, initiate Razorpay payment
+        if (onlinePaymentSelected) {
+            // Calculate total amount based on product's final amount
+            var finalAmount = (<%= finalAmount %>) * 100;
+            // Initiate Razorpay payment
+            initiateRazorpayPayment(finalAmount);
         } else {
-                        // If cash on delivery or other payment method is selected, proceed with normal order placement
-                        document.getElementById('checkout_details').submit();
-                    }
+            // If cash on delivery or other payment method is selected, proceed with normal order placement
+            document.getElementById('checkout_details').submit();
+        }
     }
 });
                 </script>
