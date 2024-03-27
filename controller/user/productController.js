@@ -418,13 +418,12 @@ const removeFromWishlist = async (req, res, next) => {
 
 
 
-const applyCoupon =  async (req, res) => {
+const applyCoupon =  async (req, res, next) => {
   try {
     const isUser = req.session.user;
 
     let walletBalance = 0;
     const ordId = orderId();
-    console.log(ordId);
 
    
     if (!req.session.user) {
@@ -432,7 +431,6 @@ const applyCoupon =  async (req, res) => {
     }
     const userId = req.session.user._id;
 
-      // Fetch user's wallet balance
       const wallet = await Wallet.findOne({ user: userId });
       if (wallet) {
         walletBalance = wallet.balance;
@@ -453,38 +451,24 @@ const applyCoupon =  async (req, res) => {
       } 
 
       const { couponCode } = req.body;
-        console.log(couponCode,'couponCode is this')
 
-       // Validate the coupon
 const coupon = await Coupon.findOne({ code: couponCode });
-
-console.log(coupon,'coupon is this ')
 if (!coupon) {
   return res.status(400).json({ success: false, message: 'Invalid coupon code' });
 }
 
-
-
-// Check if the user has already used this coupon
 if (coupon.usedByUsers.includes(userId)) {
-  console.log("User has already used this coupon");
   return res.status(200).json({ success: false, alreadyUsed: true, message: 'You have already used this coupon' });
 }
 
-
-// Update usedByUsers array with the current user
 coupon.usedByUsers.push(userId);
 
-// Check if coupon has exceeded maximum uses
 if (coupon.usedCount >= coupon.maxUses) {
-console.log("Coupon has reached maximum usage limit")
   return res.status(400).json({ success: false, message: 'Coupon has reached maximum usage limit' });
 }
 
-// Check if coupon is expired
 const currentDate = new Date();
 if (currentDate.getTime() < coupon.startDate.getTime() || currentDate.getTime() > coupon.endDate.getTime()) {
-console.log(currentDate.getTime(), 'Coupon is expired')
 return res.status(400).json({ success: false, message: 'Coupon is expired' });
 }
 
@@ -507,11 +491,9 @@ for (const product of cart.products) {
   totalSGST += (sgstValue / 100) * product.price * product.quantity; 
   totaldeliveryCost += deliveryCharge * product.quantity; 
   finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost-1
-  console.log(totaldeliveryCost, 'totalCGST')
 }
 }
 
-// Calculate discount based on the coupon type
 let discount = 0;
 if (coupon.discountType === 'percentage') {
   discount = (coupon.discountValue / 100) * finalAmount; 
@@ -519,19 +501,11 @@ if (coupon.discountType === 'percentage') {
   discount = coupon.discountValue;
 }
 
-// Update finalAmount with the discount applied by the coupon
 let discountedTotal = finalAmount - discount;
 
-// // Check if discounted total is less than minimum amount
-// if (discountedTotal < coupon.minimumAmount) {
-//   discountedTotal = coupon.minimumAmount;
-// }
-console.log(discount, discountedTotal, finalAmount,'discountedTotal minimum amount')
-// Update usedCount of the coupon
 coupon.usedCount += 1;
 
 await coupon.save(); 
-     console.log(discountedTotal,'this is my first discountedTotal')
     const name = req.session.user.name;
     const school = await School.find({ blocked: false });
     let totalProduct = 0;
@@ -543,8 +517,7 @@ await coupon.save();
     res.status(200).json({ success: true, couponApplied: true, updatedTotalAmount: discountedTotal, discount});
  
   } catch (error) {
-    console.error('Error showing checkout page:', error);
-    res.redirect('/'); 
+    return next(error);
   }
 };
 
@@ -556,7 +529,6 @@ const removeCoupon = async (req, res, next) => {
     }
 
     const { couponCode } = req.body;
-console.log(couponCode,'couponCode found')
     const coupon = await Coupon.findOne({ code: couponCode });
     if (!coupon) {
       return res.status(404).json({ success: false, message: 'Coupon not found' });
@@ -564,8 +536,8 @@ console.log(couponCode,'couponCode found')
 
     const userId = req.session.user._id;
     if (coupon.usedByUsers.includes(userId)) {
-      coupon.usedByUsers.pull(userId); // Remove the user from the coupon's usedByUsers array
-      coupon.usedCount -= 1; // Decrease the usedCount
+      coupon.usedByUsers.pull(userId);
+      coupon.usedCount -= 1; 
       await coupon.save();
 
       return res.status(200).json({ success: true, message: 'Coupon removed successfully' });
@@ -841,63 +813,6 @@ const buyProduct = async (req, res, next) => {
   }
 }
 
-// const getAllOrders = async (req, res, next) => {
-//   try {
-//     const isUser = req.session.user;
-//     let totalProduct = 0;
-//     let walletBalance = 0;
-
-//     if (!req.session.user) {
-//       res.redirect('/login');
-//       return;
-//     }
-
-//     const userId = req.session.user._id;
-
-//     const wallet = await Wallet.findOne({ user: userId });
-//     if (wallet) {
-//       walletBalance = wallet.balance;
-//     }
-
-//     const name = req.session.user.name;
-//     const user = await User.findById(req.session.user._id);
-
-//     const pageSize = 5;
-//     const currentPage = parseInt(req.query.page) || 1;
-//     const skip = (currentPage - 1) * pageSize;
-
-//     const ordersPromise = Order.find({ user: userId })
-//       .populate('user')
-//       .populate('products.product')
-//       .populate('address')
-//       .sort({ createdAt: -1 })
-//       .skip(skip)
-//       .limit(pageSize)
-//       .lean();
-
-//     const [orders, count] = await Promise.all([
-//       ordersPromise,
-//       Order.countDocuments({ user: userId })
-//     ]);
-
-//     const school = await School.find({ blocked: false });
-
-//     res.render('user/myOrders1', {
-//       user: userId,
-//       orders,
-//       msg1: { name },
-//       user,
-//       school,
-//       isUser,
-//       currentPage,
-//       totalPages: Math.ceil(count / pageSize),
-//       totalProduct,
-//       walletBalance
-//     });
-//   } catch (error) {
-//     return next(error);
-//   }
-// };
 
 const getAllOrders = async (req, res, next) => {
   try {
@@ -940,15 +855,12 @@ const getAllOrders = async (req, res, next) => {
 
     const school = await School.find({ blocked: false });
 
-    // Calculate return eligibility for each order
     const today = new Date();
     for (const order of orders) {
-      const deliveryDate = order.createdAt; // Assuming createdAt field is the delivery date
+      const deliveryDate = order.createdAt; 
 
-      // Calculate the difference in days between today and the delivery date
       const daysDifference = Math.floor((today - deliveryDate) / (1000 * 60 * 60 * 24));
 
-      // Set returnEligible based on the criteria (2 weeks = 14 days)
       order.returnEligible = order.status === 'completed' && daysDifference <= 14;
     }
 
@@ -1106,9 +1018,7 @@ const retryOrder = async (req, res, next) => {
     const name = req.session.user.name;
     const school = await School.find({ blocked: false });
     let totalProduct = 0;
-    // if (cart && cart.products) {
-    //   totalProduct = cart.products.length;
-    // }
+
     let discount = 0
 
 
@@ -1119,11 +1029,8 @@ const retryOrder = async (req, res, next) => {
       usedByUsers: { $ne: userId }
     });
 
-    
-    console.log(order,'founded id')
     res.render('user/retryPayment', {
       order,
-      // cart,
       addresses,
       totalAmount,
       totalCGST,
@@ -1140,7 +1047,6 @@ const retryOrder = async (req, res, next) => {
       coupons
     });
   } catch (error) {
-    console.log(error.message)
     return next(error);
   }
 };
@@ -1300,15 +1206,13 @@ const updateCartItemQuantity = async (req, res, next) => {
       return res.redirect('/login');
     }
 
-    const productId = req.params.productId;
-    const action = req.query.action;
+    const { productId, action } = req.body;
     const userId = req.session.user._id;
 
     const wallet = await Wallet.findOne({ user: userId });
     if (wallet) {
       walletBalance = wallet.balance;
     }
-
 
     const cart = await Cart.findOne({ user: userId });
     if (!cart) {
@@ -1320,7 +1224,8 @@ const updateCartItemQuantity = async (req, res, next) => {
     if (cartProductIndex === -1) {
       return res.status(404).json({ error: 'Product not found in cart' });
     }
-    const product = await Product.findOne({ _id: productId, blocked: false })
+
+    const product = await Product.findOne({ _id: productId, blocked: false });
 
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
@@ -1332,13 +1237,13 @@ const updateCartItemQuantity = async (req, res, next) => {
       if (product.stock_status === 'In Stock' && product.quantity > cartProduct.quantity) {
         cartProduct.quantity++;
       } else {
-        return res.redirect('/cart?outOfStock=true');
+        return res.status(400).json({ error: 'Product out of stock' });
       }
     } else if (action === 'decrease') {
       if (cartProduct.quantity > 1) {
         cartProduct.quantity--;
       } else {
-        return res.redirect('/cart?defaultStock=true');
+        return res.status(400).json({ error: 'Quantity less than 1' });
       }
     } else {
       return res.status(400).json({ error: 'Invalid action' });
@@ -1346,16 +1251,12 @@ const updateCartItemQuantity = async (req, res, next) => {
 
     await cart.save();
 
-    res.redirect('/cart');
-
-    if (!cart || !cart.products || cart.products.length === 0) {
-      return res.redirect('/cart');
-    }
-
+    res.json({ quantity: cartProduct.quantity }); // Send updated quantity as JSON response
   } catch (error) {
     return next(error);
   }
 };
+
 
 const addToCart = async (req, res, next) => {
   try {
@@ -1475,59 +1376,67 @@ const schoolProducts = async (req, res, next) => {
 
 const getWallet = async (req, res, next) => {
   try {
-    const isUser = req.session.user;
-    let totalProduct = 0;
-    let walletBalance = 0;
-
     if (!req.session.user) {
       res.redirect('/login');
       return;
     }
 
     const userId = req.session.user._id;
+const pageSize = 5; // Number of items per page
+const currentPage = parseInt(req.query.page) || 1; // Current page, default to 1 if not provided
+const skip = (currentPage - 1) * pageSize;
 
-    const wallet = await Wallet.findOne({ user: userId }).sort({ createdAt: -1 });
+const walletPromise = await Wallet.findOne({ user: userId })
+  .populate('user')
+  .populate({
+    path: 'walletHistory',
+    options: { sort: { createdAt: 1 } } // Sort wallet history in descending order of createdAt
+  })
+  .skip(skip)
+  .limit(pageSize);
+
+
+    const ordersPromise = await Order.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize);
+
+    const [wallet, ordersCount, orders] = await Promise.all([
+      walletPromise,
+      Order.countDocuments({ user: userId }),
+      ordersPromise
+    ]);
+
+    let walletBalance = 0;
+    let walletHistory = [];
     if (wallet) {
       walletBalance = wallet.balance;
+      walletHistory = wallet.walletHistory;
     }
 
     const name = req.session.user.name;
-    const user = await User.findById(req.session.user._id);
-
-    const pageSize = 5;
-    const currentPage = parseInt(req.query.page) || 1;
-    const skip = (currentPage - 1) * pageSize;
-
-    const ordersPromise = Order.find({ user: userId })
-      .populate('user')
-      .populate('products.product')
-      .populate('address')
-      .sort({ createdAt: -1 })
-
-
-    const [orders, count] = await Promise.all([
-      ordersPromise,
-      Order.countDocuments({ user: userId })
-    ]);
-
+    const user = await User.findById(userId);
     const school = await School.find({ blocked: false });
+
     res.render('user/wallet', {
       user: userId,
       orders,
       msg1: { name },
       user,
-      walletHistory: wallet.walletHistory,
+      walletHistory,
       school,
-      isUser,
+      isUser: true,
       currentPage,
-      totalPages: Math.ceil(count / pageSize),
-      totalProduct,
+      totalPages: Math.ceil(ordersCount / pageSize),
+      totalProduct: orders.length,
       walletBalance
     });
   } catch (error) {
     return next(error);
   }
 };
+
+
 
 
 
@@ -1551,10 +1460,7 @@ const storeCheckoutRetry = async (req, res, next) => {
     if (!wallet || wallet.balance < order.totalAmount) {
       return res.redirect('/checkout?outOfStock=true');
     }
-console.log(order.orderId,' check this ', orderId)
-    // Create a new order based on the failed order's details
     const newOrder = new Order({
-      // user: order.user,
       products: order.products,
       totalAmount: order.totalAmount,
       discountedAmount: order.discountedAmount,
@@ -1562,21 +1468,17 @@ console.log(order.orderId,' check this ', orderId)
       category: order.category,
       address: order.address,
       billingDetails: order.billingDetails,
-      payment_type: 'Wallet', // Assuming retry uses wallet payment type
+      payment_type: 'Wallet',
       orderId: order.orderId,
       deliveryType: order.deliveryType,
-      status: 'pending' // Set the status of the new order to pending
+      status: 'pending' 
     });
 
     await newOrder.save();
 
-    // Deduct the total amount from the wallet balance
     wallet.balance -= order.totalAmount;
     await wallet.save();
 
-    // Update the status of the failed order to indicate retry attempt
-    // order.status = 'Accepted';
-    // await order.save();
 
     const isPaymentSuccessful = true;
 
@@ -1593,16 +1495,13 @@ console.log(order.orderId,' check this ', orderId)
     walletBalance = 0
     totalProduct = 0
 
-    // return res.status(200).json({ message: 'Order retried successfully', newOrder });
     res.render('user/myOrderSuccess', {
       user: req.session.user,
       ordId,
       msg1: { name },
       walletBalance,
       isUser,
-      // cart,
       totalProduct,
-      // school,
       userId,
       lessThanLimit: false,
       isPaymentSuccessful

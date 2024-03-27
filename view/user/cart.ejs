@@ -119,10 +119,64 @@
                           <td><b><%= product.name %></b></td>
                           <td><b><%= product.price %></b></td>
                           <td><b>
-                            <a href="/update-cart-quantity/<%= product.product._id %>?action=decrease" class="update-quantity-link decrease" data-action="decrease"><b>-</b></a>
-                              <span class="quantity"><b><%= product.quantity %></b></span>
-                              <a href="/update-cart-quantity/<%= product.product._id %>?action=increase" class="update-quantity-link increase" data-action="increase"><b>+</b></a>
-                          
+                            <button class="update-quantity-link decrease" data-action="decrease" data-product-id="<%= product.product._id %>"><b>-</b></button>
+                            <span class="quantity" id="quantity_<%= product.product._id %>"><b><%= product.quantity %></b></span>
+                            <button class="update-quantity-link increase" data-action="increase" data-product-id="<%= product.product._id %>"><b>+</b></button>
+                            
+                            <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const updateQuantityLinks = document.querySelectorAll('.update-quantity-link');
+
+    updateQuantityLinks.forEach(link => {
+      link.addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        const productId = link.dataset.productId;
+        const action = link.dataset.action;
+
+        try {
+          const response = await fetch('/update-cart-quantity', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId, action }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+
+          const responseData = await response.json();
+
+          if (responseData.error) {
+            if (responseData.error === 'Quantity less than 1') {
+              // Show SweetAlert for quantity less than 1
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Quantity cannot be less than 1',
+              });
+            } else if (responseData.error === 'Product out of stock') {
+              // Show SweetAlert for product out of stock or insufficient quantity
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Product is out of stock or insufficient quantity',
+              });
+            }
+          } else {
+            // Update the quantity on the page
+            document.getElementById(`quantity_${productId}`).textContent = responseData.quantity;
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      });
+    });
+  });
+</script>
+                            
                               </b></td>
                           <td><b>Out of Stock</b></td>
                           <td>
@@ -139,10 +193,45 @@
                           <td><b><%= product.category %></b></td>
                           <td><b><%= product.price %></b></td>
                           <td>
-                              <a href="/update-cart-quantity/<%= product.product._id %>?action=decrease" class="update-quantity-link decrease" data-action="decrease"><b>-</b></a>
-                              <span class="quantity"><b><%= product.quantity %></b></span>
-                              <a href="/update-cart-quantity/<%= product.product._id %>?action=increase" class="update-quantity-link increase" data-action="increase"><b>+</b></a>
-                         
+                            <button class="update-quantity-link decrease" data-action="decrease" data-product-id="<%= product.product._id %>"><b>-</b></button>
+                            <span class="quantity" id="quantity_<%= product.product._id %>"><b><%= product.quantity %></b></span>
+                            <button class="update-quantity-link increase" data-action="increase" data-product-id="<%= product.product._id %>"><b>+</b></button>
+                            
+                            <script>
+                              document.addEventListener('DOMContentLoaded', () => {
+                                const updateQuantityLinks = document.querySelectorAll('.update-quantity-link');
+                            
+                                updateQuantityLinks.forEach(link => {
+                                  link.addEventListener('click', async (event) => {
+                                    event.preventDefault();
+                            
+                                    const productId = link.dataset.productId;
+                                    const action = link.dataset.action;
+                            
+                                    try {
+                                      const response = await fetch('/update-cart-quantity', {
+                                        method: 'POST',
+                                        headers: {
+                                          'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ productId, action }),
+                                      });
+                            
+                                      if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                      }
+                            
+                                      const responseData = await response.json();
+                                      // Update the quantity on the page
+                                      document.getElementById(`quantity_${productId}`).textContent = responseData.quantity;
+                                    } catch (error) {
+                                      console.error('Error:', error);
+                                    }
+                                  });
+                                });
+                              });
+                            </script>
+ 
                             </td>
                           <td><b><span class="total" id="total-<%= product.product._id %>"><%= product.price * product.quantity %></span></b></td>
                           <td>
@@ -397,55 +486,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-  <!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Function to handle updating the quantity
-      function updateQuantity(productId, action) {
-        fetch(`/update-cart-quantity/${productId}?action=${action}`, {
-          method: 'POST'
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to update quantity');
-          }
-          return response.json();
-        })
-        .then(data => {
-          // Check if the updated quantity is valid based on product quantity
-          if (data.validQuantity) {
-            // Update the quantity and total price in the UI
-            document.getElementById(`quantity-${productId}`).textContent = data.quantity;
-            document.getElementById(`total-${productId}`).textContent = data.total;
-          } else {
-            // Quantity is not valid, display an error message
-            alert('Invalid quantity. Please enter a valid quantity.');
-          }
-        })
-        .catch(error => {
-          console.error('Error updating quantity:', error);
-          // Optionally handle errors
-        });
-      }
-  
-      // Event listener for the "+" button
-      document.querySelectorAll('.increase-quantity').forEach(button => {
-        button.addEventListener('click', function() {
-          const productId = this.dataset.productId;
-          updateQuantity(productId, 'increase');
-        });
-      });
-  
-      // Event listener for the "-" button
-      document.querySelectorAll('.decrease-quantity').forEach(button => {
-        button.addEventListener('click', function() {
-          const productId = this.dataset.productId;
-          updateQuantity(productId, 'decrease');
-        });
-      });
-    });
-  </script> -->
-  
-  
+
   <!-- Add this script at the end of your EJS file -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>

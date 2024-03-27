@@ -75,7 +75,7 @@ router.get('/view-product/:id', productController.showProduct);
 router.get("/login-status/:id", productController.buyProduct);
 router.get('/cart', productController.showCart);
 router.get('/add-to-cart/:productId', productController.addToCart);
-router.get('/update-cart-quantity/:productId', productController.updateCartItemQuantity);
+router.post('/update-cart-quantity', productController.updateCartItemQuantity);
 router.get('/checkout', productController.showCheckoutPage);
 router.post('/store_checkout', productController.storeCheckout);
 

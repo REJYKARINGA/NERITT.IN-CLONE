@@ -155,13 +155,97 @@
                     
                       <td>
                         <% if (order.returnEligible) { %>
-                          <form action="/return-order/<%= order._id %>" method="POST">
-                            <button type="submit" class="btn btn-warning">Return Order</button>
-                          </form>
+                          <form id="returnOrderForm" action="/return-order/<%= order._id %>" method="POST">
+                            <button type="submit" class="btn btn-danger">Return Order</button>
+                        </form>
+                        <script>
+                          // Function to display SweetAlert confirmation dialog
+                          const showConfirmationDialog = () => {
+                              const swalWithBootstrapButtons = Swal.mixin({
+                                  customClass: {
+                                      confirmButton: "btn btn-success",
+                                      cancelButton: "btn btn-danger"
+                                  },
+                                  buttonsStyling: false,
+                              });
+                      
+                              swalWithBootstrapButtons.fire({
+                                  title: "Are you sure?",
+                                  text: "Do you want to return this order?",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonText: "Yes, return it!",
+                                  cancelButtonText: "No, keep it",
+                                  reverseButtons: true,
+                              }).then((result) => {
+                                  if (result.isConfirmed) {
+                                      // If user confirms, submit the form
+                                      document.getElementById('returnOrderForm').submit();
+                                  } else {
+                                      // If user cancels, show a message
+                                      Swal.fire({
+                                          title: "Cancelled",
+                                          text: "Your order return was cancelled.",
+                                          icon: "info"
+                                      });
+                                  }
+                              });
+                          };
+                      
+                          // Intercept form submission and show confirmation dialog
+                          document.getElementById('returnOrderForm').addEventListener('submit', (event) => {
+                              event.preventDefault(); // Prevent default form submission
+                              showConfirmationDialog(); // Display SweetAlert confirmation dialog
+                          });
+                      </script>
+                        
                           <% } else if (order.status == 'pending' || order.status == 'Accepted' ||  order.status == 'shipped') { %>
-                            <form action="/cancel-order/<%= order._id %>" method="POST">
+                            <form id="cancelOrderForm" action="/cancel-order/<%= order._id %>" method="POST">
                               <button type="submit" class="btn btn-danger">Cancel Order</button>
-                            </form><br>
+                          </form>
+                          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- Include SweetAlert2 library -->
+
+<script>
+    // Function to display SweetAlert confirmation dialog
+    const showConfirmationDialog = () => {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false,
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, cancel it!",
+            cancelButtonText: "No, keep it",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If user confirms, submit the form
+                document.getElementById('cancelOrderForm').submit();
+            } else {
+                // If user cancels, show a message
+                Swal.fire({
+                    title: "Cancelled",
+                    text: "Your order cancellation was cancelled.",
+                    icon: "info"
+                });
+            }
+        });
+    };
+
+    // Intercept form submission and show confirmation dialog
+    document.getElementById('cancelOrderForm').addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent default form submission
+        showConfirmationDialog(); // Display SweetAlert confirmation dialog
+    });
+</script>
+
                             <% } else  if(order.status == 'Failed') { %>
                               <form action="/retry-order/<%= order._id %>" >
                                 <button type="submit" class="btn btn-warning">Retry Order</button>
