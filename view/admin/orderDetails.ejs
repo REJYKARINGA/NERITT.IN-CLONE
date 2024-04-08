@@ -521,11 +521,11 @@ Order Details
                     </div>                                
                 </div>
                 <div class="card-body">
-                    <form action="/admin/updateOrderStatus/<%= order.id %>" method="POST">
+                    <form action="/admin/updateOrderStatus/<%= order.id %>/<%= product.product.id %>" method="POST">
                         <div class="form-group">
                             <label for="status">Order Status:</label>
-                            <select class="form-control" id="status" name="status" value="<%= order.status %>">
-                                <option selected value="<%=order.status%>"><%=order.status%></option>
+                            <select class="form-control" id="status" name="status" value="<%= product.status %>">
+                                <option selected value="<%= product.status %>"><%= product.status %></option>
                                 <option  value="pending">Order Placed</option>
                                 <option value="Accepted">Order Accepted</option>
                                 <option value="shipped">Order Shipped</option>
@@ -568,14 +568,14 @@ Order Details
                                 <tr>
                                     <th scope="row">1</th>
                                     <td><%= product.name %></td> <!-- Dynamically insert product name -->
-                                    <td><img style="height:50%;width:50%;" src="/<%= product.gallery[0] %>"/></td> <!-- Dynamically insert product image -->
+                                    <td><img style="height:30%;width:30%;" src="/<%= product.image %>"/></td> <!-- Dynamically insert product image -->
                                     <td>1</td> <!-- Dynamically insert product quantity -->
-                                    <td>INR <%= product.sales_cost %></td> <!-- Dynamically insert product price -->
-                                    <td><%= product.cgst %> %</td> <!-- Dynamically insert product CGST -->
-                                    <td><%= product.sgst %> %</td> <!-- Dynamically insert product SGST -->
-                                    <%let cgst = (product.cgst / 100) * product.sales_cost * 1; 
-                                        let sgst = (product.sgst / 100) * product.sales_cost * 1%>
-                                    <td class="text-right">INR <%= product.sales_cost %></td> <!-- Calculate total -->
+                                    <td>INR <%= products.sales_cost %></td> <!-- Dynamically insert product price -->
+                                    <td><%= products.cgst %> %</td> <!-- Dynamically insert product CGST -->
+                                    <td><%= products.sgst %> %</td> <!-- Dynamically insert product SGST -->
+                                    <%let cgst = (products.cgst / 100) * products.sales_cost * 1; 
+                                        let sgst = (products.sgst / 100) * products.sales_cost * 1%>
+                                    <td class="text-right">INR <%= products.sales_cost %></td> <!-- Calculate total -->
                                 </tr>
                             </tbody>
                         </table>
@@ -592,7 +592,7 @@ Order Details
                                     <tbody>
                                         <tr>
                                             <td>Sub Total :</td>
-                                            <td>INR <%= cgst +sgst + product.sales_cost %></td> <!-- Dynamically insert order total amount -->
+                                            <td>INR <%= cgst +sgst + products.sales_cost %></td> <!-- Dynamically insert order total amount -->
                                         </tr>
                                         
                                         <tr>
@@ -602,15 +602,15 @@ Order Details
                 
                                         <tr>
                                             <td>CGST Amount :</td>
-                                            <td>INR <%= (product.cgst / 100) * product.sales_cost * 1 %></td> <!-- Dynamically insert CGST amount -->
+                                            <td>INR <%= (products.cgst / 100) * products.sales_cost * 1 %></td> <!-- Dynamically insert CGST amount -->
                                         </tr>
                                         <tr>
                                             <td>SGST Amount :</td>
-                                            <td>INR <%= (product.sgst / 100) * product.sales_cost * 1 %></td> <!-- Dynamically insert SGST amount -->
+                                            <td>INR <%= (products.sgst / 100) * products.sales_cost * 1 %></td> <!-- Dynamically insert SGST amount -->
                                         </tr>
                                         <tr>
                                             <td class="text-black f-w-7 font-18">Amount :</td>
-                                            <td class="text-black f-w-7 font-18">INR <%= product.sales_cost + product.delivery_charge + ((product.sgst / 100) * product.sales_cost) -1+((product.cgst / 100) * product.sales_cost) %></td> <!-- Calculate total amount -->
+                                            <td class="text-black f-w-7 font-18">INR <%= product.totalCost %></td> <!-- Calculate total amount -->
                                         </tr>
                                     </tbody>
                                 </table>

@@ -70,7 +70,7 @@ router.post('/edit/:id', upload.fields([{ name: 'logo_image', maxCount: 1 }]), c
 // Order Routes 
 router.get('/orders', orderController.displayOrders);
 router.get('/order-details/:orderId/:productId', orderController.getOrderDetailsById);
-router.post('/updateOrderStatus/:orderId', orderController.updateOrderStatus);
+router.post('/updateOrderStatus/:orderId/:productId', orderController.updateOrderStatus);
 router.get('/failed-orders', orderController.displayPendingOrders);
 router.get('/cancelled-orders', orderController.displayCancelledOrders);
 

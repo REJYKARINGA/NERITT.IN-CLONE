@@ -119,23 +119,24 @@
                 <% if (orders.length > 0) { %>
                   <!-- Loop through user orders -->
                   <% orders.forEach((order) => { %>
+                    <% order.products.forEach((product) => { %>
                     <tr>
                       <td><%= order.orderId %></td>
                       <td>
                         <!-- Loop through products in the order to display images -->
-                        <% order.products.forEach((product) => { %>
+                        
                           <a href="/view-product/<%= product.product.id %>">
                             <img src="<%= product.image %>" alt="<%= product.name %>" width="50">
                           </a>
-                        <% }); %>
+                       
                       </td>
                       <td>
                         <!-- Loop through products in the order to display names and quantities -->
-                        <% order.products.forEach((product) => { %>
+                        
                           <p><%= product.name %> - Quantity: <%= product.quantity %></p>
-                        <% }); %>
+                       
                       </td>
-                      <td><%= order.totalAmount %></td>
+                      <td><%= product.totalCost * product.quantity %></td>
                       <td><%= order.payment_type %></td>
                       <td>
                         <%= order.billingDetails.studentName %><br>
@@ -144,18 +145,18 @@
                         <%= order.billingDetails.address %><br>
                         <%= order.billingDetails.district %>, <%= order.billingDetails.pincode %><br>
                       </td>
-                      <td><%= order.status %></td>
+                      <td><%= product.status %></td>
                       
                       <td>
-                        <% if (order.status === 'completed') { %>
+                        <% if (product.status === 'completed') { %>
                           <!-- Add a link to download the invoice -->
                           <a href="/generate-invoice/<%= order._id %>" class="btn" style="background-color:#129393; color:white">Download Invoice</a>
                         <% } %>
                       </td>
                     
                       <td>
-                        <% if (order.returnEligible) { %>
-                          <form id="returnOrderForm" action="/return-order/<%= order._id %>" method="POST">
+                        <% if (order.returnEligible && product.status !== 'Return requested') { %>
+                          <form id="returnOrderForm" action="/return-order/<%= order._id %>/<%= product.product._id %>" method="POST">
                             <button type="submit" class="btn btn-danger">Return Order</button>
                         </form>
                         <script>
@@ -199,8 +200,8 @@
                           });
                       </script>
                         
-                          <% } else if (order.status == 'pending' || order.status == 'Accepted' ||  order.status == 'shipped') { %>
-                            <form id="cancelOrderForm" action="/cancel-order/<%= order._id %>" method="POST">
+                          <% } else if (product.status == 'pending' || product.status == 'Accepted' ||  product.status == 'shipped') { %>
+                            <form id="cancelOrderForm" action="/cancel-order/<%= order._id %>/<%= product.product._id %>" method="POST">
                               <button type="submit" class="btn btn-danger">Cancel Order</button>
                           </form>
                           <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- Include SweetAlert2 library -->
@@ -246,9 +247,9 @@
     });
 </script>
 
-                            <% } else  if(order.status == 'Failed') { %>
-                              <form action="/retry-order/<%= order._id %>" >
-                                <button type="submit" class="btn btn-warning">Retry Order</button>
+                            <% } else  if(product.status == 'Failed') { %>
+                              <form action="/retry-order/<%= order._id %>/<%= product.product._id %>" >
+                                <button type="submit" class="btn btn-warning">Retry All Order</button>
                               </form><br>
                             <% } else { %>
                              <p>Return Expired</p>
@@ -256,6 +257,7 @@
                         
                       </td>
                     </tr>
+                    <% }); %>
                   <% }); %>
                 <% } else { %>
                   <!-- If there are no orders, display an empty orders message with a nice design -->

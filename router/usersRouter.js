@@ -1,7 +1,7 @@
 const express = require('express')
 var app = express();
 const router = express.Router()
-const multer = require('multer'); 
+const multer = require('multer');  
 const path  = require('path')
 
 const { body, validationResult } = require('express-validator');
@@ -70,6 +70,11 @@ router.post('/resend-otp', authController.resendOtp);
 router.get('/', productController.neritt);
 router.get('/getCategory', productController.category);
 router.get('/shop', productController.displayProducts);
+
+
+router.get('/topCategories', productController.topCategories);
+router.get('/topProducts', productController.topProducts);
+
 router.get("/set-session", productController.displayProducts);
 router.get('/view-product/:id', productController.showProduct);
 router.get("/login-status/:id", productController.buyProduct);
@@ -78,6 +83,7 @@ router.get('/add-to-cart/:productId', productController.addToCart);
 router.post('/update-cart-quantity', productController.updateCartItemQuantity);
 router.get('/checkout', productController.showCheckoutPage);
 router.post('/store_checkout', productController.storeCheckout);
+router.post('/store_checkoutFailed', productController.failedStoreCheckout);
 
 
 router.get('/store_checkout', productController.showCheckoutPage); 
@@ -94,10 +100,10 @@ router.post('/removeCoupon', productController.removeCoupon);
 // Order Management  
 router.get('/orders', productController.getAllOrders);
 router.post('/orders/:orderId', productController.deleteOrderById);
-router.post('/cancel-order/:id', productController.cancelOrder);
-router.post('/return-order/:id', productController.returnOrder);
-router.get('/retry-order/:id', productController.retryOrder);
-router.post('/retryCheckout/:id', productController.storeCheckoutRetry);
+router.post('/cancel-order/:id/:productId', productController.cancelOrder);
+router.post('/return-order/:id/:productId', productController.returnOrder);
+router.get('/retry-order/:orderId/:productId', productController.getRetryOrder);
+router.post('/retryCheckout/:orderId/:productId', productController.postRetryOrder);
 
 // School Registration
 router.get('/school-registration', schoolController.schoolRegister);

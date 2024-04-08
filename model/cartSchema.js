@@ -8,7 +8,7 @@ const cartSchema = new mongoose.Schema({
     ref: 'userDetails',
     required: true
   }, 
-
+ 
   products: [
     {
       product: {
@@ -18,6 +18,9 @@ const cartSchema = new mongoose.Schema({
       name: String,
       category: String, 
       price: Number,
+      gst: Number,
+      delivery_charge: Number,
+      totalCost: Number,
       image: String, // Add image field for each product in the cart
       quantity: {
         type: Number,
@@ -29,6 +32,7 @@ const cartSchema = new mongoose.Schema({
     type: String,
     default: null
   }
+
   
 });
 

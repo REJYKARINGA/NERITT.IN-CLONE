@@ -88,7 +88,7 @@
   </header>
   <main class="container mt-5">
     <div class="row d-flex justify-content-between">
-      <div class="col-md-8">
+      <div class="col-md-10">
         <div class="card shadow-sm">
           <div class="card-header">
             <h3 class="mb-0">Cart Items</h3>
@@ -105,6 +105,8 @@
                       <th scope="col">Product Name</th>
                       <th scope="col">category</th>
                       <th scope="col">Price</th>
+                      <th scope="col">GST</th>
+                      <th scope="col">Shipping Charge</th>
                       <th scope="col">Quantity</th>
                       <th scope="col">Total</th>
                       <th scope="col">Remove</th>
@@ -118,6 +120,8 @@
                           <td><b><img src="<%= product.image %>" alt="Product Image" width="50"></b></td>
                           <td><b><%= product.name %></b></td>
                           <td><b><%= product.price %></b></td>
+                          <td><b><%= product.gst %></b></td>
+                          <td><b><%= product.delivery_charge %></b></td>
                           <td><b>
                             <button class="update-quantity-link decrease" data-action="decrease" data-product-id="<%= product.product._id %>"><b>-</b></button>
                             <span class="quantity" id="quantity_<%= product.product._id %>"><b><%= product.quantity %></b></span>
@@ -176,7 +180,7 @@
     });
   });
 </script>
-                            
+                             
                               </b></td>
                           <td><b>Out of Stock</b></td>
                           <td>
@@ -192,48 +196,52 @@
                           <td><b><%= product.name %></b></td>
                           <td><b><%= product.category %></b></td>
                           <td><b><%= product.price %></b></td>
+                          <td><b><%= product.gst %></b></td>
+                          <td><b><%= product.delivery_charge %></b></td>
                           <td>
                             <button class="update-quantity-link decrease" data-action="decrease" data-product-id="<%= product.product._id %>"><b>-</b></button>
                             <span class="quantity" id="quantity_<%= product.product._id %>"><b><%= product.quantity %></b></span>
                             <button class="update-quantity-link increase" data-action="increase" data-product-id="<%= product.product._id %>"><b>+</b></button>
-                            
-                            <script>
-                              document.addEventListener('DOMContentLoaded', () => {
-                                const updateQuantityLinks = document.querySelectorAll('.update-quantity-link');
-                            
-                                updateQuantityLinks.forEach(link => {
-                                  link.addEventListener('click', async (event) => {
-                                    event.preventDefault();
-                            
-                                    const productId = link.dataset.productId;
-                                    const action = link.dataset.action;
-                            
-                                    try {
-                                      const response = await fetch('/update-cart-quantity', {
-                                        method: 'POST',
-                                        headers: {
-                                          'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ productId, action }),
-                                      });
-                            
-                                      if (!response.ok) {
-                                        throw new Error('Network response was not ok');
-                                      }
-                            
-                                      const responseData = await response.json();
-                                      // Update the quantity on the page
-                                      document.getElementById(`quantity_${productId}`).textContent = responseData.quantity;
-                                    } catch (error) {
-                                      console.error('Error:', error);
+                          </td>
+                          <td><b><span class="total" id="total_<%= product.product._id %>"><%= product.totalCost * product.quantity %></span></b></td>
+                          
+                          <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                              const updateQuantityLinks = document.querySelectorAll('.update-quantity-link');
+                          
+                              updateQuantityLinks.forEach(link => {
+                                link.addEventListener('click', async (event) => {
+                                  event.preventDefault();
+                          
+                                  const productId = link.dataset.productId;
+                                  const action = link.dataset.action;
+                          
+                                  try {
+                                    const response = await fetch('/update-cart-quantity', {
+                                      method: 'POST',
+                                      headers: {
+                                        'Content-Type': 'application/json'
+                                      },
+                                      body: JSON.stringify({ productId, action }),
+                                    });
+                          
+                                    if (!response.ok) {
+                                      throw new Error('Network response was not ok');
                                     }
-                                  });
+                          
+                                    const responseData = await response.json();
+                                    // Update the quantity and total cost on the page
+                                    document.getElementById(`quantity_${productId}`).textContent = responseData.quantity;
+                                    document.getElementById(`total_${productId}`).textContent = responseData.totalCost;
+                                  } catch (error) {
+                                    console.error('Error:', error);
+                                  }
                                 });
                               });
-                            </script>
- 
-                            </td>
-                          <td><b><span class="total" id="total-<%= product.product._id %>"><%= product.price * product.quantity %></span></b></td>
+                            });
+                          </script>
+                          
+                          
                           <td>
                             <form action="/remove-from-cart/<%= product._id %>" method="POST">
                               <button type="submit" class="btn btn-danger"><b>Remove</b></button>
@@ -326,9 +334,9 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-2">
         <div class="card shadow-sm">
-          <div class="card-header">
+          <!-- <div class="card-header">
             <h3 class="mb-0">Order Summary</h3>
           </div>
           <div class="card-body">
@@ -339,12 +347,12 @@
             <div class="d-flex align-items-center justify-content-between mb-2">
               <span class="text-muted">Subtotal:</span>
               <span >₹ <%= subtotal %> </span>
-              <!-- <span id="subtotal">₹ <%= subtotal %></span> -->
+              <span id="subtotal">₹ <%= subtotal %></span>
             </div>
             <div class="d-flex align-items-center justify-content-between mb-2">
               <span class="text-muted">Shipping:</span>
               <span class="text-success"><b>Free Shipping</b></span>
-            </div>
+            </div> -->
             <!-- <div class="mb-3">
               <label for="promo" class="form-label mb-1">Promo Code</label>
               <input type="text" id="promo" placeholder="Enter your code" class="form-control" onchange="removeCoupon()">
@@ -356,11 +364,11 @@
               <span class="text-muted">Discount:</span>
               <span id="discount">₹ 0</span>
             </div> -->
-            <div class="d-flex align-items-center justify-content-between mb-2">
+            <!-- <div class="d-flex align-items-center justify-content-between mb-2">
               <span class="text-muted"><b>Total:</b></span>
               <span ><b>₹ <%= subtotal %> </b></span>
-              <!-- <span id="total">₹ 44000</span> -->
-            </div>
+              <span id="total">₹ 44000</span>
+            </div> -->
             <% if (cart && cart.products && cart.products.length > 0) { %>
               <% const anyProductUnavailable = cart.products.some(product => product.product.quantity === 0); %>
               <% if (anyProductUnavailable) { %>

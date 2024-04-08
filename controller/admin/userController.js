@@ -16,7 +16,8 @@ const phantom = require('phantomjs-prebuilt');
 const dashboard = async (req, res, next) => {
   try {
     if (req.session.admin) {
-      let orders = await Order.find({ status: { $in: ['shipped', 'completed'] } });
+      let orders = await Order.find({ 'products.status': { $in: ['shipped', 'completed'] } });
+      console.log(orders, ' order founded')
       const { start_date, end_date, filter } = req.query;
       let filteredOrders = orders;
 
@@ -83,6 +84,7 @@ const dashboard = async (req, res, next) => {
           }
         });
       });
+      console.log(categoryCounts,'categoryCounts')
 
       const categoryData = Object.keys(categoryCounts).map(category => ({
         category,
@@ -160,7 +162,6 @@ const dashboard = async (req, res, next) => {
     return next(error);
   }
 };
-
 const users = async (req, res, next) => {
   try {
     if (req.session.admin) {

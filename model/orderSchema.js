@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 const User = require('./userSchema'); // Adjust the path as needed
 
 const districtEnum = ['Thiruvananthapuram', 'Kollam', 'Pathanamthitta', 'Alappuzha', 'Kottayam', 'Idukki', 'Ernakulam', 'Thrissur', 'Palakkad', 'Malappuram', 'Kozhikode', 'Wayanad', 'Kannur', 'Kasaragod']
-  
+   
 const orderSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -19,6 +19,14 @@ const orderSchema = new mongoose.Schema({
       name: String,
       price: Number,
       category:String,
+      gst: Number,
+      delivery_charge: Number,
+      totalCost: Number,
+      status: { 
+        type: String,
+        enum: ['pending', 'Accepted', 'shipped', 'completed', "Returned", "Return requested", 'Return Rejected', 'cancelled', 'cancelledByAdmin', 'Failed' ],
+        default: 'pending'
+    },
       image: String, // Add image field for each product in the cart
       quantity: {
         type: Number,
@@ -42,11 +50,6 @@ const orderSchema = new mongoose.Schema({
     address: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address'
-    },
-    status: { 
-        type: String,
-        enum: ['pending', 'Accepted', 'shipped', 'completed', "Returned", "Return requested", 'Return Rejected', 'cancelled', 'cancelledByAdmin', 'Failed' ],
-        default: 'pending'
     },
     billingDetails: {
         fatherName: {

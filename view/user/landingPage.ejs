@@ -154,41 +154,40 @@
         </div>
         <%}%>
     </section>
-    
-
-                                                
+         
                                        <!-- Category Area -->
 
-    <section class="section section-slider categories-section">
-        <% if(typeof category !== "undefined" && category !== null){%>
-    
-        <div class="container">
-            <div class="section-header">
-                <h2>Shop by categories</h2>
-                <div class="right-btn"><a href="/getCategory" class="btn btn-transparent">View All <img src="https://neritt.in/assets/user/images/assets/right-arrow.svg" alt=""></a></div>
-            </div>
-            <div class="categories-carousel">
-                <div class="cat-slider">
-                    
-                    <% category.forEach((cate_gory,index)=>{ %>
-                      
-                    <div class="category-item">
-                        <div class="cat-item-inner">
-                            <a href="" url="/shop?value=<%=cate_gory.id%>" class="bg-1 goto-shop">
-                                <div class="cat-image"><img src="/<%=cate_gory.logo_image%>" alt="" style="width:120px !important;height:150px !important;"></div>
-                                <div class="cat-title">
-                                    <h3><%=cate_gory.category_name%></h3>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <% }); %>                
-                                        
-                                    </div>
-            </div>
-        </div>
-        <%}%>
-    </section>
+                                       <section class="section section-slider categories-section">
+                                        <% if(typeof category !== "undefined" && category !== null){%>
+                                    
+                                        <div class="container">
+                                            <div class="section-header">
+                                                <h2>Shop by categories</h2>
+                                                <div class="right-btn"><a href="/getCategory" class="btn btn-transparent">View All <img src="https://neritt.in/assets/user/images/assets/right-arrow.svg" alt=""></a></div>
+                                            </div>
+                                            <div class="categories-carousel">
+                                                <div class="cat-slider">
+                                                    
+                                                    <% category.forEach((cate_gory,index)=>{ %>
+                                                      
+                                                    <div class="category-item">
+                                                        <div class="cat-item-inner">
+                                                            <a href="" url="/shop?value=<%=cate_gory.id%>" class="bg-1 goto-shop">
+                                                                <div class="cat-image"><img src="/<%=cate_gory.logo_image%>" alt="" style="width:120px !important;height:150px !important;"></div>
+                                                                <div class="cat-title">
+                                                                    <h3><%=cate_gory.category_name%></h3>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <% }); %>                
+                                                                        
+                                                                    </div>
+                                            </div>
+                                        </div>
+                                        <%}%>
+                                    </section>  
+                                    
 
      <!-- Shipping , payment ,support showing -->
 <section class="section section-delivery-system">

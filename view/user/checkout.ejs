@@ -332,7 +332,7 @@
                                                 <div class="row">
 
                                                     <div class="col-md-6">
-                                                        <label for="existing_address">Seledfdsfdfct an existing
+                                                        <label for="existing_address">Select an existing
                                                             address:</label>
                                                         <select name="existing_address" id="existing_address"
                                                             class="form-control text-field">
@@ -767,56 +767,84 @@
 
                 <!-- JavaScript code to handle form submission -->
                 <script>
-                    // Function to handle online payment
-                    // Function to handle online payment
-                    // Function to handle online payment
-function initiateRazorpayPayment(finalAmount) {
-    // Create a Razorpay payment object
-    var options = {
-        key: 'rzp_test_ATZkateK1H3fCP', // Replace with your Razorpay API key
-        amount: finalAmount, // Amount in paise (e.g., 1000 paise = ₹10)
-        currency: 'INR',
-        name: 'Neritt.shop',
-        description: 'Purchase Description',
-        handler: function (response) {
-            // Handle payment success
-            // Submit the form programmatically
-            document.getElementById('checkout_details').submit();
-        }
+                    function initiateRazorpayPayment(finalAmount) {
+                      // Create a Razorpay payment object
+                      var options = {
+                        key: 'rzp_test_ATZkateK1H3fCP', // Replace with your Razorpay API key
+                        amount: finalAmount, // Amount in paise (e.g., 1000 paise = ₹10)
+                        currency: 'INR',
+                        name: 'Neritt.shop',
+                        description: 'Purchase Description',
+                        handler: function (response) {
+                          // Handle payment success
+                          // Submit the form programmatically
+                          document.getElementById('checkout_details').submit();
+                        },
+                        prefill: {
+                          // Pre-fill user details if available
+                          name: '<%= user.name %>',
+                          email: '<%= user.email %>',
+                          contact: '<%= user.phone %>'
+                        },
+                        theme: {
+                          color: '#F37254' // Customize Razorpay checkout theme color
+                        }
+                      };
+                  
+                      var rzp1 = new Razorpay(options);
+                  
+                      rzp1.open();
+                  
+                      rzp1.on('payment.failed', function (response) {
+                        // Handle payment failure
+                        console.log('Payment failed:', response.error.code);
+                        const ordId = orderNumber();
+                        const fatherName = document.getElementById('displayed_father_name').value.trim();
+    const studentName = document.getElementById('displayed_student_name').value.trim();
+    const email = document.getElementById('displayed_email').value.trim();
+    const phone = document.getElementById('displayed_phone').value.trim();
+    const district = document.getElementById('displayed_district').value;
+    const address = document.getElementById('displayed_address').value.trim();
+    const landmark = document.getElementById('displayed_landmark').value.trim();
+    const pincode = document.getElementById('displayed_pincode').value.trim();
+    const homeOrOffice = document.getElementById('displayed_home_or_office').value.trim();
+
+    // Send failed payment details to server
+    var errorDetails = {
+        code: response.error.code,
+        description: response.error.description,
+        finalAmount: finalAmount / 100,
+        discount: <%= discount %>,
+        order_id: ordId,
+        fatherName: fatherName,
+        studentName: studentName,
+        email: email,
+        phone: phone,
+        district: district,
+        address: address,
+        landmark: landmark,
+        pincode: pincode,
+        homeOrOffice: homeOrOffice,
+        payment_type: '2',
+
     };
-
-    var rzp1 = new Razorpay(options);
-
-    rzp1.open();
-
-    rzp1.on('payment.failed', function (response) {
-        // Extracting necessary data
-        var errorDetails = {
-            code: response.error.code,
-            description: response.error.description,
-            source: response.error.source,
-            step: response.error.step,
-            reason: response.error.reason,
-            order_id: response.error.metadata.order_id,
-            payment_id: response.error.metadata.payment_id
-        };
-
-        // Send data to backend
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/store_checkout");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                // Request was successful
-                console.log("Payment failure details sent successfully.");
-            }
-        };
-        xhr.send(JSON.stringify(errorDetails));
-    });
-}
-
-
-document.getElementById('place_order').addEventListener('click', function (event) {
+                        // Send data to backend using AJAX
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "/store_checkoutFailed");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.onreadystatechange = function () {
+                          if (xhr.readyState === 4 && xhr.status === 200) {
+                            // Request was successful
+                            console.log("Failed payment details sent successfully.");
+                            // Redirect to checkout page
+                            window.location.href = '/checkout?payment_failed=true';
+                          }
+                        };
+                        xhr.send(JSON.stringify(errorDetails));
+                      });
+                    }
+                  
+                    document.getElementById('place_order').addEventListener('click', function (event) {
     // Prevent default button behavior
     event.preventDefault();
 
@@ -899,23 +927,24 @@ document.getElementById('place_order').addEventListener('click', function (event
                         }
 
                         // If form is valid
-                        if (valid) {
-        // Check if online payment is selected
-        var onlinePaymentSelected = document.getElementById('online_payment').checked;
+    if (valid) {
+      // Check if online payment is selected
+      var onlinePaymentSelected = document.getElementById('online_payment').checked;
 
-        // If online payment is selected, initiate Razorpay payment
-        if (onlinePaymentSelected) {
-            // Calculate total amount based on product's final amount
-            var finalAmount = (<%= finalAmount %>) * 100;
-            // Initiate Razorpay payment
-            initiateRazorpayPayment(finalAmount);
-        } else {
-            // If cash on delivery or other payment method is selected, proceed with normal order placement
-            document.getElementById('checkout_details').submit();
-        }
+      // If online payment is selected, calculate finalAmount and initiate Razorpay payment
+      if (onlinePaymentSelected) {
+        // Calculate total amount based on product's final amount
+        var finalAmount = <%= finalAmount * 100 %>;
+        // Initiate Razorpay payment with finalAmount
+        initiateRazorpayPayment(finalAmount);
+      } else {
+        // If cash on delivery or other payment method is selected, proceed with normal order placement
+        document.getElementById('checkout_details').submit();
+      }
     }
-});
+  });
                 </script>
+                  
 
             </div>
             </div>

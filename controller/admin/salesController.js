@@ -88,7 +88,7 @@ const salesReportDate = async (req, res, next) => {
       };
     }
 
-    const orders = await Order.find(filterQuery)
+    let orders = await Order.find({ 'products.status': { $in: ['shipped', 'completed'] } })
       .populate('user')
       .populate('products.product')
       .populate('address')
@@ -284,7 +284,7 @@ const salesReportPdf = async (req, res, next) => {
       orderNumber: item?.orderId,
       date: moment(item?.createdAt).format('DD/MM/YYYY'),
       price: item?.totalAmount,
-      status: item?.status,
+      status: item?.products[0].status,
       street: item?.billingDetails?.address,
       city: item?.billingDetails?.address,
       phoneNumber: item?.billingDetails?.phone,

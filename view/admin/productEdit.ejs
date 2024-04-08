@@ -506,7 +506,7 @@
                                     <div class="form-group row ">
                                         <label for="stockStatus" class="col-sm-4 col-form-label">Stock Status</label>
                                         <div class="col-sm-8">
-                                        <select class="form-control" name='stock_status' id='stock_status'>
+                                        <select class="form-control" name='stock_status' id='stock_status' value="<%= product.stock_status %>">
                                                                                         <option value="In Stock">In Stock</option>
                                             <option value='Out Of Stock'>Out Of Stock</option>
                                                                                     </select>
@@ -604,7 +604,7 @@
                 
       
                 <div class="card-body">
-                    <select class="form-control" name='school' id='school'>
+                    <select class="form-control" name='school' id='school' value="<%= product.school %>">
                         <% school.forEach((schoo_l,index)=>{ %>
                         <option value='<%=schoo_l.id%>'><%=schoo_l.school_name%></option>
                         <% }); %>                        
@@ -618,7 +618,7 @@
                 </div>
                 <div class="card-body">
                     
-                    <select class="form-control" name='category' id='category'>
+                    <select class="form-control" name='category' id='category'  value="<%= product.category_name %>">
                         
                         <% category.forEach((category,index)=>{ %>
                         <option value="<%=category.id%>"><%=category.category_name%></option>
