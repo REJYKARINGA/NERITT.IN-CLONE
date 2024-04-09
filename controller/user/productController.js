@@ -681,6 +681,7 @@ const applyCoupon = async (req, res, next) => {
     }
 
     discountedTotal = discountedTotal - 1;
+    console.log( discountedTotal, discount, 'couponApplied,  discountedTotal, discount')
     res.status(200).json({ success: true, couponApplied: true, updatedTotalAmount: discountedTotal, discount });
 
   } catch (error) {
@@ -716,6 +717,43 @@ const removeCoupon = async (req, res, next) => {
   }
 };
 
+// const removeCoupon = async (req, res, next) => {
+//   try {
+//     if (!req.session.user) {
+//       return res.redirect('/login');
+//     }
+
+//     const { couponCode } = req.body;
+//     const coupon = await Coupon.findOne({ code: couponCode });
+//     if (!coupon) {
+//       return res.status(404).json({ success: false, message: 'Coupon not found' });
+//     }
+
+//     const userId = req.session.user._id;
+//     if (coupon.usedByUsers.includes(userId)) {
+//       coupon.usedByUsers.pull(userId);
+//       coupon.usedCount -= 1;
+//       await coupon.save();
+
+//       // Calculate the discount amount
+//       let discountAmount = 0;
+//       if (coupon.discountType === 'percentage') {
+//         discountAmount = (coupon.discountValue / 100) * finalAmount;
+//       } else if (coupon.discountType === 'fixedAmount') {
+//         discountAmount = coupon.discountValue;
+//       }
+
+//       // Update the discountedTotal by adding the discount back
+//       discountedTotal += discountAmount;
+
+//       return res.status(200).json({ success: true, message: 'Coupon removed successfully', discountedTotal, discountAmount });
+//     } else {
+//       return res.status(400).json({ success: false, message: 'User has not used this coupon' });
+//     }
+//   } catch (error) {
+//     return next(error);
+//   }
+// };
 
 
 const showCheckoutPage = async (req, res, next) => {
