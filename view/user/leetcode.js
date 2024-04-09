@@ -1,4 +1,16 @@
+nums = [1,2,0]
+var firstMissingPositive = function(nums) {
+    let a = nums.sort((a,b)=>a-b)
+    console.log(a)
+    for(let i =1; i<(nums.length*nums.length);i++){
+        for(let j=0; j<nums.length; j++){
+            if(i==a[j] && i==0){
 
+            }
+        }
+    }
+};
+firstMissingPositive(nums)
 // input nums = [1,1,2]
 // ouput nums = [1,2]
 // var removeDuplicates = function(nums) {
