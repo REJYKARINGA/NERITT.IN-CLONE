@@ -552,45 +552,10 @@
                                                         <p>Applied Coupon Code: <span id="applied_coupon_code"></span></p>
                                                         <button id="remove_coupon_btn" style="background-color: #ff0000; color: white; display: none;" class="btn">Remove Coupon</button>
                                                     </div>
-                                                    <script>
-                                                        document.getElementById('remove_coupon_btn').addEventListener('click', async () => {
-                                                            try {
-                                                                const response = await fetch('/removeCoupon', {
-                                                                    method: 'POST',
-                                                                    headers: {
-                                                                        'Content-Type': 'application/json'
-                                                                    },
-                                                                    body: JSON.stringify({ couponCode: document.getElementById('applied_coupon_code').textContent })
-                                                                });
+                                                   
                                                         
-                                                                if (response.ok) {
-                                                                    const data = await response.json();
-                                                                    if (data.success) {
-                                                                        // Coupon removed successfully
-                                                                        // Additional actions if needed
-                                                        
-                                                                        // Reset coupon code input field
-                                                                        document.getElementById('coupon_code').value = '';
-                                                        
-                                                                        // Hide applied coupon display
-                                                                        document.getElementById('coupon_display').style.display = 'none';
-                                                        
-                                                                        // Hide Remove Coupon button
-                                                                        document.getElementById('remove_coupon_btn').style.display = 'none';
-                                                        
-                                                                        // Update total amount on the checkout page if needed
-                                                                    } else {
-                                                                        console.error('Failed to remove coupon:', data.message);
-                                                                    }
-                                                                } else {
-                                                                    console.error('Failed to remove coupon');
-                                                                }
-                                                            } catch (error) {
-                                                                console.error('Error removing coupon:', error);
-                                                            }
-                                                        });
-                                                        
-                                                        </script>
+                                                   
+
                                                     <div class="ztotal d-flex justify-content-between">
                                                         <div class="total-left">
                                                             <p>Total</p>
@@ -654,6 +619,7 @@
                 </div>
     
                 <script>
+                    //This is for Apply Coupon
                     document.getElementById('apply_coupon_btn').addEventListener('click', async () => {
                         const couponCode = document.getElementById('coupon_code').value;
                 
@@ -669,26 +635,19 @@
                             if (response.ok) {
                                 const data = await response.json();
                                 if (data.success) {
-                                    // Coupon applied successfully
-                                    // Update total amount on the checkout page
                                     const totalAmountDisplay = document.getElementById('total_amount_display');
                                     totalAmountDisplay.innerHTML = `<span>&#8377;</span> ${data.updatedTotalAmount}`;
                 
-                                    // Update hidden input field value
                                     const totalPriceInput = document.getElementById('total_price');
                                     totalPriceInput.value = data.updatedTotalAmount;
                 
-                                    // Update hidden input field value
                                     const totalDiscountInput = document.getElementById('total_discounted');
                                     totalDiscountInput.value = data.discount;
                 
-                                    // Display applied coupon code
                                     document.getElementById('applied_coupon_code').textContent = couponCode;
                                     document.getElementById('coupon_display').style.display = 'block';
                 
-                                    // Show Remove Coupon button
                                     document.getElementById('remove_coupon_btn').style.display = 'block';
-                                  // Display SweetAlert indicating coupon applied
                 Swal.fire({
                     icon: 'success',
                     title: 'Coupon Applied',
@@ -698,7 +657,6 @@
                 });
             } else {
                 if (data.alreadyUsed) {
-                                        // Display SweetAlert indicating that the user has already used the coupon
                                         Swal.fire({
                                             icon: 'info',
                                             title: 'Already used Not working',
@@ -717,77 +675,88 @@
                             console.error('Error applying coupon:', error);
                         }
                     });
+                    
+                        document.getElementById('remove_coupon_btn').addEventListener('click', async () => {
+                        const couponCode = document.getElementById('coupon_code').value;
                 
-                    document.getElementById('remove_coupon_btn').addEventListener('click', async () => {
-                        // Reset coupon code input field
-                        document.getElementById('coupon_code').value = '';
-                
-                        // Hide applied coupon display
-                        document.getElementById('coupon_display').style.display = 'none';
-                
-                        // Hide Remove Coupon button
-                        document.getElementById('remove_coupon_btn').style.display = 'none';
-                
-                        // Reset total amount and hidden input field value
-                        const totalAmountDisplay = document.getElementById('total_amount_display');
-                        totalAmountDisplay.innerHTML = `<span>&#8377;</span> ${originalTotalAmount}`; // Replace originalTotalAmount with the original total amount
-                        const totalPriceInput = document.getElementById('total_price');
-                        totalPriceInput.value = originalTotalAmount; // Replace originalTotalAmount with the original total amount
-                
-                        // Send request to remove the coupon from the user
                         try {
                             const response = await fetch('/removeCoupon', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify({ couponCode: document.getElementById('remove_coupon_btn').textContent })
+                                body: JSON.stringify({ couponCode })
                             });
                 
                             if (response.ok) {
                                 const data = await response.json();
                                 if (data.success) {
-                                    // Coupon removed successfully
-                                    // Additional actions if needed
-                                } else {
-                                    console.error('Failed to remove coupon:', data.message);
+                                    const totalAmountDisplay = document.getElementById('total_amount_display');
+                                    totalAmountDisplay.innerHTML = `<span>&#8377;</span> ${data.updatedTotalAmount}`;
+                
+                                    const totalPriceInput = document.getElementById('total_price');
+                                    totalPriceInput.value = data.updatedTotalAmount;
+                
+                                    const totalDiscountInput = document.getElementById('total_discounted');
+                                    totalDiscountInput.value = data.discount;
+                
+                                    document.getElementById('coupon_display').style.display = 'none';
+                                                        
+                                    document.getElementById('remove_coupon_btn').style.display = 'none';
+                                                        
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Coupon Removed',
+                    text: 'Coupon Removed successfully!',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            } else {
+                if (data.alreadyUsed) {
+                                        Swal.fire({
+                                            icon: 'info',
+                                            title: 'Already Removed',
+                                            text: 'User has already Removed this coupon',
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        });
+                                    } else {
+                                        console.error('Failed to apply coupon:', data.message);
+                                    }
                                 }
                             } else {
-                                console.error('Failed to remove coupon');
+                                console.error('Failed to apply coupon');
                             }
                         } catch (error) {
-                            console.error('Error removing coupon:', error);
+                            console.error('Error applying coupon:', error);
                         }
                     });
+                
+
                 </script>
                 
-                
+              
                 
                 
 
-                <!-- JavaScript code to handle form submission -->
                 <script>
                     function initiateRazorpayPayment(finalAmount) {
-                      // Create a Razorpay payment object
                       var options = {
-                        key: 'rzp_test_ATZkateK1H3fCP', // Replace with your Razorpay API key
-                        amount: finalAmount, // Amount in paise (e.g., 1000 paise = ₹10)
+                        key: 'rzp_test_ATZkateK1H3fCP', 
+                        amount: finalAmount, 
                         currency: 'INR',
                         name: 'Neritt.shop',
                         description: 'Purchase Description',
                         handler: function (response) {
-                          // Handle payment success
-                          // Submit the form programmatically
                           document.getElementById('checkout_details').submit();
                         },
                         prefill: {
-                          // Pre-fill user details if available
                           name: '<%= user.name %>',
                           email: '<%= user.email %>',
                           contact: '<%= user.phone %>'
                         },
                         theme: {
-                          color: '#F37254' // Customize Razorpay checkout theme color
+                          color: '#F37254' 
                         }
                       };
                   
@@ -796,21 +765,19 @@
                       rzp1.open();
                   
                       rzp1.on('payment.failed', function (response) {
-                        // Handle payment failure
                         console.log('Payment failed:', response.error.code);
                         const ordId = orderNumber();
                         const fatherName = document.getElementById('displayed_father_name').value.trim();
-    const studentName = document.getElementById('displayed_student_name').value.trim();
-    const email = document.getElementById('displayed_email').value.trim();
-    const phone = document.getElementById('displayed_phone').value.trim();
-    const district = document.getElementById('displayed_district').value;
-    const address = document.getElementById('displayed_address').value.trim();
-    const landmark = document.getElementById('displayed_landmark').value.trim();
-    const pincode = document.getElementById('displayed_pincode').value.trim();
-    const homeOrOffice = document.getElementById('displayed_home_or_office').value.trim();
+                        const studentName = document.getElementById('displayed_student_name').value.trim();
+                        const email = document.getElementById('displayed_email').value.trim();
+                        const phone = document.getElementById('displayed_phone').value.trim();
+                        const district = document.getElementById('displayed_district').value;
+                        const address = document.getElementById('displayed_address').value.trim();
+                        const landmark = document.getElementById('displayed_landmark').value.trim();
+                        const pincode = document.getElementById('displayed_pincode').value.trim();
+                        const homeOrOffice = document.getElementById('displayed_home_or_office').value.trim();
 
-    // Send failed payment details to server
-    var errorDetails = {
+   var errorDetails = {
         code: response.error.code,
         description: response.error.description,
         finalAmount: finalAmount / 100,
@@ -828,15 +795,12 @@
         payment_type: '2',
 
     };
-                        // Send data to backend using AJAX
                         var xhr = new XMLHttpRequest();
                         xhr.open("POST", "/store_checkoutFailed");
                         xhr.setRequestHeader("Content-Type", "application/json");
                         xhr.onreadystatechange = function () {
                           if (xhr.readyState === 4 && xhr.status === 200) {
-                            // Request was successful
                             console.log("Failed payment details sent successfully.");
-                            // Redirect to checkout page
                             window.location.href = '/checkout?payment_failed=true';
                           }
                         };
@@ -845,13 +809,10 @@
                     }
                   
                     document.getElementById('place_order').addEventListener('click', function (event) {
-    // Prevent default button behavior
     event.preventDefault();
 
-    // Perform form validation
     var valid = true;
 
-                        // Validate Father's Name
                         var fatherName = document.getElementById('displayed_father_name').value.trim();
                         if (!fatherName) {
                             document.getElementById('fatherNameError').style.display = 'block';
@@ -860,7 +821,6 @@
                             document.getElementById('fatherNameError').style.display = 'none';
                         }
 
-                        // Validate Student's Name
                         var studentName = document.getElementById('displayed_student_name').value.trim();
                         if (!studentName) {
                             document.getElementById('studentNameError').style.display = 'block';
@@ -869,7 +829,6 @@
                             document.getElementById('studentNameError').style.display = 'none';
                         }
 
-                        // Validate Email
                         var email = document.getElementById('displayed_email').value.trim();
                         var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (!emailPattern.test(email)) {
@@ -879,7 +838,6 @@
                             document.getElementById('emailError').style.display = 'none';
                         }
 
-                        // Validate Phone
                         var phone = document.getElementById('displayed_phone').value.trim();
                         var phonePattern = /^\d{10}$/;
                         if (!phonePattern.test(phone)) {
@@ -889,7 +847,6 @@
                             document.getElementById('phoneError').style.display = 'none';
                         }
 
-                        // Validate District
                         var district = document.getElementById('displayed_district').value;
                         if (!district) {
                             document.getElementById('districtError').style.display = 'block';
@@ -898,7 +855,6 @@
                             document.getElementById('districtError').style.display = 'none';
                         }
 
-                        // Validate Address
                         var address = document.getElementById('displayed_address').value.trim();
                         if (!address) {
                             document.getElementById('addressError').style.display = 'block';
@@ -907,7 +863,6 @@
                             document.getElementById('addressError').style.display = 'none';
                         }
 
-                        // Validate Pincode
                         var pincode = document.getElementById('displayed_pincode').value.trim();
                         var pincodePattern = /^\d{6}$/;
                         if (!pincodePattern.test(pincode)) {
@@ -917,7 +872,6 @@
                             document.getElementById('pincodeError').style.display = 'none';
                         }
 
-                        // Validate Home or Office
                         var homeOrOffice = document.getElementById('displayed_home_or_office').value;
                         if (!homeOrOffice) {
                             document.getElementById('homeOrOfficeError').style.display = 'block';
@@ -925,20 +879,13 @@
                         } else {
                             document.getElementById('homeOrOfficeError').style.display = 'none';
                         }
-
-                        // If form is valid
     if (valid) {
-      // Check if online payment is selected
       var onlinePaymentSelected = document.getElementById('online_payment').checked;
 
-      // If online payment is selected, calculate finalAmount and initiate Razorpay payment
       if (onlinePaymentSelected) {
-        // Calculate total amount based on product's final amount
         var finalAmount = <%= finalAmount * 100 %>;
-        // Initiate Razorpay payment with finalAmount
         initiateRazorpayPayment(finalAmount);
       } else {
-        // If cash on delivery or other payment method is selected, proceed with normal order placement
         document.getElementById('checkout_details').submit();
       }
     }
@@ -1084,7 +1031,6 @@
 
 
         <script>
-            // Function to update the displayed fields
             function updateDisplayedFields() {
                 const selectElement = document.getElementById('existing_address');
                 const displayedFatherNameInput = document.getElementById('displayed_father_name');
@@ -1099,11 +1045,9 @@
 
                 const selectedOption = selectElement.options[selectElement.selectedIndex];
                 if (selectedOption.value) {
-                    // Parse the selected address text to extract individual fields
                     const selectedAddressText = selectedOption.text;
                     const addressFields = selectedAddressText.split(', ');
 
-                    // Update the input fields with the extracted fields
                     displayedFatherNameInput.value = addressFields[0];
                     displayedStudentNameInput.value = addressFields[1];
                     displayedEmailInput.value = addressFields[2];
@@ -1114,7 +1058,6 @@
                     displayedPincodeInput.value = addressFields[7];
                     displayedHomeOrOfficeInput.value = addressFields[8];
                 } else {
-                    // Clear the input fields if no option is selected
                     displayedFatherNameInput.value = '';
                     displayedStudentNameInput.value = '';
                     displayedEmailInput.value = '';
@@ -1127,7 +1070,6 @@
                 }
             }
 
-            // Add event listener to the select element
             document.getElementById('existing_address').addEventListener('change', updateDisplayedFields);
         </script>
 
@@ -1243,17 +1185,14 @@
             console.log(ordId);
         </script>
          <script>
-            // Function to parse query parameters from URL
             function getQueryParam(name) {
                 const urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get(name);
             }
     
-            // Check if exceedsLimit query parameter is true
             const exceedsLimit = getQueryParam('exceedsLimit');
             const lessThanLimit = getQueryParam('lessThanLimit');
             
-            // Display SweetAlert if exceedsLimit is true
             if (exceedsLimit === 'true') {
                 Swal.fire({
                     icon: 'info',
@@ -1264,7 +1203,6 @@
                 });
             }
     
-            // Display SweetAlert if lessThanLimit is true
             if (lessThanLimit === 'true') {
                 Swal.fire({
                     icon: 'error',
@@ -1297,31 +1235,25 @@
                 }
             }
 
-            // Call the function to populate addresses when the page loads
             window.onload = populateAddresses;
 
-            // Function to display selected address
             function displaySelectedAddress() {
                 const selectElement = document.getElementById('existing_address');
                 const selectedAddress = selectElement.options[selectElement.selectedIndex].textContent;
 
-                // Display the selected address however you want (e.g., in a separate <div>)
                 const displayElement = document.getElementById('selected_address_display');
                 displayElement.textContent = `Selected Address: ${selectedAddress}`;
             }
         </script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            // Function to parse query parameters from URL
             function getQueryParam(name) {
                 const urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get(name);
             }
 
-            // Check if outOfStock query parameter is true
             const outOfStock = getQueryParam('outOfStock');
             if (outOfStock === 'true') {
-                // Display SweetAlert indicating that the product is successfully added to the cart
                 Swal.fire({
                     icon: 'info',
                     title: 'Insufficient Wallet',
@@ -1331,38 +1263,17 @@
                 });
             }
         </script>
-        <!-- <script>
-            // Function to parse query parameters from URL
-            function getQueryParam(name) {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(name);
-            }
-
-            // Check if outOfStock query parameter is true
-            const couponApplied = getQueryParam('couponApplied');
-            if (couponApplied === 'true') {
-                // Display SweetAlert indicating that the product is successfully added to the cart
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Already used1',
-                    text: 'User has already used this coupon',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-            }
-        </script> -->
+        
 
         <script>
-            // Function to parse query parameters from URL
+            
             function getQueryParam(name) {
                 const urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get(name);
             }
 
-            // Check if outOfStock query parameter is true
             const invalid = getQueryParam('invalidCoupon');
             if (invalidCoupon === 'true') {
-                // Display SweetAlert indicating that the product is successfully added to the cart
                 Swal.fire({
                     icon: 'info',
                     title: 'Invalid Coupon',

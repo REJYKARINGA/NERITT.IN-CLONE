@@ -84,6 +84,8 @@ router.post('/school-edit/:id', upload.fields([{ name: 'school_logo', maxCount: 
 
 // Product Routes
 router.get('/products', productController.displayProducts);
+router.get('/topProducts', productController.topProducts);
+router.get('/topCategories', productController.topCategories);
 router.get('/add-products', productController.displayCreateProduct);
 router.post('/products/store', upload.fields([{ name: 'gallery[]', maxCount: 100 }]), productController.createProduct);
 router.get('/edit-products/:id', productController.editProduct);

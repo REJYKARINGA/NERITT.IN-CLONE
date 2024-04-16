@@ -1,16 +1,37 @@
-nums = [1,2,0]
-var firstMissingPositive = function(nums) {
-    let a = nums.sort((a,b)=>a-b)
-    console.log(a)
-    for(let i =1; i<(nums.length*nums.length);i++){
-        for(let j=0; j<nums.length; j++){
-            if(i==a[j] && i==0){
 
-            }
-        }
-    }
-};
-firstMissingPositive(nums)
+
+// strs = ["flower","flow","flight"]
+// var longestCommonPrefix = function(strs) {
+
+//     for(let i = 0; i<strs.length; i++){
+        
+//         for(let j=0; j<strs.length; j++){
+//             for(let k=0; k<strs.length; k++){
+//                 console.log(strs[i][j],strs[i][j][k])
+//             }
+//         }
+//     }
+// };
+// longestCommonPrefix(strs)
+
+// nums = [3,4,-1,1,-1]
+// var firstMissingPositive = function(nums) {
+//     nums = nums.sort((a,b)=>a-b)
+//     // console.log(nums)
+//     for(let i =0; i<=nums.length;i++){
+//         let a = i+1
+//       if(nums[i]==a){
+//         let b = a
+//         console.log(b)
+//         // return b
+//       }
+//     }
+    
+//     // return b
+// };
+// firstMissingPositive(nums)
+
+
 // input nums = [1,1,2]
 // ouput nums = [1,2]
 // var removeDuplicates = function(nums) {

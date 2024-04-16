@@ -139,7 +139,7 @@ const displayPendingOrders = async (req, res, next) => {
     const perPage = 2;
     const skip = (page - 1) * perPage;
 
-    const ordersPromise = await await Order.aggregate([
+    const ordersPromise =  await Order.aggregate([
       {
         $match: { 'products.status': 'pending' } // Match orders with products having status "pending"
       },

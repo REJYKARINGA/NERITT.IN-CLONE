@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 /node_modules/             
 /vendor/                   
 
 # Ignore environment-specific files
 .env
+=======
+node_modules
+>>>>>>> 2fe72cdaf00a430a457eceacf783835d152f788e

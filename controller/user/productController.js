@@ -579,33 +579,12 @@ const removeFromWishlist = async (req, res, next) => {
   }
 };
 
-
-
-
-
-
-
 const applyCoupon = async (req, res, next) => {
   try {
-    const isUser = req.session.user;
-
-    let walletBalance = 0;
-    const ordId = orderId();
-
-
     if (!req.session.user) {
       return res.redirect('/login');
     }
     const userId = req.session.user._id;
-
-    const wallet = await Wallet.findOne({ user: userId });
-    if (wallet) {
-      walletBalance = wallet.balance;
-    }
-
-
-    const addresses = await Address.find({ userId: req.session.user._id });
-
 
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
@@ -613,9 +592,7 @@ const applyCoupon = async (req, res, next) => {
       select: 'title sales_cost quantity category'
     });
 
-    if (!cart || (cart.products && cart.products.length === 0)) {
-      return res.redirect('/cart');
-    }
+   
 
     const { couponCode } = req.body;
 
@@ -657,7 +634,7 @@ const applyCoupon = async (req, res, next) => {
         totalCGST += (cgstValue / 100) * product.price * product.quantity;
         totalSGST += (sgstValue / 100) * product.price * product.quantity;
         totaldeliveryCost += deliveryCharge * product.quantity;
-        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost - 1
+        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost 
       }
     }
 
@@ -673,14 +650,8 @@ const applyCoupon = async (req, res, next) => {
     coupon.usedCount += 1;
 
     await coupon.save();
-    const name = req.session.user.name;
-    const school = await School.find({ blocked: false });
-    let totalProduct = 0;
-    if (cart && cart.products) {
-      totalProduct = cart.products.length;
-    }
-
-    discountedTotal = discountedTotal - 1;
+    
+    discountedTotal = discountedTotal ;
     console.log( discountedTotal, discount, 'couponApplied,  discountedTotal, discount')
     res.status(200).json({ success: true, couponApplied: true, updatedTotalAmount: discountedTotal, discount });
 
@@ -695,65 +666,79 @@ const removeCoupon = async (req, res, next) => {
     if (!req.session.user) {
       return res.redirect('/login');
     }
-
+    const userId = req.session.user._id;
     const { couponCode } = req.body;
+
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: 'products.product',
+      model: 'productDetails',
+      select: 'title sales_cost quantity category'
+    });
+
+    
     const coupon = await Coupon.findOne({ code: couponCode });
     if (!coupon) {
-      return res.status(404).json({ success: false, message: 'Coupon not found' });
+      return res.status(400).json({ success: false, message: 'Invalid coupon code' });
     }
 
-    const userId = req.session.user._id;
-    if (coupon.usedByUsers.includes(userId)) {
-      coupon.usedByUsers.pull(userId);
-      coupon.usedCount -= 1;
-      await coupon.save();
-
-      return res.status(200).json({ success: true, message: 'Coupon removed successfully' });
-    } else {
-      return res.status(400).json({ success: false, message: 'User has not used this coupon' });
+    if (coupon.isRemoved) {
+      // Coupon has already been removed
+      return res.status(200).json({ success: false, alreadyRemoved: true, message: 'Coupon has already been removed' });
     }
+
+    coupon.usedByUsers.pop();
+
+    if (coupon.usedCount >= coupon.maxUses) {
+      return res.status(400).json({ success: false, message: 'Coupon has reached maximum usage limit' });
+    }
+
+    const currentDate = new Date();
+    if (currentDate.getTime() < coupon.startDate.getTime() || currentDate.getTime() > coupon.endDate.getTime()) {
+      return res.status(400).json({ success: false, message: 'Coupon is expired' });
+    }
+
+    let totalAmount = 0;
+    let totalCGST = 0;
+    let totalSGST = 0;
+    let totaldeliveryCost = 0;
+    let finalAmount = 0;
+
+    if (cart && cart.products) {
+      for (const product of cart.products) {
+
+        const products = await Product.find({ _id: product.product.id, blocked: false })
+        const cgstValue = products[0].cgst;
+        const sgstValue = products[0].sgst;
+        const deliveryCharge = products[0].delivery_charge;
+
+        totalAmount += product.price * product.quantity;
+        totalCGST += (cgstValue / 100) * product.price * product.quantity;
+        totalSGST += (sgstValue / 100) * product.price * product.quantity;
+        totaldeliveryCost += deliveryCharge * product.quantity;
+        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost 
+      }
+    }
+
+    let discount = 0;
+    if (coupon.discountType === 'percentage') {
+      discount = (coupon.discountValue / 100) * finalAmount;
+    } else if (coupon.discountType === 'fixedAmount') {
+      discount = coupon.discountValue;
+    }
+
+    let discountedTotal = finalAmount ;
+    coupon.usedCount -= 1;
+    coupon.isRemoved = true;
+    await coupon.save();
+    discount = 0
+    discountedTotal = discountedTotal ;
+    console.log( discountedTotal, discount, 'couponApplied,  discountedTotal, discount')
+    res.status(200).json({ success: true, couponApplied: true, updatedTotalAmount: discountedTotal, discount });
+
   } catch (error) {
     return next(error);
   }
 };
-
-// const removeCoupon = async (req, res, next) => {
-//   try {
-//     if (!req.session.user) {
-//       return res.redirect('/login');
-//     }
-
-//     const { couponCode } = req.body;
-//     const coupon = await Coupon.findOne({ code: couponCode });
-//     if (!coupon) {
-//       return res.status(404).json({ success: false, message: 'Coupon not found' });
-//     }
-
-//     const userId = req.session.user._id;
-//     if (coupon.usedByUsers.includes(userId)) {
-//       coupon.usedByUsers.pull(userId);
-//       coupon.usedCount -= 1;
-//       await coupon.save();
-
-//       // Calculate the discount amount
-//       let discountAmount = 0;
-//       if (coupon.discountType === 'percentage') {
-//         discountAmount = (coupon.discountValue / 100) * finalAmount;
-//       } else if (coupon.discountType === 'fixedAmount') {
-//         discountAmount = coupon.discountValue;
-//       }
-
-//       // Update the discountedTotal by adding the discount back
-//       discountedTotal += discountAmount;
-
-//       return res.status(200).json({ success: true, message: 'Coupon removed successfully', discountedTotal, discountAmount });
-//     } else {
-//       return res.status(400).json({ success: false, message: 'User has not used this coupon' });
-//     }
-//   } catch (error) {
-//     return next(error);
-//   }
-// };
 
 
 const showCheckoutPage = async (req, res, next) => {
@@ -802,7 +787,7 @@ const showCheckoutPage = async (req, res, next) => {
         totalCGST += (cgstValue / 100) * product.price * product.quantity;
         totalSGST += (sgstValue / 100) * product.price * product.quantity;
         totaldeliveryCost += deliveryCharge * product.quantity;
-        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost - 1;
+        finalAmount = totalAmount + totalCGST + totalSGST + totaldeliveryCost ;
 
         const categories = products[0].category.map(cat => cat.category_name);
         product.category = categories;
@@ -1784,6 +1769,9 @@ const postRetryOrder = async (req, res, next) => {
     if (paymentType === 'Wallet' && (!wallet || wallet.balance < finalAmount)) {
       return res.redirect(`/retry-order/${orderId}/${productId}?outOfStock=true`);
     }
+    console.log(productId,'productId founded')
+   await Product.findByIdAndUpdate( productId, { $inc: { quantity: -product.quantity } });
+    
     let a = order.totalAmount + (product.totalCost * product.quantity); // Update the total amount with the retry amount
     
  order.totalAmount = a
@@ -1799,7 +1787,6 @@ let b = paymentType
 
     await order.save();
     await product.save();
-
     res.render('user/myOrderSuccess', {
       user: req.session.user,
       order,

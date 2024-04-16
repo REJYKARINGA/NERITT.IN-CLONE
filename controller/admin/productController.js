@@ -3,7 +3,7 @@ const fs = require('fs')
 const schoolSchema = require('../../model/schoolSchema');
 const productSchema = require('../../model/productSchema');
 const categorySchema = require('../../model/categorySchema');
-
+const Order = require('../../model/orderSchema');
 
 
 
@@ -255,11 +255,62 @@ const deleteProduct = async (req, res, next) => {
   }
 }
 
+
+const topProducts = async (req, res, next) => {
+  try {
+    if (!req.session.admin) {
+      res.redirect("/admin")
+    }{
+      const topProductsPipeline = [
+        { $unwind: '$products' },
+        { $group: { _id: { product: '$products.product', name: '$products.name' }, count: { $sum: '$products.quantity' } } },
+        { $sort: { count: -1 } },
+        { $limit: 2 },
+        { $project: { _id: '$_id.product', name: '$_id.name', count: 1 } }
+      ];
+      const topProductsAggregationResult = await Order.aggregate(topProductsPipeline);
+      const productIds = topProductsAggregationResult.map(product => product._id);
+      const products = await productSchema.find({ _id: { $in: productIds } });
+      res.render('admin/topProducts', {products, topProducts: topProductsAggregationResult });
+    }
+  } catch (error) {
+    return next(error)
+  }
+}
+
+const topCategories = async (req, res, next) => {
+  try {
+    
+    if (!req.session.admin) {
+      res.redirect("/admin")
+    }{
+        const topCategoriesPipeline = [
+          { $unwind: '$products' },
+          { $group: { _id: '$products.category', count: { $sum: '$products.quantity' } } },
+          { $sort: { count: -1 } },
+          { $limit: 2 }
+        ];
+        const topCategoriesAggregationResult = await Order.aggregate(topCategoriesPipeline);
+        const categoryIds = topCategoriesAggregationResult.map(category => category._id);
+        const category = await categorySchema.find({ category_name: categoryIds });
+        console.log(category,' category founded',topCategoriesAggregationResult)
+        res.render('admin/topCategories', { categories: category , count: topCategoriesAggregationResult});
+
+      } 
+  } catch (error) {
+    return next(error)
+  }
+
+}
+
+
 module.exports = {
   displayProducts,
   displayCreateProduct,
   createProduct,
   editProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  topProducts,
+  topCategories
 }

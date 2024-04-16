@@ -102,6 +102,7 @@ const salesReportDate = async (req, res, next) => {
 
     const totalPages = Math.ceil(totalOrders / pageSize);
 
+    console.log(orders,'orders founded')
     res.render('admin/salesReport', { orders, totalSales, totalOrders, currentPage, totalPages });
 
   } catch (error) {

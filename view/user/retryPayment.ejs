@@ -319,7 +319,7 @@
                                                 value="kFzTS1UngvgFQ0LSU9mEwC6HTt9zEKPiQ1Rd3R6y">
                                             <input type="hidden" name="rzp" id="rzp" value="rzp_test_ATZkateK1H3fCP">
                                             <input type="hidden" id="total_price"  name="finalAmount"
-                                                value="<%=product.totalCost %>" />
+                                                value="<%=product.totalCost * product.quantity %>" />
                                                 <input type="hidden" id="total_discounted"  name="discount"
                                                 value="<%= order.discountedAmount %>" />
                                                
@@ -583,28 +583,21 @@
                             if (response.ok) {
                                 const data = await response.json();
                                 if (data.success) {
-                                    // Coupon applied successfully
-                                    // Update total amount on the checkout page
                                     const totalAmountDisplay = document.getElementById('total_amount_display');
                                     totalAmountDisplay.innerHTML = `<span>&#8377;</span> ${data.updatedTotalAmount}`;
                 
-                                    // Update hidden input field value
-                                    const totalPriceInput = document.getElementById('total_price');
+                                   const totalPriceInput = document.getElementById('total_price');
                                     totalPriceInput.value = data.updatedTotalAmount;
                 
-                                    // Update hidden input field value
-                                    const totalDiscountInput = document.getElementById('total_discounted');
+                                   const totalDiscountInput = document.getElementById('total_discounted');
                                     totalDiscountInput.value = data.discount;
                 
-                                    // Display applied coupon code
-                                    document.getElementById('applied_coupon_code').textContent = couponCode;
+                                   document.getElementById('applied_coupon_code').textContent = couponCode;
                                     document.getElementById('coupon_display').style.display = 'block';
                 
-                                    // Show Remove Coupon button
-                                    document.getElementById('remove_coupon_btn').style.display = 'block';
+                                   document.getElementById('remove_coupon_btn').style.display = 'block';
                                 } else {
                                     if (data.alreadyUsed) {
-                                        // Display SweetAlert indicating that the user has already used the coupon
                                         Swal.fire({
                                             icon: 'info',
                                             title: 'Already used',
@@ -625,22 +618,13 @@
                     });
                 
                     document.getElementById('remove_coupon_btn').addEventListener('click', async () => {
-                        // Reset coupon code input field
                         document.getElementById('coupon_code').value = '';
-                
-                        // Hide applied coupon display
                         document.getElementById('coupon_display').style.display = 'none';
-                
-                        // Hide Remove Coupon button
                         document.getElementById('remove_coupon_btn').style.display = 'none';
-                
-                        // Reset total amount and hidden input field value
                         const totalAmountDisplay = document.getElementById('total_amount_display');
-                        totalAmountDisplay.innerHTML = `<span>&#8377;</span> ${originalTotalAmount}`; // Replace originalTotalAmount with the original total amount
+                        totalAmountDisplay.innerHTML = `<span>&#8377;</span> ${originalTotalAmount}`; 
                         const totalPriceInput = document.getElementById('total_price');
-                        totalPriceInput.value = originalTotalAmount; // Replace originalTotalAmount with the original total amount
-                
-                        // Send request to remove the coupon from the user
+                        totalPriceInput.value = originalTotalAmount; 
                         try {
                             const response = await fetch('/removeCoupon', {
                                 method: 'POST',
@@ -671,29 +655,26 @@
                 
                 
 
-                <!-- JavaScript code to handle form submission -->
+                
                 <script>
                     function initiateRazorpayPayment(finalAmount) {
-                      // Create a Razorpay payment object
+                     
                       var options = {
-                        key: 'rzp_test_ATZkateK1H3fCP', // Replace with your Razorpay API key
-                        amount: finalAmount, // Amount in paise (e.g., 1000 paise = ₹10)
+                        key: 'rzp_test_ATZkateK1H3fCP', 
+                        amount: finalAmount, 
                         currency: 'INR',
                         name: 'Neritt.shop',
                         description: 'Purchase Description',
                         handler: function (response) {
-                          // Handle payment success
-                          // Submit the form programmatically
                           document.getElementById('checkout_details').submit();
                         },
                         prefill: {
-                          // Pre-fill user details if available
                           name: '<%= user.name %>',
                           email: '<%= user.email %>',
                           contact: '<%= user.phone %>'
                         },
                         theme: {
-                          color: '#F37254' // Customize Razorpay checkout theme color
+                          color: '#F37254'
                         }
                       };
                   
@@ -702,7 +683,6 @@
                       rzp1.open();
                   
                       rzp1.on('payment.failed', function (response) {
-                        // Handle payment failure
                         console.log('Payment failed:', response.error.code);
                         const ordId = orderNumber();
                         const fatherName = document.getElementById('displayed_father_name').value.trim();
@@ -714,12 +694,10 @@
     const landmark = document.getElementById('displayed_landmark').value.trim();
     const pincode = document.getElementById('displayed_pincode').value.trim();
     const homeOrOffice = document.getElementById('displayed_home_or_office').value.trim();
-
-    // Send failed payment details to server
     var errorDetails = {
         code: response.error.code,
         description: response.error.description,
-        finalAmount: <%= product.totalCost %> ,
+        finalAmount: <%= product.totalCost * product.quantity%> ,
         discount: <%= order.discountedAmount %>,
         order_id: ordId,
         fatherName: fatherName,
@@ -734,15 +712,12 @@
         payment_type: '2',
 
     };
-                        // Send data to backend using AJAX
                         var xhr = new XMLHttpRequest();
                         xhr.open("POST", "/store_checkoutFailed");
                         xhr.setRequestHeader("Content-Type", "application/json");
                         xhr.onreadystatechange = function () {
                           if (xhr.readyState === 4 && xhr.status === 200) {
-                            // Request was successful
                             console.log("Failed payment details sent successfully.");
-                            // Redirect to checkout page
                             window.location.href = '/checkout?payment_failed=true';
                           }
                         };
@@ -751,13 +726,9 @@
                     }
                   
                     document.getElementById('place_order').addEventListener('click', function (event) {
-    // Prevent default button behavior
     event.preventDefault();
-
-    // Perform form validation
     var valid = true;
 
-                        // Validate Father's Name
                         var fatherName = document.getElementById('displayed_father_name').value.trim();
                         if (!fatherName) {
                             document.getElementById('fatherNameError').style.display = 'block';
@@ -765,8 +736,6 @@
                         } else {
                             document.getElementById('fatherNameError').style.display = 'none';
                         }
-
-                        // Validate Student's Name
                         var studentName = document.getElementById('displayed_student_name').value.trim();
                         if (!studentName) {
                             document.getElementById('studentNameError').style.display = 'block';
@@ -774,8 +743,6 @@
                         } else {
                             document.getElementById('studentNameError').style.display = 'none';
                         }
-
-                        // Validate Email
                         var email = document.getElementById('displayed_email').value.trim();
                         var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (!emailPattern.test(email)) {
@@ -784,8 +751,6 @@
                         } else {
                             document.getElementById('emailError').style.display = 'none';
                         }
-
-                        // Validate Phone
                         var phone = document.getElementById('displayed_phone').value.trim();
                         var phonePattern = /^\d{10}$/;
                         if (!phonePattern.test(phone)) {
@@ -794,8 +759,6 @@
                         } else {
                             document.getElementById('phoneError').style.display = 'none';
                         }
-
-                        // Validate District
                         var district = document.getElementById('displayed_district').value;
                         if (!district) {
                             document.getElementById('districtError').style.display = 'block';
@@ -803,8 +766,6 @@
                         } else {
                             document.getElementById('districtError').style.display = 'none';
                         }
-
-                        // Validate Address
                         var address = document.getElementById('displayed_address').value.trim();
                         if (!address) {
                             document.getElementById('addressError').style.display = 'block';
@@ -812,8 +773,6 @@
                         } else {
                             document.getElementById('addressError').style.display = 'none';
                         }
-
-                        // Validate Pincode
                         var pincode = document.getElementById('displayed_pincode').value.trim();
                         var pincodePattern = /^\d{6}$/;
                         if (!pincodePattern.test(pincode)) {
@@ -822,8 +781,6 @@
                         } else {
                             document.getElementById('pincodeError').style.display = 'none';
                         }
-
-                        // Validate Home or Office
                         var homeOrOffice = document.getElementById('displayed_home_or_office').value;
                         if (!homeOrOffice) {
                             document.getElementById('homeOrOfficeError').style.display = 'block';
@@ -831,20 +788,12 @@
                         } else {
                             document.getElementById('homeOrOfficeError').style.display = 'none';
                         }
-
-                        // If form is valid
     if (valid) {
-      // Check if online payment is selected
       var onlinePaymentSelected = document.getElementById('online_payment').checked;
-
-      // If online payment is selected, calculate finalAmount and initiate Razorpay payment
       if (onlinePaymentSelected) {
-        // Calculate total amount based on product's final amount
-        var finalAmount = <%= product.totalCost * 100 %>;
-        // Initiate Razorpay payment with finalAmount
+        var finalAmount = <%= product.totalCost * product.quantity * 100 %>;
         initiateRazorpayPayment(finalAmount);
       } else {
-        // If cash on delivery or other payment method is selected, proceed with normal order placement
         document.getElementById('checkout_details').submit();
       }
     }
