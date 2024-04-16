@@ -1,8 +1,8 @@
 const express = require('express')
 var app = express();
 const router = express.Router()
-const multer = require('multer');  
-const path  = require('path')
+const multer = require('multer');
+const path = require('path')
 
 const { body, validationResult } = require('express-validator');
 const authController = require('../controller/user/authController');
@@ -28,7 +28,7 @@ router.get('/generate-invoice/:orderId', invoiceController.generateInvoice);
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/'); 
+        cb(null, 'public/uploads/');
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -45,7 +45,8 @@ const upload = multer({
             cb(null, true);
         } else {
             cb(new Error('Only images are allowed.'));
-        }  },
+        }
+    },
 });
 
 
@@ -57,15 +58,15 @@ router.post('/signup', authController.signupPost);
 router.post('/signupVerifyOtp', authController.signupVerifyOtp);
 router.post('/signResendOtp', authController.emailResendOtp);
 router.get('/logout', authController.logout);
-router.get('/forgotPage', authController.forgotPage); 
+router.get('/forgotPage', authController.forgotPage);
 router.get('/generate-otp', authController.getGenerateOTP);
 router.post('/reset-password', authController.resetPassword);
 router.post('/generate-otp', authController.generateOtp);
 router.post('/verify-otp', authController.forgotVerifyOtp);
 router.get('/reset-password', authController.forgotVerifyOtp);
 router.post('/resend-otp', authController.resendOtp);
-   
-     
+
+
 // Product Display and Management
 router.get('/', productController.neritt);
 router.get('/getCategory', productController.category);
@@ -86,13 +87,13 @@ router.post('/store_checkout', productController.storeCheckout);
 router.post('/store_checkoutFailed', productController.failedStoreCheckout);
 
 
-router.get('/store_checkout', productController.showCheckoutPage); 
+router.get('/store_checkout', productController.showCheckoutPage);
 router.post('/remove-from-cart/:productId', productController.removeFromCart);
 router.get('/wishlist', productController.wishlist);
 router.get('/wallet', productController.getWallet);
-router.get('/wishlist/add/:id', productController.addToWishlist); 
+router.get('/wishlist/add/:id', productController.addToWishlist);
 router.get('/wishlist/remove/:productId', productController.removeFromWishlist);
- 
+
 // Assuming you have imported the necessary models and middleware
 router.post('/applyCoupon', productController.applyCoupon)
 router.post('/removeCoupon', productController.removeCoupon);

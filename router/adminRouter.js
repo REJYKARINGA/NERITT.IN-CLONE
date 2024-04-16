@@ -1,8 +1,8 @@
 const express = require('express')
 var app = express();
 const router = express.Router()
-const multer = require('multer'); 
-const path  = require('path')
+const multer = require('multer');
+const path = require('path')
 
 const authController = require('../controller/admin/authController');
 const userController = require('../controller/admin/userController');
@@ -12,12 +12,10 @@ const productController = require('../controller/admin/productController');
 const orderController = require('../controller/admin/orderController');
 const couponController = require('../controller/admin/couponController');
 const salesController = require('../controller/admin/salesController');
-  
 
- 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/') 
+        cb(null, 'public/uploads/')
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -39,8 +37,6 @@ const upload = multer({
     },
 });
 
-
-
 // Authentication Routes
 router.get('/', authController.login);
 router.post('/dashboard', authController.loginValidate);
@@ -51,13 +47,12 @@ router.get('/dashboard', userController.dashboard);
 router.get('/admin-dashboard', userController.dashboard);
 router.get('/salesReport', salesController.salesReportDate);
 router.get('/sales-Report', salesController.salesReportDate);
-router.post('/salesReport', salesController.sales_ReportDate );
-
+router.post('/salesReport', salesController.sales_ReportDate);
 
 // router.get('/sales-Report', salesController.salesReportDate);
 router.get('/sales-export', salesController.salesExport);
 router.get('/generate-pdf-sales-report', salesController.salesReportPdf);
- 
+
 router.get('/users', userController.users);
 router.get('/users/:id/block', userController.toggleBlockStatus);
 
@@ -91,7 +86,7 @@ router.post('/products/store', upload.fields([{ name: 'gallery[]', maxCount: 100
 router.get('/edit-products/:id', productController.editProduct);
 router.post('/products/update/:id', upload.fields([{ name: 'gallery[]', maxCount: 100 }]), productController.updateProduct);
 router.post('/delete-products/:id', productController.deleteProduct);
- 
+
 
 // Coupon Routes
 router.get('/coupons', couponController.getAllCoupons);

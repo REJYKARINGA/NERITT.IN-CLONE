@@ -48,19 +48,22 @@ const salesReportDate = async (req, res, next) => {
     if (!req.session.admin) {
       return res.redirect('/admin');
     }
+
     const { start_date, end_date, filter, filters } = req.query;
     const currentPage = parseInt(req.query.page) || 1;
     const pageSize = 10;
     const skip = (currentPage - 1) * pageSize;
 
+    console.log(req.query, 'req.query found');
+
     const filterQuery = {
-      status: { $in: ['shipped', 'completed'] }
+      'products.status': { $in: ['shipped', 'completed'] }
     };
 
     if (filter) {
-
       const currentDate = new Date();
       let startDate, endDate;
+
       switch (filter) {
         case 'year':
           startDate = new Date(currentDate.getFullYear() - 1, 0, 1);
@@ -82,13 +85,16 @@ const salesReportDate = async (req, res, next) => {
           console.log('Invalid filter option:', filter);
           break;
       }
+
       filterQuery.createdAt = {
         $gte: startDate,
         $lte: endDate
       };
     }
 
-    let orders = await Order.find({ 'products.status': { $in: ['shipped', 'completed'] } })
+    console.log('Filter Query:', filterQuery);
+
+    let orders = await Order.find(filterQuery)
       .populate('user')
       .populate('products.product')
       .populate('address')
@@ -97,12 +103,12 @@ const salesReportDate = async (req, res, next) => {
       .limit(pageSize);
 
     const totalOrders = await Order.countDocuments(filterQuery);
-
     const totalSales = orders.reduce((acc, order) => acc + order.totalAmount, 0);
-
     const totalPages = Math.ceil(totalOrders / pageSize);
 
-    console.log(orders,'orders founded')
+    console.log('Total Orders:', totalOrders);
+    console.log('Orders Length:', orders.length);
+
     res.render('admin/salesReport', { orders, totalSales, totalOrders, currentPage, totalPages });
 
   } catch (error) {
